@@ -5,3 +5,7 @@ version = 4
 [[package]]
 name = "rustcc"
 version = "0.1.0"
+
+[[package]]
+name = "rustcc-driver"
+version = "0.1.0"
