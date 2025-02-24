@@ -2,5 +2,12 @@
 resolver = "2"
 members = ["rustcc-driver", "rustcc"]
 
+[workspace.package]
+authors = ["AMS21 <ams21.github@gmail.com>"]
+edition = "2024"
+license = "MIT"
+rust-version = "1.85"
+version = "0.1.0"
+
 [workspace.dependencies]
 clap = "4.5.30"
