@@ -1,0 +1,11 @@
+KeywordInt
+Identifier("main")
+LeftParenthesis
+KeywordVoid
+RightParenthesis
+LeftBrace
+KeywordReturn
+IntegerLiteral(0)
+Semicolon
+RightBrace
+EndOfFile
