@@ -6,6 +6,7 @@ RightParenthesis
 LeftBrace
 KeywordReturn
 IntegerLiteral(0)
+IntegerLiteral(1)
 Semicolon
 RightBrace
 EndOfFile

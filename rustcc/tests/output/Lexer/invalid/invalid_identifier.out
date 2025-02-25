@@ -5,7 +5,8 @@ KeywordVoid
 RightParenthesis
 LeftBrace
 KeywordReturn
-IntegerLiteral(0)
+IntegerLiteral(1)
+Identifier("foo")
 Semicolon
 RightBrace
 EndOfFile

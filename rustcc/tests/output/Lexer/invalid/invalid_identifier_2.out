@@ -5,7 +5,7 @@ KeywordVoid
 RightParenthesis
 LeftBrace
 KeywordReturn
-IntegerLiteral(0)
+Identifier("b")
 Semicolon
 RightBrace
 EndOfFile
