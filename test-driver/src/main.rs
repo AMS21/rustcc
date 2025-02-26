@@ -96,6 +96,10 @@ fn main() {
         }
     }
 
+    if update_baseline {
+        return;
+    }
+
     // Print the summary
     println!("\nSummary:");
     println!(
@@ -120,17 +124,16 @@ fn main() {
 // Function to recursively find all `.c` files in a directory
 fn find_c_files(dir: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
+    let mut dirs = vec![dir.to_path_buf()];
 
-    if dir.is_dir() {
-        // Read the directory entries
-        if let Ok(entries) = fs::read_dir(dir) {
+    while let Some(current_dir) = dirs.pop() {
+        if let Ok(entries) = fs::read_dir(current_dir) {
             for entry in entries.filter_map(Result::ok) {
                 let path = entry.path();
+
                 if path.is_dir() {
-                    // Recursively search in subdirectories
-                    files.extend(find_c_files(&path));
+                    dirs.push(path);
                 } else if path.extension().and_then(|s| s.to_str()) == Some("c") {
-                    // Collect `.c` files
                     files.push(path);
                 }
             }
