@@ -1,0 +1,122 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'rustcc'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=rustcc",
+                    "--package=rustcc"
+                ],
+                "filter": {
+                    "name": "rustcc",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'rustcc'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=rustcc",
+                    "--package=rustcc"
+                ],
+                "filter": {
+                    "name": "rustcc",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug integration test 'run-test-driver'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--test=run-test-driver",
+                    "--package=rustcc"
+                ],
+                "filter": {
+                    "name": "run-test-driver",
+                    "kind": "test"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'rustcc-driver'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=rustcc-driver",
+                    "--package=rustcc-driver"
+                ],
+                "filter": {
+                    "name": "rustcc-driver",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'rustcc-driver'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=rustcc-driver",
+                    "--package=rustcc-driver"
+                ],
+                "filter": {
+                    "name": "rustcc-driver",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'test-driver'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=test-driver",
+                    "--package=test-driver"
+                ],
+                "filter": {
+                    "name": "test-driver",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "--directory",
+                "rustcc/tests"
+            ],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+
+Usage: rustcc [OPTIONS] <source_file>
+
+Arguments:
+  <source_file>  The source file to compile
+
+Options:
+      --print-tokens  Print all tokens
+  -h, --help          Print help
+  -V, --version       Print version

@@ -1,12 +1,12 @@
+use assert_cmd::cargo::CommandCargoExt;
+use clap::ArgAction;
+use colored::Colorize;
+use regex::RegexBuilder;
 use std::{
     env, fs,
     path::{Path, PathBuf},
     process,
 };
-
-use assert_cmd::cargo::CommandCargoExt;
-use clap::ArgAction;
-use colored::Colorize;
 
 const ARG_DIRECTORY: &str = "DIRECTORY";
 const ARG_UPDATE_BASELINE: &str = "UPDATE_BASELINE";
@@ -50,6 +50,14 @@ fn main() {
 
     println!("Found {} test files in '{}'", input_files.len(), directory);
 
+    let run_regex = RegexBuilder::new(r"^//\s*RUN:\s*(.*)$")
+        .multi_line(true)
+        .build()
+        .expect("Failed to build regex");
+    let binary_file_regex = RegexBuilder::new(r"\$\{\{(.+?)\}\}")
+        .build()
+        .expect("Failed to build regex");
+
     for input_path in &input_files {
         print!("Running test '{}'... ", input_path.display());
 
@@ -59,10 +67,54 @@ fn main() {
             .expect("Failed to strip prefix");
         let output_path = output_dir.join(relative_path).with_extension("out");
 
-        // Run rustcc on the input file
-        let output = process::Command::cargo_bin("rustcc")
-            .expect("Failed to find rustcc")
+        // Read the input file
+        let input = fs::read_to_string(input_path).expect("Failed to read input file");
+
+        // Extract run command from the input file
+        let Some(run_command) = run_regex
+            .captures(&input)
+            .and_then(|captures| captures.get(1))
+            .map(|m| m.as_str())
+        else {
+            println!("{}", "TEST ERROR".red());
+            println!("Missing run directive");
+
+            failed_tests.push(input_path);
+            continue;
+        };
+
+        // Extract executable from the run command
+        let Some(executable) = binary_file_regex
+            .captures(run_command)
+            .and_then(|capture| capture.get(1))
+            .map(|m| m.as_str())
+        else {
+            println!("{}", "TEST ERROR".red());
+            println!("Missing executable name in run directive");
+            println!("Run directive: '{}'", run_command);
+
+            failed_tests.push(input_path);
+            continue;
+        };
+
+        // Remove executable from the run command
+        let run_command = binary_file_regex.replace(run_command, "");
+
+        // Collect the command line arguments
+        let args = run_command.split_whitespace().collect::<Vec<_>>();
+
+        // Run executable on the input file
+        let Ok(mut command) = process::Command::cargo_bin(executable) else {
+            println!("{}", "TEST ERROR".red());
+            println!("Executable '{}' not found", executable);
+
+            failed_tests.push(input_path);
+            continue;
+        };
+
+        let output = command
             .arg(input_path.to_str().unwrap())
+            .args(args)
             .output()
             .expect("Failed to execute rustcc");
 
@@ -77,8 +129,9 @@ fn main() {
         } else {
             // Read the expected output
             let Ok(expected_output) = fs::read_to_string(&output_path) else {
-                println!("{}", "ERROR".red());
+                println!("{}", "TEST ERROR".red());
                 println!("Expected output file '{}' not found", output_path.display());
+
                 failed_tests.push(input_path);
                 continue;
             };
@@ -92,6 +145,7 @@ fn main() {
                 println!("Got:\n{}", output_str);
 
                 failed_tests.push(input_path);
+                continue;
             }
         }
     }
@@ -105,8 +159,8 @@ fn main() {
     println!(
         "Ran {} tests {} passed {} failed",
         input_files.len(),
-        input_files.len() - failed_tests.len(),
-        failed_tests.len()
+        (input_files.len() - failed_tests.len()).to_string().green(),
+        failed_tests.len().to_string().red()
     );
 
     // Print the failed tests

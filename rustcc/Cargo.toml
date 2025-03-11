@@ -7,7 +7,7 @@ rust-version.workspace = true
 version.workspace = true
 
 [dependencies]
-clap.workspace = true
+clap = { workspace = true, features = ["cargo"] }
 
 [dev-dependencies]
 assert_cmd.workspace = true

@@ -1,3 +1,5 @@
+// RUN: ${{rustcc}} --print-tokens
+
 // This is a comment
  // Hey, this as well
 

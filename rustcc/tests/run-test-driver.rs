@@ -1,6 +1,5 @@
-use std::{path::PathBuf, process::Command};
-
 use assert_cmd::{assert::OutputAssertExt, cargo::CommandCargoExt};
+use std::{path::PathBuf, process::Command};
 
 #[test]
 fn test_driver() {

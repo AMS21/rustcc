@@ -1,3 +1,5 @@
+// RUN: ${{rustcc}} --print-tokens
+
 /* This is an example
 for a multi line comment
 */

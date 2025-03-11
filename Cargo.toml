@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["rustcc-driver", "rustcc", "test-driver"]
+members = ["rustcc", "rustcc-driver", "test-driver"]
 
 [workspace.package]
 authors = ["AMS21 <ams21.github@gmail.com>"]
@@ -11,5 +11,6 @@ version = "0.1.0"
 
 [workspace.dependencies]
 assert_cmd = "2.0.16"
-clap = "4.5.31"
+clap = "4.5.32"
 colored = "3.0.0"
+regex = "1.11.1"

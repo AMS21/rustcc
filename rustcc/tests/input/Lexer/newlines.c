@@ -1,3 +1,5 @@
+// RUN: ${{rustcc}} --print-tokens
+
 int
 main
 (
