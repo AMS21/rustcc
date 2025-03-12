@@ -1,0 +1,11 @@
+rustcc/tests/input/lexer/warning/null.c:2:1: warning: null character ignored
+KeywordInt 3:1-3:3 - 'int'
+Identifier("main") 3:5-3:8 - 'main'
+LeftParenthesis 3:9 - '('
+RightParenthesis 3:10 - ')'
+LeftBrace 3:12 - '{'
+KeywordReturn 4:3-4:8 - 'return'
+IntegerLiteral(0) 4:10 - '0'
+Semicolon 4:11 - ';'
+RightBrace 5:1 - '}'
+EndOfFile

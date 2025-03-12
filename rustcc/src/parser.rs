@@ -1,11 +1,11 @@
-use crate::token::Token;
+use crate::token::TokenKind;
 
 pub struct Parser {
-    tokens: Vec<Token>,
+    tokens: Vec<TokenKind>,
 }
 
 impl Parser {
-    pub fn new(tokens: Vec<Token>) -> Parser {
+    pub fn new(tokens: Vec<TokenKind>) -> Parser {
         Parser { tokens }
     }
 

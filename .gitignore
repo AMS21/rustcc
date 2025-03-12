@@ -1,1 +1,5 @@
 /target
+/mutants.out
+/mutants.out.old
+/cobertura.xml
+fuzz-*.log

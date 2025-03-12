@@ -1,0 +1,11 @@
+KeywordInt 3:4-3:6 - 'int'
+Identifier("main") 3:10-3:13 - 'main'
+LeftParenthesis 3:18 - '('
+KeywordVoid 3:21-3:24 - 'void'
+RightParenthesis 3:25 - ')'
+LeftBrace 3:28 - '{'
+KeywordReturn 3:32-3:37 - 'return'
+IntegerLiteral(0) 3:40 - '0'
+Semicolon 3:42 - ';'
+RightBrace 3:44 - '}'
+EndOfFile

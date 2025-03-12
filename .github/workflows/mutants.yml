@@ -1,0 +1,49 @@
+name: cargo-mutants
+
+on:
+  pull_request:
+    branches: ["*"]
+  push:
+    branches: ["main", "develop"]
+  workflow_dispatch:
+
+concurrency:
+  # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
+  # On main, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-main-{0}', github.sha) || format('ci-{0}', github.ref) }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  cargo-mutants:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - uses: taiki-e/install-action@v2
+      name: Install cargo-mutants
+      with:
+        tool: cargo-mutants
+
+    - name: Run cargo-mutants
+      run: |
+        cargo mutants --no-shuffle -vV --shard ${{ matrix.shard }}/8 --baseline=skip --timeout 300 --in-place
+
+    - name: Archive mutants.out
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        path: mutants.out
+        name: mutants-shard-${{matrix.shard}}.out

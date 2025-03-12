@@ -1,0 +1,8 @@
+exclude_re = [
+    # These mutants have absolutely no effect so theres no real why to detect them
+    "test-driver/src/main.rs:186:5: replace find_c_files -> Vec<PathBuf> with vec!",
+    # These mutants lead to infinite loops
+    "rustcc/src/lexer.rs:59:28: replace += with *= in Lexer<'_>::consume_character",
+    "rustcc/src/lexer.rs:56:9: replace Lexer<'_>::consume_character with ()",
+    "rustcc/src/lexer.rs:63:9: replace Lexer<'_>::advance_state_machine with ()",
+]

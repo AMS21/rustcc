@@ -1,11 +1,13 @@
 [workspace]
 resolver = "2"
 members = ["rustcc", "rustcc-driver", "test-driver"]
+exclude = ["fuzz"]
 
 [workspace.package]
 authors = ["AMS21 <ams21.github@gmail.com>"]
 edition = "2024"
 license = "MIT"
+repository = "https://github.com/AMS21/rustcc"
 rust-version = "1.85"
 version = "0.1.0"
 
@@ -13,4 +15,6 @@ version = "0.1.0"
 assert_cmd = "2.0.16"
 clap = "4.5.32"
 colored = "3.0.0"
+elsa = "1.11.2"
 regex = "1.11.1"
+tempfile = "3.18.0"

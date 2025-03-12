@@ -3,11 +3,23 @@ name = "rustcc"
 authors.workspace = true
 edition.workspace = true
 license.workspace = true
+repository.workspace = true
 rust-version.workspace = true
 version.workspace = true
 
+[lib]
+name = "rustcc"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rustcc"
+path = "src/main.rs"
+
 [dependencies]
 clap = { workspace = true, features = ["cargo"] }
+colored.workspace = true
+elsa.workspace = true
 
 [dev-dependencies]
 assert_cmd.workspace = true
+tempfile.workspace = true

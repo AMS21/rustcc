@@ -1,0 +1,1 @@
+// RUN: ${{this_is_not_a_real_binary_that_exists_anywhere}} --made-up-flag

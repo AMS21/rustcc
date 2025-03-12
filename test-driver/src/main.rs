@@ -46,6 +46,12 @@ fn main() {
     // Recursively find all `.c` files in the input directory
     let input_files = find_c_files(&input_dir);
 
+    // Ensure that there are even any test files
+    if input_files.is_empty() {
+        println!("No test files found in '{}'", directory);
+        process::exit(1);
+    }
+
     let mut failed_tests = Vec::new();
 
     println!("Found {} test files in '{}'", input_files.len(), directory);
@@ -57,9 +63,13 @@ fn main() {
     let binary_file_regex = RegexBuilder::new(r"\$\{\{(.+?)\}\}")
         .build()
         .expect("Failed to build regex");
+    let expect_failure_regex = RegexBuilder::new(r"^//\s*EXPECT-FAILURE\s*$")
+        .multi_line(true)
+        .build()
+        .expect("Failed to build regex");
 
     for input_path in &input_files {
-        print!("Running test '{}'... ", input_path.display());
+        print!("Running test {}... ", input_path.display());
 
         // Construct the output path, preserving the directory structure
         let relative_path = input_path
@@ -103,6 +113,9 @@ fn main() {
         // Collect the command line arguments
         let args = run_command.split_whitespace().collect::<Vec<_>>();
 
+        // Check if the test is expected to fail
+        let expect_failure = expect_failure_regex.is_match(&input);
+
         // Run executable on the input file
         let Ok(mut command) = process::Command::cargo_bin(executable) else {
             println!("{}", "TEST ERROR".red());
@@ -116,7 +129,29 @@ fn main() {
             .arg(input_path.to_str().unwrap())
             .args(args)
             .output()
-            .expect("Failed to execute rustcc");
+            .expect("Failed to execute binary");
+
+        // Extract status code
+        let Some(status_code) = output.status.code() else {
+            println!("{}", "TEST ERROR".red());
+            println!("Failed to extract status code");
+            continue;
+        };
+
+        // Check the status code
+        if !expect_failure && status_code != 0 {
+            println!("{}", "FAIL".red());
+            println!("Test unexpectedly failed with status code: {status_code}");
+
+            failed_tests.push(input_path);
+            continue;
+        } else if expect_failure && status_code == 0 {
+            println!("{}", "FAIL".red());
+            println!("Test unexpectedly passed");
+
+            failed_tests.push(input_path);
+            continue;
+        }
 
         // Convert output to string
         let output_str = String::from_utf8_lossy(&output.stdout);

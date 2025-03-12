@@ -9,4 +9,5 @@ cd "$SCRIPT_DIR/.."
 
 echo "Updating test baselines..."
 
+cargo build --bin rustcc
 cargo run --bin test-driver -- --directory rustcc/tests --update-baseline
