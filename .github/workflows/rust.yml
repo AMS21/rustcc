@@ -109,5 +109,8 @@ jobs:
       with:
         tool: cargo-hack
 
+    - name: Build
+      run: cargo build --verbose
+
     - name: Run tests
       run: cargo hack test --feature-powerset --verbose
