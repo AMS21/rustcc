@@ -19,8 +19,19 @@ pub struct SourceFile {
 impl SourceFile {
     #[must_use]
     pub fn new<P: Into<String>, C: Into<String>>(path: P, content: C) -> Self {
+        let path = path.into();
+
+        // Assert that path is a valid path
+        assert!(!path.contains("\0"), "Path contains null byte");
+        assert!(!path.contains("\n"), "Path contains newline");
+        assert!(!path.contains(".."), "Path contains '..'");
+        assert!(!path.contains("//"), "Path contains '//'");
+        assert!(!path.contains("\\\\"), "Path contains '\\\\'");
+        assert!(!path.contains("/*"), "Path contains '/*'");
+        assert!(!path.contains("*/"), "Path contains '*/'");
+
         Self {
-            path: path.into(),
+            path,
             content: content.into(),
         }
     }
