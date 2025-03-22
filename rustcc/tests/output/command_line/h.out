@@ -6,5 +6,6 @@ Arguments:
 
 Options:
       --print-tokens  Print all tokens
+      --print-ast     Print the abstract syntax tree
   -h, --help          Print help
   -V, --version       Print version

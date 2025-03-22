@@ -36,6 +36,7 @@ impl SourceFile {
         }
     }
 }
+
 #[cfg(test)]
 mod tests {
     use super::*;

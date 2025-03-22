@@ -1,4 +1,8 @@
+use std::collections::VecDeque;
+
 use crate::source_range::SourceRange;
+
+pub type TokenList<'a> = VecDeque<Token<'a>>;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum TokenKind {
@@ -19,8 +23,6 @@ pub enum TokenKind {
     RightBrace,       // }
     Semicolon,        // ;
     Slash,            // /
-
-    EndOfFile,
 }
 
 impl TokenKind {
@@ -31,10 +33,6 @@ impl TokenKind {
             "void" => TokenKind::KeywordVoid,
             _ => TokenKind::Identifier(identifier.to_string()),
         }
-    }
-
-    pub fn is_eof(&self) -> bool {
-        matches!(self, TokenKind::EndOfFile)
     }
 
     pub fn is_keyword(&self) -> bool {
@@ -55,13 +53,6 @@ impl<'a> Token<'a> {
     #[must_use]
     pub fn new(kind: TokenKind, range: SourceRange<'a>) -> Self {
         Self { kind, range }
-    }
-
-    pub fn new_eof() -> Self {
-        Self {
-            kind: TokenKind::EndOfFile,
-            range: SourceRange::invalid(),
-        }
     }
 
     pub fn new_identifier<R: Into<SourceRange<'a>>>(range: R) -> Self {
@@ -146,10 +137,6 @@ impl<'a> Token<'a> {
         }
     }
 
-    pub fn is_eof(&self) -> bool {
-        self.kind.is_eof()
-    }
-
     pub fn is_keyword(&self) -> bool {
         self.kind.is_keyword()
     }
@@ -159,10 +146,6 @@ impl<'a> Token<'a> {
     }
 
     pub fn dump(&self) -> String {
-        if self.is_eof() {
-            return "EndOfFile".into();
-        }
-
         if self.range.begin == self.range.end {
             let location = self.range.begin;
             return format!(

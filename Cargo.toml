@@ -17,4 +17,13 @@ clap = "4.5.32"
 colored = "3.0.0"
 elsa = "1.11.2"
 regex = "1.11.1"
-tempfile = "3.18.0"
+tempfile = "3.19.1"
+
+# Enable full LTO for release builds
+[profile.release]
+codegen-units = 1
+lto = "fat"
+
+# Enable high optimizations for dependencies but not for our code
+[profile.dev.package."*"]
+opt-level = 3

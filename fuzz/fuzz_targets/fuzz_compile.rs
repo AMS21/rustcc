@@ -1,9 +1,11 @@
 #![no_main]
 
 use libfuzzer_sys::{fuzz_target, Corpus};
-use rustcc::{diagnostic_consumer::IgnoreDiagnosticConsumer, diagnostic_engine::DiagnosticEngine};
 use rustcc::{
+    diagnostic_consumer::IgnoreDiagnosticConsumer,
+    diagnostic_engine::DiagnosticEngine,
     lexer::Lexer,
+    parser::Parser,
     source_manager::{SourceManager, VirtualSourceManager},
 };
 use std::cell::RefCell;
@@ -30,11 +32,13 @@ fuzz_target!(|data: &[u8]| -> Corpus {
         return Corpus::Reject;
     };
 
-    // Create a lexer
-    let mut lexer = Lexer::new(diagnostic_engine, source_file);
+    // Tokenize
+    let mut lexer = Lexer::new(diagnostic_engine.clone(), source_file);
+    let tokens = lexer.tokenize();
 
-    // Convert to tokens
-    let _tokens = lexer.tokenize();
+    // Parse
+    let mut parser = Parser::new(diagnostic_engine.clone(), tokens);
+    let _translation_unit = parser.parse();
 
     Corpus::Keep
 });

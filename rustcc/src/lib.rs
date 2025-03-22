@@ -2,6 +2,7 @@ use std::{cell::RefCell, rc::Rc};
 
 use diagnostic_consumer::DefaultDiagnosticConsumer;
 use diagnostic_engine::DiagnosticEngine;
+use parser::Parser;
 use source_manager::{RealFSSourceManager, SourceManager};
 
 pub mod ast;
@@ -50,17 +51,22 @@ pub fn run_main() {
 
     // Create a lexer
     let mut lexer = lexer::Lexer::new(diagnostic_engine.clone(), source_file);
+    let tokens = lexer.tokenize();
 
     // Print all tokens
     if command_line_matches.get_flag(command_line::ARG_PRINT_TOKENS) {
-        loop {
-            let token = lexer.next_token();
+        for token in &tokens {
             println!("{}", token.dump());
-
-            if token.is_eof() {
-                break;
-            }
         }
+    }
+
+    // Create a parser
+    let mut parser = Parser::new(diagnostic_engine.clone(), tokens);
+    let translation_unit = parser.parse();
+
+    // Print the abstract syntax tree (AST)
+    if command_line_matches.get_flag(command_line::ARG_PRINT_AST) {
+        println!("{:#?}", translation_unit);
     }
 
     if diagnostic_engine.borrow().error_occurred() {

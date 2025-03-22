@@ -9,4 +9,3 @@ IntegerLiteral(1) 6:12 - '1'
 Identifier("foo") 6:13-6:15 - 'foo'
 Semicolon 6:16 - ';'
 RightBrace 7:1 - '}'
-EndOfFile

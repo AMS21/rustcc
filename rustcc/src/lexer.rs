@@ -9,7 +9,7 @@ use crate::{
     source_file::SourceFile,
     source_location::SourceLocation,
     source_range::SourceRange,
-    token::Token,
+    token::{Token, TokenList},
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -30,16 +30,14 @@ pub struct Lexer<'a> {
     diagnostic_engine: Rc<RefCell<DiagnosticEngine>>,
     source_file: &'a SourceFile,
 
-    line: usize,
-    column: usize,
+    line: u32,
+    column: u32,
     index: usize,
-
-    eof_emitted: bool,
 
     token_begin_location: SourceLocation<'a>,
     token_end_location: SourceLocation<'a>,
 
-    queued_tokens: Vec<Token<'a>>,
+    queued_tokens: TokenList<'a>,
 }
 
 impl<'a> Lexer<'a> {
@@ -55,50 +53,23 @@ impl<'a> Lexer<'a> {
             line: 1,
             column: 1,
             index: 0,
-            eof_emitted: false,
             token_begin_location: SourceLocation::invalid(),
             token_end_location: SourceLocation::invalid(),
-            queued_tokens: Vec::new(),
+            queued_tokens: TokenList::new(),
         }
     }
 
     #[must_use]
-    pub const fn is_finished(&self) -> bool {
-        self.eof_emitted
+    pub fn is_finished(&self) -> bool {
+        self.index >= self.source_file.content.len()
     }
 
-    pub fn tokenize(&mut self) -> Vec<Token> {
-        loop {
-            if let Some(token) = self.queued_tokens.last() {
-                if token.is_eof() {
-                    self.eof_emitted = true;
-                }
-
-                return self.queued_tokens.drain(..).collect();
-            }
-
+    pub fn tokenize(&mut self) -> TokenList {
+        while !self.is_finished() {
             self.advance_state_machine();
         }
-    }
 
-    #[must_use]
-    pub fn next_token(&mut self) -> Token {
-        // After we reached the end of file, we simply keep emitting EOF tokens
-        if self.eof_emitted {
-            return Token::new_eof();
-        }
-
-        loop {
-            if let Some(token) = self.queued_tokens.pop() {
-                if token.is_eof() {
-                    self.eof_emitted = true;
-                }
-
-                return token;
-            }
-
-            self.advance_state_machine();
-        }
+        return self.queued_tokens.drain(..).collect();
     }
 
     fn peek_next(&self) -> Option<char> {
@@ -137,10 +108,6 @@ impl<'a> Lexer<'a> {
 
     // -- Emit Token functions --
 
-    fn emit_eof_token(&mut self) {
-        self.queued_tokens.push(Token::new_eof());
-    }
-
     fn advance_state_machine(&mut self) {
         match self.state {
             LexerState::Start => match self.peek_next() {
@@ -175,32 +142,34 @@ impl<'a> Lexer<'a> {
                     let location = self.current_location();
 
                     self.queued_tokens
-                        .push(Token::new_left_parenthesis(location));
+                        .push_back(Token::new_left_parenthesis(location));
                     self.consume_character();
                 }
                 Some(')') => {
                     let location = self.current_location();
 
                     self.queued_tokens
-                        .push(Token::new_right_parenthesis(location));
+                        .push_back(Token::new_right_parenthesis(location));
                     self.consume_character();
                 }
                 Some('{') => {
                     let location = self.current_location();
 
-                    self.queued_tokens.push(Token::new_left_brace(location));
+                    self.queued_tokens
+                        .push_back(Token::new_left_brace(location));
                     self.consume_character();
                 }
                 Some('}') => {
                     let location = self.current_location();
 
-                    self.queued_tokens.push(Token::new_right_brace(location));
+                    self.queued_tokens
+                        .push_back(Token::new_right_brace(location));
                     self.consume_character();
                 }
                 Some(';') => {
                     let location = self.current_location();
 
-                    self.queued_tokens.push(Token::new_semicolon(location));
+                    self.queued_tokens.push_back(Token::new_semicolon(location));
                     self.consume_character();
                 }
 
@@ -210,9 +179,7 @@ impl<'a> Lexer<'a> {
                     self.consume_character();
                 }
 
-                None => {
-                    self.emit_eof_token();
-                }
+                None => {}
 
                 Some(character) => {
                     self.diagnostic_here(
@@ -239,7 +206,7 @@ impl<'a> Lexer<'a> {
                             self.token_begin_location,
                             self.token_end_location,
                         ));
-                        self.queued_tokens.push(token);
+                        self.queued_tokens.push_back(token);
 
                         self.state = LexerState::Start;
                         break;
@@ -281,7 +248,7 @@ impl<'a> Lexer<'a> {
                                 ),
                             );
 
-                            self.queued_tokens.push(token);
+                            self.queued_tokens.push_back(token);
                             self.state = LexerState::Start;
                             break;
                         }
@@ -329,15 +296,14 @@ impl<'a> Lexer<'a> {
 
                     Some(_) => {
                         self.queued_tokens
-                            .push(Token::new_slash(self.token_begin_location));
+                            .push_back(Token::new_slash(self.token_begin_location));
 
                         self.state = LexerState::Start;
                     }
 
                     None => {
                         self.queued_tokens
-                            .push(Token::new_slash(self.token_begin_location));
-                        self.emit_eof_token();
+                            .push_back(Token::new_slash(self.token_begin_location));
                     }
                 }
             }
@@ -356,9 +322,7 @@ impl<'a> Lexer<'a> {
                     self.consume_character();
                 }
 
-                None => {
-                    self.emit_eof_token();
-                }
+                None => {}
             },
 
             LexerState::MultiLineComment => match self.peek_next() {
@@ -380,7 +344,6 @@ impl<'a> Lexer<'a> {
 
                 None => {
                     // TODO: This is an untermianted multiline comment error
-                    self.emit_eof_token();
                 }
             },
 
@@ -408,7 +371,6 @@ impl<'a> Lexer<'a> {
 
                     None => {
                         // TODO: This is an unterminated multipline comment error
-                        self.emit_eof_token();
                     }
                 }
             }

@@ -47,6 +47,16 @@ define_diagnostics! {
     // Parser warnings
 
     // Parser errors
+    ExpectedFunctionReturnType(Error, ""),
+    ExpectedFunctionName(Error, ""),
+    ExpectedLeftParenthesis(Error, ""),
+    ExpectedRightParenthesis(Error, ""),
+    ExpectedLeftBrace(Error, ""),
+    ExpectedRightBrace(Error, ""),
+    ExpectedSemicolon(Error, ""),
+    ExpectedReturnKeyword(Error, ""),
+    ExpectedIntegerLiteral(Error, ""),
+    ExpectedVoidInParameterList(Error, ""),
 
     // Parser fatal errors
 }

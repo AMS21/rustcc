@@ -1,14 +1,10 @@
-use clap::Arg;
-use clap::ArgAction;
-use clap::Command;
-use clap::ValueHint;
-use clap::crate_authors;
-use clap::crate_description;
-use clap::crate_name;
-use clap::crate_version;
+use clap::{
+    Arg, ArgAction, Command, ValueHint, crate_authors, crate_description, crate_name, crate_version,
+};
 
 pub const ARG_INPUT_FILE: &str = "source_file";
 pub const ARG_PRINT_TOKENS: &str = "PRINT_TOKENS";
+pub const ARG_PRINT_AST: &str = "PRINT_AST";
 
 pub const GROUP_DEBUG: &str = "debug";
 
@@ -28,6 +24,13 @@ pub fn command_line() -> Command {
                 .long("print-tokens")
                 .action(ArgAction::SetTrue)
                 .help("Print all tokens")
+                .group(GROUP_DEBUG),
+        )
+        .arg(
+            Arg::new(ARG_PRINT_AST)
+                .long("print-ast")
+                .action(ArgAction::SetTrue)
+                .help("Print the abstract syntax tree")
                 .group(GROUP_DEBUG),
         )
 }

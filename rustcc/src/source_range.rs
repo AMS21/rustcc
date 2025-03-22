@@ -232,6 +232,12 @@ impl<'a> SourceRange<'a> {
     }
 }
 
+impl<'a> Default for SourceRange<'a> {
+    fn default() -> Self {
+        Self::invalid()
+    }
+}
+
 impl<'a> From<SourceLocation<'a>> for SourceRange<'a> {
     fn from(location: SourceLocation<'a>) -> Self {
         Self::from_location(location)

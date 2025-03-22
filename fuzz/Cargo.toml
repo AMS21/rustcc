@@ -13,6 +13,10 @@ libfuzzer-sys = "0.4.9"
 [dependencies.rustcc]
 path = "../rustcc"
 
+[profile.release]
+codegen-units = 1
+lto = "thin"
+
 [[bin]]
 name = "fuzz_compile"
 path = "fuzz_targets/fuzz_compile.rs"

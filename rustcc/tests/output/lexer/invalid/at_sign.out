@@ -9,4 +9,3 @@ IntegerLiteral(0) 7:12 - '0'
 IntegerLiteral(1) 7:14 - '1'
 Semicolon 7:15 - ';'
 RightBrace 8:1 - '}'
-EndOfFile

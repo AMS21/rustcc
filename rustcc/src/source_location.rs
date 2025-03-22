@@ -2,13 +2,13 @@ use crate::{source_file::SourceFile, source_range::SourceRange};
 use std::fmt;
 
 // TODO: Maybe custom implementations for PartialOrd and Ord since it makes no sense to compare SourceLocations with different source files
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 /// A location in a source file, represented by a line and column number.
+#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct SourceLocation<'a> {
     pub source_file: Option<&'a SourceFile>,
     pub index: usize,
-    pub line: usize,
-    pub column: usize,
+    pub line: u32,
+    pub column: u32,
 }
 
 impl<'a> SourceLocation<'a> {
@@ -43,7 +43,7 @@ impl<'a> SourceLocation<'a> {
     /// assert_eq!(location.column, 2);
     /// ```
     #[must_use]
-    pub fn new(source_file: &'a SourceFile, index: usize, line: usize, column: usize) -> Self {
+    pub fn new(source_file: &'a SourceFile, index: usize, line: u32, column: u32) -> Self {
         debug_assert!(
             line > 0,
             "Line must be greater than 0.\nSource file: '{}'",
@@ -59,18 +59,18 @@ impl<'a> SourceLocation<'a> {
         let line_length = source_file
             .content
             .lines()
-            .nth(line - 1)
+            .nth((line - 1) as usize)
             .map(|line| line.chars().count());
         let file_chars = source_file.content.len();
 
         debug_assert!(
-            file_lines >= line,
+            file_lines >= line as usize,
             "Line number exceeds the number of lines in the source file.\nExpected at most {file_lines}, found {line}\nSource file: '{}'",
             source_file.path
         );
         if let Some(line_length) = line_length {
             debug_assert!(
-                line_length >= column,
+                line_length >= column as usize,
                 "Column number exceeds the number of characters in the line.\nExpected at most {line_length}, found {column}.\nSource file: '{}'\nLine: {line}",
                 source_file.path
             );
@@ -108,11 +108,13 @@ impl<'a> SourceLocation<'a> {
     /// # use rustcc::source_location::SourceLocation;
     /// let location = SourceLocation::new_scratch(3, 2);
     ///
+    /// assert_eq!(location.source_file, None);
+    /// assert_eq!(location.index, 0);
     /// assert_eq!(location.line, 3);
     /// assert_eq!(location.column, 2);
     /// ```
     #[must_use]
-    pub fn new_scratch(line: usize, column: usize) -> Self {
+    pub fn new_scratch(line: u32, column: u32) -> Self {
         assert!(line > 0, "Line must be greater than 0");
         assert!(column > 0, "Column must be greater than 0");
 

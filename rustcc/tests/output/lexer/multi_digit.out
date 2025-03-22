@@ -8,4 +8,3 @@ KeywordReturn 5:5-5:10 - 'return'
 IntegerLiteral(100) 5:12-5:14 - '100'
 Semicolon 5:15 - ';'
 RightBrace 6:1 - '}'
-EndOfFile

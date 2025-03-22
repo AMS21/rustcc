@@ -8,4 +8,3 @@ KeywordReturn 3:16-3:21 - 'return'
 IntegerLiteral(0) 3:23 - '0'
 Semicolon 3:24 - ';'
 RightBrace 3:25 - '}'
-EndOfFile
