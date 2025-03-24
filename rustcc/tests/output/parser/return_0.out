@@ -1,0 +1,4 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:13
+      IntegerLiteral (0) 4:12

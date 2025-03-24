@@ -66,7 +66,7 @@ pub fn run_main() {
 
     // Print the abstract syntax tree (AST)
     if command_line_matches.get_flag(command_line::ARG_PRINT_AST) {
-        println!("{:#?}", translation_unit);
+        println!("{}", translation_unit.dump());
     }
 
     if diagnostic_engine.borrow().error_occurred() {
