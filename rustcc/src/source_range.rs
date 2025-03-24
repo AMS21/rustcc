@@ -232,7 +232,7 @@ impl<'a> SourceRange<'a> {
     }
 }
 
-impl<'a> Default for SourceRange<'a> {
+impl Default for SourceRange<'_> {
     fn default() -> Self {
         Self::invalid()
     }

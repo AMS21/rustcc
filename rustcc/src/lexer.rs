@@ -69,7 +69,7 @@ impl<'a> Lexer<'a> {
             self.advance_state_machine();
         }
 
-        return self.queued_tokens.drain(..).collect();
+        self.queued_tokens.drain(..).collect()
     }
 
     fn peek_next(&self) -> Option<char> {
