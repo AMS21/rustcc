@@ -41,6 +41,9 @@
             })
             mold
             sccache
+            cargo-fuzz
+            cargo-mutants
+            cargo-tarpaulin
           ];
 
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
