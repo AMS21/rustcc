@@ -20,6 +20,7 @@ clap = { workspace = true, features = ["cargo"] }
 colored.workspace = true
 elsa.workspace = true
 llvm-sys.workspace = true
+libc.workspace = true
 
 [dev-dependencies]
 assert_cmd.workspace = true

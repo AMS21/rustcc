@@ -1,11 +1,13 @@
 use std::{cell::RefCell, rc::Rc};
 
+use codegen::Codegen;
 use diagnostic_consumer::DefaultDiagnosticConsumer;
 use diagnostic_engine::DiagnosticEngine;
 use parser::Parser;
 use source_manager::{RealFSSourceManager, SourceManager};
 
 pub mod ast;
+pub mod codegen;
 pub mod command_line;
 pub mod diagnostic;
 pub mod diagnostic_builder;
@@ -67,6 +69,16 @@ pub fn run_main() {
     // Print the abstract syntax tree (AST)
     if command_line_matches.get_flag(command_line::ARG_PRINT_AST) {
         println!("{}", translation_unit.dump());
+    }
+
+    // Codegen the translation unit
+    let codegen = Codegen::new(file_path);
+
+    codegen.codegen(&translation_unit);
+
+    // Print the LLVM intermediate representation (IR)
+    if command_line_matches.get_flag(command_line::ARG_PRINT_IR) {
+        codegen.dump();
     }
 
     if diagnostic_engine.borrow().error_occurred() {

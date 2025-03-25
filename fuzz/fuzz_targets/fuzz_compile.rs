@@ -2,14 +2,16 @@
 
 use libfuzzer_sys::{fuzz_target, Corpus};
 use rustcc::{
+    codegen::Codegen,
     diagnostic_consumer::IgnoreDiagnosticConsumer,
     diagnostic_engine::DiagnosticEngine,
     lexer::Lexer,
     parser::Parser,
     source_manager::{SourceManager, VirtualSourceManager},
 };
-use std::cell::RefCell;
-use std::rc::Rc;
+use std::{cell::RefCell, rc::Rc};
+
+const INPUT_FILE: &str = "fuzz.c";
 
 fuzz_target!(|data: &[u8]| -> Corpus {
     // Convert input data to a string
@@ -26,9 +28,9 @@ fuzz_target!(|data: &[u8]| -> Corpus {
     let diagnostic_engine = Rc::new(RefCell::from(DiagnosticEngine::new(diagnostic_consumer)));
 
     // Load the input file into our source manager
-    source_manager.add_file("fuzz.c", data);
+    source_manager.add_file(INPUT_FILE, data);
 
-    let Some(source_file) = source_manager.load_file("fuzz.c") else {
+    let Some(source_file) = source_manager.load_file(INPUT_FILE) else {
         return Corpus::Reject;
     };
 
@@ -38,7 +40,11 @@ fuzz_target!(|data: &[u8]| -> Corpus {
 
     // Parse
     let mut parser = Parser::new(diagnostic_engine.clone(), tokens);
-    let _translation_unit = parser.parse();
+    let translation_unit = parser.parse();
+
+    // Codegen
+    let codegen = Codegen::new(INPUT_FILE);
+    codegen.codegen(&translation_unit);
 
     Corpus::Keep
 });

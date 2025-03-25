@@ -7,5 +7,6 @@ Arguments:
 Options:
       --print-tokens  Print all tokens
       --print-ast     Print the abstract syntax tree
+      --print-ir      Print the LLVM intermediate representation
   -h, --help          Print help
   -V, --version       Print version

@@ -1,0 +1,7 @@
+; ModuleID = 'rustcc/tests/input/codegen/return_0.c'
+source_filename = "rustcc/tests/input/codegen/return_0.c"
+
+define i32 @main() {
+entry:
+  ret i32 0
+}
