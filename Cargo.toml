@@ -16,6 +16,7 @@ assert_cmd = "2.0.16"
 clap = "4.5.32"
 colored = "3.0.0"
 elsa = "1.11.2"
+llvm-sys = "201.0.0"
 regex = "1.11.1"
 tempfile = "3.19.1"
 

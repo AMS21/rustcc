@@ -44,10 +44,15 @@
             cargo-fuzz
             cargo-mutants
             cargo-tarpaulin
+
+            # LLVM
+            llvmPackages_latest.libllvm
           ];
 
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
           RUSTFLAGS = "-Clink-arg=-fuse-ld=mold";
+
+          LLVM_SYS_201_PREFIX = "${pkgs.llvmPackages_latest.llvm.dev}";
         };
       }
     );
