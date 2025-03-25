@@ -1,0 +1,28 @@
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:5: error: expected 'return' keyword
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:5: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:12: error: expected '('
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:12: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:12: error: expected ')'
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:12: error: expected '{'
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:12: error: expected 'return' keyword
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:12: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:13: error: expected function name
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:13: error: expected '('
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:13: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:13: error: expected ')'
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:13: error: expected '{'
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:13: error: expected 'return' keyword
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:13: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:6:1: error: expected function name
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:6:1: error: expected '('
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:6:1: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:6:1: error: expected ')'
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:6:1: error: expected '{'
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:6:1: error: expected 'return' keyword
+rustcc/tests/input/parser/invalid/keyword_wrong_case.c:6:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword

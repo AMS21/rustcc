@@ -1,0 +1,6 @@
+rustcc/tests/input/parser/invalid/extra_junk.c:9:1: error: expected 'int' keyword
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword

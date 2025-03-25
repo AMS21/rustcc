@@ -1,0 +1,1 @@
+rustcc/tests/input/lexer/invalid/backtick.c:5:1: error: unexpected character '`' found

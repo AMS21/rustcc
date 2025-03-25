@@ -26,6 +26,7 @@ pub enum TokenKind {
 }
 
 impl TokenKind {
+    #[must_use]
     pub fn from_identifier(identifier: &str) -> TokenKind {
         match identifier {
             "int" => TokenKind::KeywordInt,
@@ -35,11 +36,17 @@ impl TokenKind {
         }
     }
 
+    #[must_use]
     pub fn is_keyword(&self) -> bool {
         matches!(
             self,
             TokenKind::KeywordInt | TokenKind::KeywordReturn | TokenKind::KeywordVoid
         )
+    }
+
+    #[must_use]
+    pub fn is_identifier(&self) -> bool {
+        matches!(self, TokenKind::Identifier(_))
     }
 }
 
@@ -55,6 +62,7 @@ impl<'a> Token<'a> {
         Self { kind, range }
     }
 
+    #[must_use]
     pub fn new_identifier<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
@@ -64,6 +72,7 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn new_integer_literal<R: Into<SourceRange<'a>>>(value: u32, range: R) -> Self {
         Self {
             kind: TokenKind::IntegerLiteral(value),
@@ -71,6 +80,7 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn new_left_parenthesis<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
@@ -82,6 +92,7 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn new_right_parenthesis<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
@@ -93,6 +104,7 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn new_left_brace<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
@@ -104,6 +116,7 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn new_right_brace<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
@@ -115,6 +128,7 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn new_semicolon<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
@@ -126,6 +140,7 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn new_slash<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
@@ -137,14 +152,22 @@ impl<'a> Token<'a> {
         }
     }
 
+    #[must_use]
     pub fn is_keyword(&self) -> bool {
         self.kind.is_keyword()
     }
 
+    #[must_use]
+    pub fn is_identifier(&self) -> bool {
+        self.kind.is_identifier()
+    }
+
+    #[must_use]
     pub fn source_text(&self) -> Option<&'a str> {
         self.range.source_text()
     }
 
+    #[must_use]
     pub fn dump(&self) -> String {
         if self.range.begin == self.range.end {
             let location = self.range.begin;

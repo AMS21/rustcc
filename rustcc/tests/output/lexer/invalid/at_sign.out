@@ -1,3 +1,26 @@
+rustcc/tests/input/lexer/invalid/at_sign.c:7:13: error: unexpected character '@' found
+rustcc/tests/input/lexer/invalid/at_sign.c:7:14: error: expected ';'
+rustcc/tests/input/lexer/invalid/at_sign.c:7:14: error: expected 'int' keyword
+rustcc/tests/input/lexer/invalid/at_sign.c:7:15: error: expected function name
+rustcc/tests/input/lexer/invalid/at_sign.c:7:15: error: expected '('
+rustcc/tests/input/lexer/invalid/at_sign.c:7:15: error: expected 'void' keyword for parameter list
+rustcc/tests/input/lexer/invalid/at_sign.c:7:15: error: expected ')'
+rustcc/tests/input/lexer/invalid/at_sign.c:7:15: error: expected '{'
+rustcc/tests/input/lexer/invalid/at_sign.c:7:15: error: expected 'return' keyword
+rustcc/tests/input/lexer/invalid/at_sign.c:7:15: error: expected 'int' keyword
+rustcc/tests/input/lexer/invalid/at_sign.c:8:1: error: expected function name
+rustcc/tests/input/lexer/invalid/at_sign.c:8:1: error: expected '('
+rustcc/tests/input/lexer/invalid/at_sign.c:8:1: error: expected 'void' keyword for parameter list
+rustcc/tests/input/lexer/invalid/at_sign.c:8:1: error: expected ')'
+rustcc/tests/input/lexer/invalid/at_sign.c:8:1: error: expected '{'
+rustcc/tests/input/lexer/invalid/at_sign.c:8:1: error: expected 'return' keyword
+rustcc/tests/input/lexer/invalid/at_sign.c:8:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword
 KeywordInt 6:1-6:3 - 'int'
 Identifier("main") 6:5-6:8 - 'main'
 LeftParenthesis 6:9 - '('

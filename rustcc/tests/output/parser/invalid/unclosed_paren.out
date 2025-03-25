@@ -1,0 +1,2 @@
+rustcc/tests/input/parser/invalid/unclosed_paren.c:4:11: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/unclosed_paren.c:4:11: error: expected ')'

@@ -99,11 +99,21 @@ impl<'a> Parser<'a> {
         }
 
         // Parse the function name
-        let name = self
-            .consume_next()
-            .map(|token| token.range.source_text().unwrap().to_string())
+        let Some(name_token) = self.consume_next() else {
+            self.diagnostic(
+                DiagnosticId::ExpectedFunctionName,
+                self.current_token_source_range(),
+                "expected function name but reached end of file",
+            );
+            return None;
+        };
+
+        let name = name_token
+            .range
+            .source_text()
+            .map(|text| text.to_string())
             .unwrap_or_default();
-        if name.is_empty() {
+        if !name_token.is_identifier() || name.is_empty() {
             self.diagnostic(
                 DiagnosticId::ExpectedFunctionName,
                 self.current_token_source_range(),
@@ -180,7 +190,14 @@ impl<'a> Parser<'a> {
         };
 
         // Parse the expression
-        let expression = self.parse_expression()?;
+        let Some(expression) = self.parse_expression() else {
+            self.diagnostic(
+                DiagnosticId::ExpectedExpression,
+                return_token.range.end,
+                "expected expression instead reached end of file",
+            );
+            return None;
+        };
 
         // Require a semicolon
         let Some(semicolon_token) = self.expect(TokenKind::Semicolon) else {

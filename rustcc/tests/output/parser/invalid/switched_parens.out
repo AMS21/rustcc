@@ -1,0 +1,9 @@
+rustcc/tests/input/parser/invalid/switched_parens.c:4:10: error: expected '('
+rustcc/tests/input/parser/invalid/switched_parens.c:4:10: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/switched_parens.c:4:11: error: expected '{'
+rustcc/tests/input/parser/invalid/switched_parens.c:4:11: error: expected 'return' keyword
+rustcc/tests/input/parser/invalid/switched_parens.c:4:11: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/switched_parens.c:4:13: error: expected function name
+rustcc/tests/input/parser/invalid/switched_parens.c:4:13: error: expected '('
+rustcc/tests/input/parser/invalid/switched_parens.c:4:13: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/switched_parens.c:4:13: error: expected ')'

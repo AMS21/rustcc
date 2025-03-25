@@ -1,3 +1,24 @@
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:13: error: expected ';'
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:13: error: expected 'int' keyword
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:16: error: expected '('
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:16: error: expected 'void' keyword for parameter list
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:16: error: expected ')'
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:16: error: expected '{'
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:16: error: expected 'return' keyword
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:6:16: error: expected 'int' keyword
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:7:1: error: expected function name
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:7:1: error: expected '('
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:7:1: error: expected 'void' keyword for parameter list
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:7:1: error: expected ')'
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:7:1: error: expected '{'
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:7:1: error: expected 'return' keyword
+rustcc/tests/input/lexer/invalid/invalid_identifier.c:7:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword
 KeywordInt 5:1-5:3 - 'int'
 Identifier("main") 5:5-5:8 - 'main'
 LeftParenthesis 5:9 - '('

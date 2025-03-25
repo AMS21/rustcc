@@ -1,0 +1,16 @@
+rustcc/tests/input/parser/invalid/not_expression.c:5:12: error: expected integer literal
+rustcc/tests/input/parser/invalid/not_expression.c:5:10: error: expected expression instead reached end of file
+rustcc/tests/input/parser/invalid/not_expression.c:5:15: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/not_expression.c:6:1: error: expected function name
+rustcc/tests/input/parser/invalid/not_expression.c:6:1: error: expected '('
+rustcc/tests/input/parser/invalid/not_expression.c:6:1: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/not_expression.c:6:1: error: expected ')'
+rustcc/tests/input/parser/invalid/not_expression.c:6:1: error: expected '{'
+rustcc/tests/input/parser/invalid/not_expression.c:6:1: error: expected 'return' keyword
+rustcc/tests/input/parser/invalid/not_expression.c:6:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword

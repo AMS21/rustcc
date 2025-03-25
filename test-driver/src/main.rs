@@ -154,12 +154,15 @@ fn main() {
         }
 
         // Convert output to string
-        let output_str = String::from_utf8_lossy(&output.stdout);
+        let stdout_str = String::from_utf8_lossy(&output.stdout);
+        let stderr_str = String::from_utf8_lossy(&output.stderr);
+
+        let output_str = format!("{}{}", stderr_str, stdout_str);
 
         if update_baseline {
             fs::create_dir_all(output_path.parent().unwrap())
                 .expect("Failed to create output directory");
-            fs::write(output_path, output_str.to_string()).expect("Failed to write output file");
+            fs::write(output_path, output_str).expect("Failed to write output file");
             println!("{}", "UPDATED".yellow());
         } else {
             // Read the expected output

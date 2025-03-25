@@ -1,1 +1,9 @@
+rustcc/tests/input/lexer/crash/crash-31543fb32b45148de1ce3e5fa8314623d6f2dc8ddd264a590f79ad110757f27b.c:4:1: error: unexpected character 'Ѥ' found
+rustcc/tests/input/lexer/crash/crash-31543fb32b45148de1ce3e5fa8314623d6f2dc8ddd264a590f79ad110757f27b.c:4:2: error: unexpected character 'Ѥ' found
+rustcc/tests/input/lexer/crash/crash-31543fb32b45148de1ce3e5fa8314623d6f2dc8ddd264a590f79ad110757f27b.c:4:3: error: expected 'int' keyword
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword
 Identifier("R") 4:3 - 'R'

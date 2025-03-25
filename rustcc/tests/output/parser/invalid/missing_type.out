@@ -1,0 +1,1 @@
+rustcc/tests/input/parser/invalid/missing_type.c:8:1: error: expected 'int' keyword
