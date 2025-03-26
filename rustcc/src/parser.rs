@@ -1,7 +1,9 @@
 use std::{cell::RefCell, rc::Rc};
 
 use crate::{
-    ast::{Expression, ExpressionKind, FunctionDefinition, Statement, TranslationUnit},
+    ast::{
+        Expression, ExpressionKind, FunctionDefinition, Statement, TranslationUnit, UnaryOperator,
+    },
     diagnostic::{Diagnostic, DiagnosticId},
     diagnostic_builder::DiagnosticBuilder,
     diagnostic_engine::DiagnosticEngine,
@@ -221,8 +223,28 @@ impl<'a> Parser<'a> {
     // -- Expressions --
 
     fn parse_expression(&self) -> Option<Expression> {
-        // TODO:  For now we only support integer literals
-        self.parse_integer_literal()
+        let Some(token) = self.peek_next() else {
+            self.diagnostic(
+                DiagnosticId::ExpectedExpression,
+                self.current_token_source_range(),
+                "expected expression but reached end of file",
+            );
+            return None;
+        };
+
+        match token.kind {
+            TokenKind::IntegerLiteral(_) => self.parse_integer_literal(),
+            TokenKind::Minus | TokenKind::Tilde => self.parse_unary_expression(),
+            TokenKind::LeftParenthesis => self.parse_parenthesis_expression(),
+            _ => {
+                self.diagnostic(
+                    DiagnosticId::ExpectedExpression,
+                    token.range,
+                    "expected expression",
+                );
+                None
+            }
+        }
     }
 
     fn parse_integer_literal(&self) -> Option<Expression> {
@@ -243,6 +265,61 @@ impl<'a> Parser<'a> {
         Some(Expression {
             kind: ExpressionKind::IntegerLiteral(value),
             range: token.range,
+        })
+    }
+
+    fn parse_unary_expression(&self) -> Option<Expression> {
+        let operator_token = self.consume_next()?;
+
+        let operator = match operator_token.kind {
+            TokenKind::Minus => UnaryOperator::Negate,
+            TokenKind::Tilde => UnaryOperator::Complement,
+            _ => {
+                unreachable!();
+            }
+        };
+
+        let expression = self.parse_expression()?;
+        let range = SourceRange {
+            begin: operator_token.range.begin,
+            end: expression.range.end,
+        };
+
+        Some(Expression {
+            kind: ExpressionKind::UnaryOperation {
+                operator,
+                expression: Box::new(expression),
+            },
+            range,
+        })
+    }
+
+    fn parse_parenthesis_expression(&self) -> Option<Expression> {
+        // Opening parenthesis
+        let opnening_parenthesis_token = self.expect(TokenKind::LeftParenthesis)?;
+
+        let expression = self.parse_expression()?;
+
+        // Closing parenthesis
+        let closing_paren_token = self.expect(TokenKind::RightParenthesis);
+        if closing_paren_token.is_none() {
+            self.diagnostic(
+                DiagnosticId::MissingClosingParenthesis,
+                self.current_token_source_range(),
+                "missing closing right parenthesis ')'",
+            );
+        };
+
+        let range = SourceRange {
+            begin: opnening_parenthesis_token.range.begin,
+            end: closing_paren_token
+                .map(|token| token.range.end)
+                .unwrap_or(expression.range.end),
+        };
+
+        Some(Expression {
+            kind: ExpressionKind::Parenthesis(Box::new(expression)),
+            range,
         })
     }
 }

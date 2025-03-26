@@ -58,6 +58,7 @@ define_diagnostics! {
     ExpectedIntegerLiteral(Error, ""),
     ExpectedVoidInParameterList(Error, ""),
     ExpectedExpression(Error, ""),
+    MissingClosingParenthesis(Error, ""),
 
     // Parser fatal errors
 }

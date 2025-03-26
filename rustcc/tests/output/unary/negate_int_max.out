@@ -1,0 +1,12 @@
+; ModuleID = 'rustcc/tests/input/unary/negate_int_max.c'
+source_filename = "rustcc/tests/input/unary/negate_int_max.c"
+
+define i32 @main() {
+entry:
+  ret i32 -2147483647
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 5:5-5:23
+      UnaryOperation Negate 5:12-5:22
+        IntegerLiteral (2147483647) 5:13-5:22

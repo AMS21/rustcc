@@ -4,10 +4,10 @@ use libc::c_uint;
 use llvm_sys::{
     analysis::{LLVMVerifierFailureAction, LLVMVerifyFunction},
     core::{
-        LLVMAddFunction, LLVMAppendBasicBlockInContext, LLVMBuildRet, LLVMConstInt,
-        LLVMContextCreate, LLVMContextDispose, LLVMCreateBuilder, LLVMCreateBuilderInContext,
-        LLVMDisposeBuilder, LLVMDisposeModule, LLVMDumpModule, LLVMFunctionType,
-        LLVMInt1TypeInContext, LLVMInt8TypeInContext, LLVMInt16TypeInContext,
+        LLVMAddFunction, LLVMAppendBasicBlockInContext, LLVMBuildNeg, LLVMBuildNot, LLVMBuildRet,
+        LLVMConstInt, LLVMContextCreate, LLVMContextDispose, LLVMCreateBuilder,
+        LLVMCreateBuilderInContext, LLVMDisposeBuilder, LLVMDisposeModule, LLVMDumpModule,
+        LLVMFunctionType, LLVMInt1TypeInContext, LLVMInt8TypeInContext, LLVMInt16TypeInContext,
         LLVMInt32TypeInContext, LLVMInt64TypeInContext, LLVMInt128TypeInContext,
         LLVMIntTypeInContext, LLVMModuleCreateWithName, LLVMModuleCreateWithNameInContext,
         LLVMPositionBuilderAtEnd, LLVMSetSourceFileName,
@@ -19,6 +19,7 @@ use llvm_sys::{
 
 use crate::ast::{
     Expression, ExpressionKind, FunctionDefinition, Statement, StatementKind, TranslationUnit,
+    UnaryOperator,
 };
 
 #[derive(Debug)]
@@ -87,6 +88,16 @@ impl Codegen {
         unsafe { LLVMConstInt(self.int32_type(), value as u64, 0) }
     }
 
+    #[must_use]
+    fn negate(&self, value: LLVMValueRef) -> LLVMValueRef {
+        self.builder.negate(value)
+    }
+
+    #[must_use]
+    fn not(&self, value: LLVMValueRef) -> LLVMValueRef {
+        self.builder.not(value)
+    }
+
     pub fn codegen(&self, translation_unit: &TranslationUnit) -> Option<()> {
         // Code gen all functions
         for function in &translation_unit.function {
@@ -135,8 +146,26 @@ impl Codegen {
     }
 
     fn codegen_expression(&self, expression: &Expression) -> LLVMValueRef {
-        match expression.kind {
-            ExpressionKind::IntegerLiteral(value) => self.const_int(value),
+        match &expression.kind {
+            ExpressionKind::IntegerLiteral(value) => self.const_int(*value),
+            ExpressionKind::UnaryOperation {
+                operator,
+                expression,
+            } => self.codegen_unary_operation(operator, expression.as_ref()),
+            ExpressionKind::Parenthesis(expression) => self.codegen_expression(expression),
+        }
+    }
+
+    fn codegen_unary_operation(
+        &self,
+        operator: &UnaryOperator,
+        expression: &Expression,
+    ) -> LLVMValueRef {
+        let value = self.codegen_expression(expression);
+
+        match operator {
+            UnaryOperator::Negate => self.negate(value),
+            UnaryOperator::Complement => self.not(value),
         }
     }
 }
@@ -244,6 +273,16 @@ impl LLVMBuilder {
 
     fn ret(&self, value: LLVMValueRef) {
         unsafe { LLVMBuildRet(self.0, value) };
+    }
+
+    fn not(&self, value: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("not").unwrap();
+        unsafe { LLVMBuildNot(self.0, value, name.as_ptr()) }
+    }
+
+    fn negate(&self, value: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("neg").unwrap();
+        unsafe { LLVMBuildNeg(self.0, value, name.as_ptr()) }
     }
 }
 

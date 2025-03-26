@@ -87,13 +87,24 @@ impl<'a> Statement<'a> {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
-pub enum ExpressionKind {
+pub enum UnaryOperator {
+    Complement,
+    Negate,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
+pub enum ExpressionKind<'a> {
     IntegerLiteral(u32),
+    UnaryOperation {
+        operator: UnaryOperator,
+        expression: Box<Expression<'a>>,
+    },
+    Parenthesis(Box<Expression<'a>>),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub struct Expression<'a> {
-    pub kind: ExpressionKind,
+    pub kind: ExpressionKind<'a>,
     pub range: SourceRange<'a>,
 }
 
@@ -106,6 +117,26 @@ impl Expression<'_> {
                     "  ".repeat(depth),
                     value,
                     ast_source_range_to_string(&self.range)
+                )
+            }
+            ExpressionKind::UnaryOperation {
+                operator,
+                expression,
+            } => {
+                format!(
+                    "{}UnaryOperation {:?} {}\n{}",
+                    "  ".repeat(depth),
+                    operator,
+                    ast_source_range_to_string(&self.range),
+                    expression.dump(depth + 1)
+                )
+            }
+            ExpressionKind::Parenthesis(expression) => {
+                format!(
+                    "{}Parenthesis {}\n{}",
+                    "  ".repeat(depth),
+                    ast_source_range_to_string(&self.range),
+                    expression.dump(depth + 1)
                 )
             }
         }

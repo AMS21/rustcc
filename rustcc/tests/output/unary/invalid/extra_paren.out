@@ -1,0 +1,22 @@
+rustcc/tests/input/unary/invalid/extra_paren.c:6:15: error: expected ';'
+rustcc/tests/input/unary/invalid/extra_paren.c:6:15: error: expected 'int' keyword
+rustcc/tests/input/unary/invalid/extra_paren.c:6:16: error: expected function name
+rustcc/tests/input/unary/invalid/extra_paren.c:6:16: error: expected '('
+rustcc/tests/input/unary/invalid/extra_paren.c:6:16: error: expected 'void' keyword for parameter list
+rustcc/tests/input/unary/invalid/extra_paren.c:6:16: error: expected ')'
+rustcc/tests/input/unary/invalid/extra_paren.c:6:16: error: expected '{'
+rustcc/tests/input/unary/invalid/extra_paren.c:6:16: error: expected 'return' keyword
+rustcc/tests/input/unary/invalid/extra_paren.c:6:16: error: expected 'int' keyword
+rustcc/tests/input/unary/invalid/extra_paren.c:7:1: error: expected function name
+rustcc/tests/input/unary/invalid/extra_paren.c:7:1: error: expected '('
+rustcc/tests/input/unary/invalid/extra_paren.c:7:1: error: expected 'void' keyword for parameter list
+rustcc/tests/input/unary/invalid/extra_paren.c:7:1: error: expected ')'
+rustcc/tests/input/unary/invalid/extra_paren.c:7:1: error: expected '{'
+rustcc/tests/input/unary/invalid/extra_paren.c:7:1: error: expected 'return' keyword
+rustcc/tests/input/unary/invalid/extra_paren.c:7:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword

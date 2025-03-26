@@ -1,0 +1,13 @@
+; ModuleID = 'rustcc/tests/input/unary/parens.c'
+source_filename = "rustcc/tests/input/unary/parens.c"
+
+define i32 @main() {
+entry:
+  ret i32 -2
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:16
+      Parenthesis 4:12-4:15
+        UnaryOperation Negate 4:13-4:14
+          IntegerLiteral (2) 4:14

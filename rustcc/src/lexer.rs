@@ -22,6 +22,7 @@ enum LexerState {
     LineComment,
     MultiLineComment,
     MultiLineCommentAfterStar,
+    AfterMinus,
 }
 
 pub struct Lexer<'a> {
@@ -170,6 +171,19 @@ impl<'a> Lexer<'a> {
                     let location = self.current_location();
 
                     self.queued_tokens.push_back(Token::new_semicolon(location));
+                    self.consume_character();
+                }
+                Some('~') => {
+                    let location = self.current_location();
+
+                    self.queued_tokens.push_back(Token::new_tilde(location));
+                    self.consume_character();
+                }
+                Some('-') => {
+                    let location = self.current_location();
+                    self.token_begin_location = location;
+
+                    self.state = LexerState::AfterMinus;
                     self.consume_character();
                 }
 
@@ -374,6 +388,32 @@ impl<'a> Lexer<'a> {
                     }
                 }
             }
+
+            LexerState::AfterMinus => match self.peek_next() {
+                Some('-') => {
+                    self.consume_character();
+
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+                    self.queued_tokens
+                        .push_back(Token::new_minus_minus(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                Some(_) => {
+                    self.queued_tokens
+                        .push_back(Token::new_minus(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+
+                None => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+                    self.queued_tokens.push_back(Token::new_minus(location));
+                }
+            },
         }
     }
 }

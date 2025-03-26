@@ -1,0 +1,8 @@
+rustcc/tests/input/unary/invalid/missing_semicolon.c:6:1: error: expected ';'
+rustcc/tests/input/unary/invalid/missing_semicolon.c:6:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword

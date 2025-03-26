@@ -1,0 +1,12 @@
+; ModuleID = 'rustcc/tests/input/unary/bitwise_zero.c'
+source_filename = "rustcc/tests/input/unary/bitwise_zero.c"
+
+define i32 @main() {
+entry:
+  ret i32 -1
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:14
+      UnaryOperation Complement 4:12-4:13
+        IntegerLiteral (0) 4:13

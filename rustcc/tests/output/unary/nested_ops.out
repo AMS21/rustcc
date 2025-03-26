@@ -1,0 +1,13 @@
+; ModuleID = 'rustcc/tests/input/unary/nested_ops.c'
+source_filename = "rustcc/tests/input/unary/nested_ops.c"
+
+define i32 @main() {
+entry:
+  ret i32 2
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:15
+      UnaryOperation Complement 4:12-4:14
+        UnaryOperation Negate 4:13-4:14
+          IntegerLiteral (3) 4:14

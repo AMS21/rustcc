@@ -1,0 +1,1 @@
+rustcc/tests/input/unary/invalid/unclosed_paren.c:6:14: error: missing closing right parenthesis ')'

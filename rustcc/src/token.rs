@@ -23,6 +23,9 @@ pub enum TokenKind {
     RightBrace,       // }
     Semicolon,        // ;
     Slash,            // /
+    Tilde,            // ~
+    Minus,            // -
+    MinusMinus,       // --
 }
 
 impl TokenKind {
@@ -148,6 +151,42 @@ impl<'a> Token<'a> {
 
         Self {
             kind: TokenKind::Slash,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_tilde<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "~");
+
+        Self {
+            kind: TokenKind::Tilde,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_minus<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "-");
+
+        Self {
+            kind: TokenKind::Minus,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_minus_minus<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "--");
+
+        Self {
+            kind: TokenKind::MinusMinus,
             range,
         }
     }

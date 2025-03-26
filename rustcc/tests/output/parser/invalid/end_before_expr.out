@@ -1,1 +1,2 @@
+<invalid>: error: expected expression but reached end of file
 rustcc/tests/input/parser/invalid/end_before_expr.c:5:10: error: expected expression instead reached end of file
