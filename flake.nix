@@ -25,9 +25,11 @@
           ];
         };
       in {
-        devShell = pkgs.mkShell {
+        devShell = pkgs.mkShell rec {
           nativeBuildInputs = with pkgs; [
             pkg-config
+            libxml2
+            zlib
           ];
 
           RUST_SRC_PATH = "${pkgs.rust-bin.stable.latest.default.override {
@@ -46,13 +48,15 @@
             cargo-tarpaulin
 
             # LLVM
-            llvmPackages_latest.libllvm
+            llvmPackages_19.libllvm
           ];
+
+          LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath nativeBuildInputs}:${pkgs.stdenv.cc.cc.lib.outPath}/lib:$LD_LIBRARY_PATH";
 
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
           RUSTFLAGS = "-Clink-arg=-fuse-ld=mold";
 
-          LLVM_SYS_201_PREFIX = "${pkgs.llvmPackages_latest.llvm.dev}";
+          LLVM_SYS_191_PREFIX = "${pkgs.llvmPackages_19.llvm.dev}";
         };
       }
     );
