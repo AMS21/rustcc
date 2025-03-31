@@ -1,0 +1,4 @@
+// RUN: ${{rustcc}}
+// EXPECT-FAILURE
+
+--

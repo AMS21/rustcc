@@ -391,10 +391,10 @@ impl<'a> Lexer<'a> {
 
             LexerState::AfterMinus => match self.peek_next() {
                 Some('-') => {
-                    self.consume_character();
-
                     let location =
                         SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
                     self.queued_tokens
                         .push_back(Token::new_minus_minus(location));
 

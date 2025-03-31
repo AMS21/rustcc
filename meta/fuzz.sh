@@ -23,4 +23,4 @@ JOBS=$(($(nproc) / 2))
 # Fuzz the compiler
 echo "Fuzzing the compiler..."
 
-cargo +nightly fuzz run fuzz_compile -- -only_ascii=1 -max_len=$MAX_LEN -jobs=$JOBS
+cargo +nightly fuzz run fuzz_compile -- -only_ascii=0 -max_len=$MAX_LEN -jobs=$JOBS

@@ -1,0 +1,7 @@
+rustcc/tests/input/lexer/crash/crash-e6a9fc04320a924f46c7c737432bb0389d9dd095.c:4:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword
