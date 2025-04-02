@@ -23,6 +23,7 @@ enum LexerState {
     MultiLineComment,
     MultiLineCommentAfterStar,
     AfterMinus,
+    AfterPlus,
 }
 
 pub struct Lexer<'a> {
@@ -184,6 +185,24 @@ impl<'a> Lexer<'a> {
                     self.token_begin_location = location;
 
                     self.state = LexerState::AfterMinus;
+                    self.consume_character();
+                }
+                Some('+') => {
+                    self.token_begin_location = self.current_location();
+
+                    self.state = LexerState::AfterPlus;
+                    self.consume_character();
+                }
+                Some('*') => {
+                    let location = self.current_location();
+
+                    self.queued_tokens.push_back(Token::new_star(location));
+                    self.consume_character();
+                }
+                Some('%') => {
+                    let location = self.current_location();
+
+                    self.queued_tokens.push_back(Token::new_percent(location));
                     self.consume_character();
                 }
 
@@ -412,6 +431,25 @@ impl<'a> Lexer<'a> {
                     let location =
                         SourceRange::new(self.token_begin_location, self.current_location());
                     self.queued_tokens.push_back(Token::new_minus(location));
+                }
+            },
+
+            LexerState::AfterPlus => match self.peek_next() {
+                Some('+') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens.push_back(Token::new_plus_plus(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    self.queued_tokens
+                        .push_back(Token::new_plus(self.token_begin_location));
+
+                    self.state = LexerState::Start;
                 }
             },
         }

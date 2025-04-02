@@ -1,1 +1,8 @@
-rustcc/tests/input/lexer/crash/crash-0ef2a36978d541a9161cef5f969766b662a5828a437b15cc0a6c1b16a0c087e9.c:5:3: error: unexpected character '*' found
+rustcc/tests/input/lexer/crash/crash-0ef2a36978d541a9161cef5f969766b662a5828a437b15cc0a6c1b16a0c087e9.c:5:3: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword
+Star 5:3 - '*'

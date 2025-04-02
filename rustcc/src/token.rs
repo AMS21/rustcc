@@ -26,6 +26,10 @@ pub enum TokenKind {
     Tilde,            // ~
     Minus,            // -
     MinusMinus,       // --
+    Plus,             // +
+    PlusPlus,         // ++
+    Star,             // *
+    Percent,          // %
 }
 
 impl TokenKind {
@@ -187,6 +191,54 @@ impl<'a> Token<'a> {
 
         Self {
             kind: TokenKind::MinusMinus,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_plus<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "+");
+
+        Self {
+            kind: TokenKind::Plus,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_plus_plus<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "++");
+
+        Self {
+            kind: TokenKind::PlusPlus,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_star<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "*");
+
+        Self {
+            kind: TokenKind::Star,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_percent<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "%");
+
+        Self {
+            kind: TokenKind::Percent,
             range,
         }
     }
