@@ -3,3 +3,4 @@
 /mutants.out.old
 /cobertura.xml
 fuzz-*.log
+.vscode/

@@ -182,10 +182,33 @@ impl<'a> SourceLocation<'a> {
     /// assert_eq!(range.begin, location);
     /// assert_eq!(range.end, location);
     /// ```
+    #[must_use]
     pub const fn to_range(&self) -> SourceRange {
         SourceRange {
             begin: *self,
             end: *self,
+        }
+    }
+
+    /// Returns a `SourceRange` with the same begin and end locations as this `SourceLocation` and consumes the location in the process.
+    ///
+    /// # Examples
+    /// ```
+    /// # use rustcc::source_file::SourceFile;
+    /// # use rustcc::source_location::SourceLocation;
+    /// let source_file = SourceFile::new("path/to/file", "content");
+    /// let location = SourceLocation::new(&source_file, 1, 1, 2);
+    /// let range = location.as_range();
+    ///
+    /// assert!(range.is_valid());
+    /// assert_eq!(range.begin, location);
+    /// assert_eq!(range.end, location);
+    /// ```
+    #[must_use]
+    pub const fn as_range(self) -> SourceRange<'a> {
+        SourceRange {
+            begin: self,
+            end: self,
         }
     }
 }
@@ -359,6 +382,37 @@ mod tests {
     fn test_to_range_scratch_location() {
         let location = SourceLocation::new_scratch(3, 2);
         let range = location.to_range();
+
+        assert!(range.is_valid());
+        assert_eq!(range.begin, location);
+        assert_eq!(range.end, location);
+    }
+
+    #[test]
+    fn test_as_range_valid_location() {
+        let source_file = SourceFile::new("path/to/file", "content");
+        let location = SourceLocation::new(&source_file, 1, 1, 2);
+        let range = location.as_range();
+
+        assert!(range.is_valid());
+        assert_eq!(range.begin, location);
+        assert_eq!(range.end, location);
+    }
+
+    #[test]
+    fn test_as_range_invalid_location() {
+        let location = SourceLocation::invalid();
+        let range = location.as_range();
+
+        assert!(!range.is_valid());
+        assert_eq!(range.begin, location);
+        assert_eq!(range.end, location);
+    }
+
+    #[test]
+    fn test_as_range_scratch_location() {
+        let location = SourceLocation::new_scratch(3, 2);
+        let range = location.as_range();
 
         assert!(range.is_valid());
         assert_eq!(range.begin, location);

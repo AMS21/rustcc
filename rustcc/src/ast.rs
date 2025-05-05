@@ -8,12 +8,14 @@ pub struct TranslationUnit<'a> {
 }
 
 impl TranslationUnit<'_> {
-    pub fn new() -> Self {
+    #[must_use]
+    pub const fn new() -> Self {
         Self {
             function: Vec::new(),
         }
     }
 
+    #[must_use]
     pub fn dump(&self) -> String {
         let mut result = String::new();
         result.push_str("TranslationUnit\n");
@@ -35,6 +37,7 @@ pub struct FunctionDefinition<'a> {
 }
 
 impl<'a> FunctionDefinition<'a> {
+    #[must_use]
     pub fn new<S: Into<String>>(name: S, body: Statement<'a>) -> Self {
         Self {
             name: name.into(),
@@ -42,6 +45,7 @@ impl<'a> FunctionDefinition<'a> {
         }
     }
 
+    #[must_use]
     pub fn dump(&self, depth: usize) -> String {
         format!(
             "{}FunctionDefinition \"{}\"\n{}",
@@ -64,14 +68,17 @@ pub struct Statement<'a> {
 }
 
 impl<'a> Statement<'a> {
-    pub fn new(kind: StatementKind<'a>, range: SourceRange<'a>) -> Self {
+    #[must_use]
+    pub const fn new(kind: StatementKind<'a>, range: SourceRange<'a>) -> Self {
         Self { kind, range }
     }
 
-    pub fn new_return(expression: Expression<'a>, range: SourceRange<'a>) -> Self {
+    #[must_use]
+    pub const fn new_return(expression: Expression<'a>, range: SourceRange<'a>) -> Self {
         Self::new(StatementKind::Return(expression), range)
     }
 
+    #[must_use]
     pub fn dump(&self, depth: usize) -> String {
         match &self.kind {
             StatementKind::Return(expression) => {
@@ -93,11 +100,25 @@ pub enum UnaryOperator {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
+pub enum BinaryOperator {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
+    Remainder,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub enum ExpressionKind<'a> {
     IntegerLiteral(u32),
     UnaryOperation {
         operator: UnaryOperator,
         expression: Box<Expression<'a>>,
+    },
+    BinaryOperation {
+        operator: BinaryOperator,
+        left: Box<Expression<'a>>,
+        right: Box<Expression<'a>>,
     },
     Parenthesis(Box<Expression<'a>>),
 }
@@ -109,6 +130,7 @@ pub struct Expression<'a> {
 }
 
 impl Expression<'_> {
+    #[must_use]
     pub fn dump(&self, depth: usize) -> String {
         match &self.kind {
             ExpressionKind::IntegerLiteral(value) => {
@@ -119,6 +141,7 @@ impl Expression<'_> {
                     ast_source_range_to_string(&self.range)
                 )
             }
+
             ExpressionKind::UnaryOperation {
                 operator,
                 expression,
@@ -131,12 +154,27 @@ impl Expression<'_> {
                     expression.dump(depth + 1)
                 )
             }
+
             ExpressionKind::Parenthesis(expression) => {
                 format!(
                     "{}Parenthesis {}\n{}",
                     "  ".repeat(depth),
                     ast_source_range_to_string(&self.range),
                     expression.dump(depth + 1)
+                )
+            }
+
+            ExpressionKind::BinaryOperation {
+                operator,
+                left,
+                right,
+            } => {
+                format!(
+                    "{}BinaryOperation {:?}\n{}\n{}",
+                    "  ".repeat(depth),
+                    operator,
+                    left.dump(depth + 1),
+                    right.dump(depth + 1)
                 )
             }
         }

@@ -1,7 +1,3 @@
-use std::{cell::RefCell, char, rc::Rc};
-
-use colored::Colorize;
-
 use crate::{
     diagnostic::{Diagnostic, DiagnosticId},
     diagnostic_builder::DiagnosticBuilder,
@@ -11,6 +7,8 @@ use crate::{
     source_range::SourceRange,
     token::{Token, TokenList},
 };
+use colored::Colorize;
+use std::{cell::RefCell, char, rc::Rc};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum LexerState {
@@ -26,6 +24,7 @@ enum LexerState {
     AfterPlus,
 }
 
+#[derive(Debug)]
 pub struct Lexer<'a> {
     state: LexerState,
 
@@ -44,7 +43,7 @@ pub struct Lexer<'a> {
 
 impl<'a> Lexer<'a> {
     #[must_use]
-    pub fn new(
+    pub const fn new(
         diagnostic_engine: Rc<RefCell<DiagnosticEngine>>,
         source_file: &'a SourceFile,
     ) -> Self {
@@ -80,6 +79,7 @@ impl<'a> Lexer<'a> {
 
     fn consume_character(&mut self) {
         // Get current character
+        #[expect(clippy::unwrap_used)]
         let current_character = self.peek_next().unwrap();
 
         self.column += 1;
@@ -110,6 +110,7 @@ impl<'a> Lexer<'a> {
 
     // -- Emit Token functions --
 
+    #[expect(clippy::too_many_lines)]
     fn advance_state_machine(&mut self) {
         match self.state {
             LexerState::Start => match self.peek_next() {
@@ -259,6 +260,7 @@ impl<'a> Lexer<'a> {
                             };
 
                             // Convert the current character to an actual base 10 number
+                            #[expect(clippy::unwrap_used)]
                             let character_value = character.to_digit(10).unwrap();
 
                             // Add the current character value to the current value and check for any overflow
