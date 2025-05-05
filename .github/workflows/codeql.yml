@@ -1,10 +1,12 @@
-name: cargo-mutants
+name: "CodeQL Analysis"
 
 on:
   pull_request:
     branches: ["*"]
   push:
     branches: ["main", "develop"]
+  schedule:
+    - cron: '0 0 * * 0'  # Runs weekly
   workflow_dispatch:
 
 concurrency:
@@ -17,33 +19,29 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  cargo-mutants:
+  analyze:
+    name: Analyze (CodeQL)
     runs-on: ubuntu-latest
 
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
 
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v5
 
     - name: Install rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
 
-    - uses: taiki-e/install-action@v2
-      name: Install cargo-mutants
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
       with:
-        tool: cargo-mutants
+        languages: "rust"
 
-    - name: Run cargo-mutants
-      run: |
-        cargo mutants --no-shuffle -vV --shard ${{ matrix.shard }}/8 --baseline=skip --timeout 300 --in-place
+    - name: Build the project
+      run: cargo build
 
-    - name: Archive mutants.out
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        path: mutants.out
-        name: mutants-shard-${{matrix.shard}}.out
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3

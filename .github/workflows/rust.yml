@@ -22,7 +22,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Audit Rust Dependencies
       uses: actions-rust-lang/audit@v1
@@ -32,7 +32,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Install rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -52,7 +52,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Install rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -68,7 +68,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Install rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -94,10 +94,11 @@ jobs:
         toolchain:
           - nightly
           - stable
+          - "1.85" # MSRV
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
 
     - name: Install rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1

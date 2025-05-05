@@ -7,6 +7,7 @@ pub const ARG_PRINT_TOKENS: &str = "PRINT_TOKENS";
 pub const ARG_PRINT_AST: &str = "PRINT_AST";
 pub const ARG_PRINT_IR: &str = "PRINT_IR";
 
+#[must_use]
 pub fn command_line() -> Command {
     Command::new(crate_name!())
         .about(crate_description!())

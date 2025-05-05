@@ -1,11 +1,5 @@
-rustcc/tests/input/unary/invalid/wrong_order.c:5:13: error: expected ';'
-rustcc/tests/input/unary/invalid/wrong_order.c:5:13: error: expected 'int' keyword
-rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected function name
-rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected '('
-rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected 'void' keyword for parameter list
-rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected ')'
-rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected '{'
-rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected 'return' keyword
+rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected expression
+rustcc/tests/input/unary/invalid/wrong_order.c:5:10: error: expected expression instead reached end of file
 rustcc/tests/input/unary/invalid/wrong_order.c:5:14: error: expected 'int' keyword
 rustcc/tests/input/unary/invalid/wrong_order.c:6:1: error: expected function name
 rustcc/tests/input/unary/invalid/wrong_order.c:6:1: error: expected '('

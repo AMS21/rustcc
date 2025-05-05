@@ -1,0 +1,13 @@
+; ModuleID = 'rustcc/tests/input/binary/mult.c'
+source_filename = "rustcc/tests/input/binary/mult.c"
+
+define i32 @main() {
+entry:
+  ret i32 6
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:17
+      BinaryOperation Multiply
+        IntegerLiteral (2) 4:12
+        IntegerLiteral (3) 4:16

@@ -12,6 +12,7 @@ pub trait SourceManager<'a> {
 
 /// This class manages all the source files with access to the real filesystem
 #[derive(Default)]
+#[expect(missing_debug_implementations)]
 pub struct RealFSSourceManager {
     source_files: FrozenMap<String, Box<SourceFile>>,
 }

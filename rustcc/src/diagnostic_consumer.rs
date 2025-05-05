@@ -1,7 +1,5 @@
-use colored::Colorize;
-
 use crate::diagnostic::{Diagnostic, DiagnosticLevel};
-
+use colored::Colorize;
 use std::fmt::Debug;
 
 pub trait DiagnosticConsumer: Debug {
@@ -40,16 +38,16 @@ impl DiagnosticConsumer for DefaultDiagnosticConsumer {
 
         match diagnostic.level {
             DiagnosticLevel::Warning => {
-                println!("{begin_location}: {} {message}", "warning:".yellow())
+                println!("{begin_location}: {} {message}", "warning:".yellow());
             }
             DiagnosticLevel::Error => {
-                eprintln!("{begin_location}: {} {message}", "error:".red().bold())
+                eprintln!("{begin_location}: {} {message}", "error:".red().bold());
             }
             DiagnosticLevel::FatalError => {
                 eprintln!(
                     "{begin_location}: {} {message}",
                     "fatal error:".red().bold()
-                )
+                );
             }
             DiagnosticLevel::Ignored => {
                 unreachable!("Unexpected diagnostic level");

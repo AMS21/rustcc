@@ -40,16 +40,16 @@ pub fn run_main() {
     let diagnostic_engine = Rc::new(RefCell::from(DiagnosticEngine::new(diagnostic_consumer)));
 
     // Load the input file into our source manager
-    let source_file = match source_manager.load_file(file_path.as_str()) {
-        Some(source) => source,
-        None => {
+    let source_file = source_manager.load_file(file_path.as_str()).map_or_else(
+        || {
             eprintln!("Error reading file: '{file_path}'");
             // TODO: Once we recover the error handling, print the error message here
             //eprintln!("{error}");
 
             std::process::exit(1);
-        }
-    };
+        },
+        |source| source,
+    );
 
     // Create a lexer
     let mut lexer = lexer::Lexer::new(diagnostic_engine.clone(), source_file);

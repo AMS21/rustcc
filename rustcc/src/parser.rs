@@ -13,6 +13,7 @@ use crate::{
 
 // TODO: This is a mess probably need to completely rethink and rewrite this
 
+#[derive(Debug)]
 pub struct Parser<'a> {
     diagnostic_engine: Rc<RefCell<DiagnosticEngine>>,
     tokens: TokenList<'a>,
@@ -20,10 +21,7 @@ pub struct Parser<'a> {
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(
-        diagnostic_engine: Rc<RefCell<DiagnosticEngine>>,
-        tokens: TokenList<'a>,
-    ) -> Parser<'a> {
+    pub fn new(diagnostic_engine: Rc<RefCell<DiagnosticEngine>>, tokens: TokenList<'a>) -> Self {
         Parser {
             diagnostic_engine,
             tokens,
@@ -77,7 +75,7 @@ impl<'a> Parser<'a> {
         None
     }
 
-    pub fn parse(&mut self) -> TranslationUnit {
+    pub fn parse(&'_ mut self) -> TranslationUnit<'_> {
         let mut translation_unit = TranslationUnit::new();
 
         while !self.is_finished() {
@@ -89,7 +87,7 @@ impl<'a> Parser<'a> {
         translation_unit
     }
 
-    fn parse_function_definition(&self) -> Option<FunctionDefinition> {
+    fn parse_function_definition(&'_ self) -> Option<FunctionDefinition<'_>> {
         // First parse the function return type.
         // TODO: For now we only support 'int' return type.
         if self.expect(TokenKind::KeywordInt).is_none() {
@@ -113,7 +111,7 @@ impl<'a> Parser<'a> {
         let name = name_token
             .range
             .source_text()
-            .map(|text| text.to_string())
+            .map(std::string::ToString::to_string)
             .unwrap_or_default();
         if !name_token.is_identifier() || name.is_empty() {
             self.diagnostic(
@@ -175,12 +173,12 @@ impl<'a> Parser<'a> {
         Some(FunctionDefinition { name, body })
     }
 
-    fn parse_statement(&self) -> Option<Statement> {
+    fn parse_statement(&'_ self) -> Option<Statement<'_>> {
         // TODO: Statement can be all sorts of things, for now we only allow the return statement
         self.parse_return_statement()
     }
 
-    fn parse_return_statement(&self) -> Option<Statement> {
+    fn parse_return_statement(&'_ self) -> Option<Statement<'_>> {
         // Require the 'return' keyword
         let Some(return_token) = self.expect(TokenKind::KeywordReturn) else {
             self.diagnostic(
@@ -192,7 +190,7 @@ impl<'a> Parser<'a> {
         };
 
         // Parse the expression
-        let Some(expression) = self.parse_expression() else {
+        let Some(expression) = self.parse_expression(0) else {
             self.diagnostic(
                 DiagnosticId::ExpectedExpression,
                 return_token.range.end,
@@ -222,7 +220,39 @@ impl<'a> Parser<'a> {
 
     // -- Expressions --
 
-    fn parse_expression(&self) -> Option<Expression> {
+    fn parse_expression(&'_ self, minimum_precedence: u8) -> Option<Expression<'_>> {
+        let mut left = self.parse_factor()?;
+
+        while let Some(token) = self.peek_next() {
+            if let Some(operator) = token.binary_operator()
+                && operator.precedence() >= minimum_precedence
+            {
+                self.consume();
+
+                let right = self.parse_expression(operator.precedence() + 1)?;
+
+                let range = SourceRange {
+                    begin: left.range.begin,
+                    end: right.range.end,
+                };
+
+                left = Expression {
+                    kind: ExpressionKind::BinaryOperation {
+                        operator,
+                        left: Box::new(left),
+                        right: Box::new(right),
+                    },
+                    range,
+                };
+            } else {
+                break;
+            }
+        }
+
+        Some(left)
+    }
+
+    fn parse_factor(&'_ self) -> Option<Expression<'_>> {
         let Some(token) = self.peek_next() else {
             self.diagnostic(
                 DiagnosticId::ExpectedExpression,
@@ -247,19 +277,16 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_integer_literal(&self) -> Option<Expression> {
+    fn parse_integer_literal(&'_ self) -> Option<Expression<'_>> {
         let token = self.consume_next()?;
 
-        let value = match token.kind {
-            TokenKind::IntegerLiteral(value) => value,
-            _ => {
-                self.diagnostic(
-                    DiagnosticId::ExpectedIntegerLiteral,
-                    token.range,
-                    "expected integer literal",
-                );
-                return None;
-            }
+        let TokenKind::IntegerLiteral(value) = token.kind else {
+            self.diagnostic(
+                DiagnosticId::ExpectedIntegerLiteral,
+                token.range,
+                "expected integer literal",
+            );
+            return None;
         };
 
         Some(Expression {
@@ -268,7 +295,7 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn parse_unary_expression(&self) -> Option<Expression> {
+    fn parse_unary_expression(&'_ self) -> Option<Expression<'_>> {
         let operator_token = self.consume_next()?;
 
         let operator = match operator_token.kind {
@@ -279,7 +306,7 @@ impl<'a> Parser<'a> {
             }
         };
 
-        let expression = self.parse_expression()?;
+        let expression = self.parse_factor()?;
         let range = SourceRange {
             begin: operator_token.range.begin,
             end: expression.range.end,
@@ -294,11 +321,11 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn parse_parenthesis_expression(&self) -> Option<Expression> {
+    fn parse_parenthesis_expression(&'_ self) -> Option<Expression<'_>> {
         // Opening parenthesis
         let opnening_parenthesis_token = self.expect(TokenKind::LeftParenthesis)?;
 
-        let expression = self.parse_expression()?;
+        let expression = self.parse_expression(0)?;
 
         // Closing parenthesis
         let closing_paren_token = self.expect(TokenKind::RightParenthesis);
@@ -308,13 +335,11 @@ impl<'a> Parser<'a> {
                 self.current_token_source_range(),
                 "missing closing right parenthesis ')'",
             );
-        };
+        }
 
         let range = SourceRange {
             begin: opnening_parenthesis_token.range.begin,
-            end: closing_paren_token
-                .map(|token| token.range.end)
-                .unwrap_or(expression.range.end),
+            end: closing_paren_token.map_or(expression.range.end, |token| token.range.end),
         };
 
         Some(Expression {

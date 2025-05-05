@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use crate::source_range::SourceRange;
+use crate::{ast::BinaryOperator, source_range::SourceRange};
 
 pub type TokenList<'a> = VecDeque<Token<'a>>;
 
@@ -34,26 +34,53 @@ pub enum TokenKind {
 
 impl TokenKind {
     #[must_use]
-    pub fn from_identifier(identifier: &str) -> TokenKind {
+    pub fn from_identifier(identifier: &str) -> Self {
         match identifier {
-            "int" => TokenKind::KeywordInt,
-            "return" => TokenKind::KeywordReturn,
-            "void" => TokenKind::KeywordVoid,
-            _ => TokenKind::Identifier(identifier.to_string()),
+            "int" => Self::KeywordInt,
+            "return" => Self::KeywordReturn,
+            "void" => Self::KeywordVoid,
+            _ => Self::Identifier(identifier.to_owned()),
         }
     }
 
     #[must_use]
-    pub fn is_keyword(&self) -> bool {
+    pub const fn is_keyword(&self) -> bool {
         matches!(
             self,
-            TokenKind::KeywordInt | TokenKind::KeywordReturn | TokenKind::KeywordVoid
+            Self::KeywordInt | Self::KeywordReturn | Self::KeywordVoid
         )
     }
 
     #[must_use]
-    pub fn is_identifier(&self) -> bool {
-        matches!(self, TokenKind::Identifier(_))
+    pub const fn is_identifier(&self) -> bool {
+        matches!(self, Self::Identifier(_))
+    }
+
+    #[must_use]
+    pub const fn is_binary_operator(&self) -> bool {
+        matches!(
+            self,
+            Self::Plus | Self::Minus | Self::Star | Self::Slash | Self::Percent
+        )
+    }
+
+    #[must_use]
+    pub const fn is_unary_operator(&self) -> bool {
+        matches!(self, Self::Plus | Self::Minus | Self::Tilde)
+    }
+
+    #[must_use]
+    pub const fn binary_operator(&self) -> Option<BinaryOperator> {
+        #[expect(clippy::wildcard_enum_match_arm)]
+        match self {
+            Self::Plus => Some(BinaryOperator::Add),
+            Self::Minus => Some(BinaryOperator::Subtract),
+            Self::Star => Some(BinaryOperator::Multiply),
+            Self::Slash => Some(BinaryOperator::Divide),
+            Self::Percent => Some(BinaryOperator::Remainder),
+
+            _ => None,
+        }
     }
 }
 
@@ -65,7 +92,7 @@ pub struct Token<'a> {
 
 impl<'a> Token<'a> {
     #[must_use]
-    pub fn new(kind: TokenKind, range: SourceRange<'a>) -> Self {
+    pub const fn new(kind: TokenKind, range: SourceRange<'a>) -> Self {
         Self { kind, range }
     }
 
@@ -244,13 +271,28 @@ impl<'a> Token<'a> {
     }
 
     #[must_use]
-    pub fn is_keyword(&self) -> bool {
+    pub const fn is_keyword(&self) -> bool {
         self.kind.is_keyword()
     }
 
     #[must_use]
-    pub fn is_identifier(&self) -> bool {
+    pub const fn is_identifier(&self) -> bool {
         self.kind.is_identifier()
+    }
+
+    #[must_use]
+    pub const fn is_binary_operator(&self) -> bool {
+        self.kind.is_binary_operator()
+    }
+
+    #[must_use]
+    pub const fn is_unary_operator(&self) -> bool {
+        self.kind.is_unary_operator()
+    }
+
+    #[must_use]
+    pub const fn binary_operator(&self) -> Option<BinaryOperator> {
+        self.kind.binary_operator()
     }
 
     #[must_use]

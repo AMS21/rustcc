@@ -1,0 +1,13 @@
+; ModuleID = 'rustcc/tests/input/binary/sub.c'
+source_filename = "rustcc/tests/input/binary/sub.c"
+
+define i32 @main() {
+entry:
+  ret i32 -1
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:17
+      BinaryOperation Subtract
+        IntegerLiteral (1) 4:12
+        IntegerLiteral (2) 4:16

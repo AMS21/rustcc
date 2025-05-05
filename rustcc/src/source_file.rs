@@ -22,8 +22,8 @@ impl SourceFile {
         let path = path.into();
 
         // Assert that path is a valid path
-        assert!(!path.contains("\0"), "Path contains null byte");
-        assert!(!path.contains("\n"), "Path contains newline");
+        assert!(!path.contains('\0'), "Path contains null byte");
+        assert!(!path.contains('\n'), "Path contains newline");
         assert!(!path.contains(".."), "Path contains '..'");
         assert!(!path.contains("//"), "Path contains '//'");
         assert!(!path.contains("\\\\"), "Path contains '\\\\'");
