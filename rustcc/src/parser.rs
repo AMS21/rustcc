@@ -2,17 +2,19 @@ use std::{cell::RefCell, rc::Rc};
 
 use crate::{
     ast::{
-        Expression, ExpressionKind, FunctionDefinition, Statement, TranslationUnit, UnaryOperator,
+        BinaryOperator, Expression, ExpressionKind, FunctionDefinition, Statement, TranslationUnit,
+        UnaryOperator,
     },
     diagnostic::{Diagnostic, DiagnosticId},
     diagnostic_builder::DiagnosticBuilder,
     diagnostic_engine::DiagnosticEngine,
     source_range::SourceRange,
-    token::{Token, TokenKind, TokenList},
+    token::{self, Token, TokenKind, TokenList},
 };
 
 // TODO: This is a mess probably need to completely rethink and rewrite this
 
+#[derive(Debug)]
 pub struct Parser<'a> {
     diagnostic_engine: Rc<RefCell<DiagnosticEngine>>,
     tokens: TokenList<'a>,
@@ -20,10 +22,7 @@ pub struct Parser<'a> {
 }
 
 impl<'a> Parser<'a> {
-    pub fn new(
-        diagnostic_engine: Rc<RefCell<DiagnosticEngine>>,
-        tokens: TokenList<'a>,
-    ) -> Parser<'a> {
+    pub fn new(diagnostic_engine: Rc<RefCell<DiagnosticEngine>>, tokens: TokenList<'a>) -> Self {
         Parser {
             diagnostic_engine,
             tokens,
@@ -192,7 +191,7 @@ impl<'a> Parser<'a> {
         };
 
         // Parse the expression
-        let Some(expression) = self.parse_expression() else {
+        let Some(expression) = self.parse_factor() else {
             self.diagnostic(
                 DiagnosticId::ExpectedExpression,
                 return_token.range.end,
@@ -223,6 +222,33 @@ impl<'a> Parser<'a> {
     // -- Expressions --
 
     fn parse_expression(&self) -> Option<Expression> {
+        let mut left = self.parse_factor()?;
+
+        while let Some(token) = self.peek_next() {
+            if matches!(token.kind, TokenKind::Plus | TokenKind::Minus) {
+                let operator = self.parse_binary_operator()?;
+                let right = self.parse_factor()?;
+
+                let range = SourceRange {
+                    begin: left.range.begin.clone(),
+                    end: right.range.end,
+                };
+
+                left = Expression {
+                    kind: ExpressionKind::BinaryOperation {
+                        operator,
+                        left: Box::new(left),
+                        right: Box::new(right),
+                    },
+                    range,
+                };
+            }
+        }
+
+        Some(left)
+    }
+
+    fn parse_factor(&self) -> Option<Expression> {
         let Some(token) = self.peek_next() else {
             self.diagnostic(
                 DiagnosticId::ExpectedExpression,
@@ -279,7 +305,7 @@ impl<'a> Parser<'a> {
             }
         };
 
-        let expression = self.parse_expression()?;
+        let expression = self.parse_factor()?;
         let range = SourceRange {
             begin: operator_token.range.begin,
             end: expression.range.end,
@@ -298,7 +324,7 @@ impl<'a> Parser<'a> {
         // Opening parenthesis
         let opnening_parenthesis_token = self.expect(TokenKind::LeftParenthesis)?;
 
-        let expression = self.parse_expression()?;
+        let expression = self.parse_factor()?;
 
         // Closing parenthesis
         let closing_paren_token = self.expect(TokenKind::RightParenthesis);
@@ -321,5 +347,16 @@ impl<'a> Parser<'a> {
             kind: ExpressionKind::Parenthesis(Box::new(expression)),
             range,
         })
+    }
+
+    fn parse_binary_operator(&self) -> Option<BinaryOperator> {
+        let token = self.consume_next()?;
+
+        match token.kind {
+            TokenKind::Plus => Some(BinaryOperator::Add),
+            TokenKind::Minus => Some(BinaryOperator::Subtract),
+
+            _ => None,
+        }
     }
 }

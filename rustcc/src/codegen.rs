@@ -1,16 +1,14 @@
 use std::{ffi::CString, ptr};
 
-use libc::c_uint;
 use llvm_sys::{
     analysis::{LLVMVerifierFailureAction, LLVMVerifyFunction},
     core::{
-        LLVMAddFunction, LLVMAppendBasicBlockInContext, LLVMBuildNeg, LLVMBuildNot, LLVMBuildRet,
-        LLVMConstInt, LLVMContextCreate, LLVMContextDispose, LLVMCreateBuilder,
-        LLVMCreateBuilderInContext, LLVMDisposeBuilder, LLVMDisposeModule, LLVMDumpModule,
-        LLVMFunctionType, LLVMInt1TypeInContext, LLVMInt8TypeInContext, LLVMInt16TypeInContext,
-        LLVMInt32TypeInContext, LLVMInt64TypeInContext, LLVMInt128TypeInContext,
-        LLVMIntTypeInContext, LLVMModuleCreateWithName, LLVMModuleCreateWithNameInContext,
-        LLVMPositionBuilderAtEnd, LLVMSetSourceFileName,
+        LLVMAddFunction, LLVMAppendBasicBlockInContext, LLVMBuildAdd, LLVMBuildFDiv, LLVMBuildFRem,
+        LLVMBuildMul, LLVMBuildNeg, LLVMBuildNot, LLVMBuildRet, LLVMBuildSDiv, LLVMBuildSRem,
+        LLVMBuildSub, LLVMBuildUDiv, LLVMBuildURem, LLVMConstInt, LLVMContextCreate,
+        LLVMContextDispose, LLVMCreateBuilderInContext, LLVMDisposeBuilder, LLVMDisposeModule,
+        LLVMDumpModule, LLVMFunctionType, LLVMInt32TypeInContext,
+        LLVMModuleCreateWithNameInContext, LLVMPositionBuilderAtEnd, LLVMSetSourceFileName,
     },
     prelude::{
         LLVMBasicBlockRef, LLVMBuilderRef, LLVMContextRef, LLVMModuleRef, LLVMTypeRef, LLVMValueRef,
@@ -18,8 +16,8 @@ use llvm_sys::{
 };
 
 use crate::ast::{
-    Expression, ExpressionKind, FunctionDefinition, Statement, StatementKind, TranslationUnit,
-    UnaryOperator,
+    BinaryOperator, Expression, ExpressionKind, FunctionDefinition, Statement, StatementKind,
+    TranslationUnit, UnaryOperator,
 };
 
 #[derive(Debug)]
@@ -153,6 +151,29 @@ impl Codegen {
                 expression,
             } => self.codegen_unary_operation(operator, expression.as_ref()),
             ExpressionKind::Parenthesis(expression) => self.codegen_expression(expression),
+            ExpressionKind::BinaryOperation {
+                operator,
+                left,
+                right,
+            } => self.codegen_binary_operation(operator, left, right),
+        }
+    }
+
+    fn codegen_binary_operation(
+        &self,
+        operator: &BinaryOperator,
+        left: &Expression,
+        right: &Expression,
+    ) -> LLVMValueRef {
+        let left_value = self.codegen_expression(left);
+        let right_value = self.codegen_expression(right);
+
+        match operator {
+            BinaryOperator::Add => self.builder.add(left_value, right_value),
+            BinaryOperator::Subtract => self.builder.subtract(left_value, right_value),
+            BinaryOperator::Multiply => self.builder.multiply(left_value, right_value),
+            BinaryOperator::Divide => self.builder.signed_divide(left_value, right_value),
+            BinaryOperator::Remainder => self.builder.signed_remainder(left_value, right_value),
         }
     }
 
@@ -181,32 +202,8 @@ impl LLVMContext {
         LLVMContext(context)
     }
 
-    pub fn int1_type(&self) -> LLVMTypeRef {
-        unsafe { LLVMInt1TypeInContext(self.0) }
-    }
-
-    pub fn int8_type(&self) -> LLVMTypeRef {
-        unsafe { LLVMInt8TypeInContext(self.0) }
-    }
-
-    pub fn int16_type(&self) -> LLVMTypeRef {
-        unsafe { LLVMInt16TypeInContext(self.0) }
-    }
-
     pub fn int32_type(&self) -> LLVMTypeRef {
         unsafe { LLVMInt32TypeInContext(self.0) }
-    }
-
-    pub fn int64_type(&self) -> LLVMTypeRef {
-        unsafe { LLVMInt64TypeInContext(self.0) }
-    }
-
-    pub fn int128_type(&self) -> LLVMTypeRef {
-        unsafe { LLVMInt128TypeInContext(self.0) }
-    }
-
-    pub fn int_type(&self, num_bits: c_uint) -> LLVMTypeRef {
-        unsafe { LLVMIntTypeInContext(self.0, num_bits) }
     }
 
     pub fn create_basic_block_for_function(
@@ -228,11 +225,6 @@ impl Drop for LLVMContext {
 struct LLVMModule(LLVMModuleRef);
 
 impl LLVMModule {
-    pub fn new_global<S: Into<CString>>(name: S) -> Self {
-        let module = unsafe { LLVMModuleCreateWithName(name.into().as_ptr()) };
-        LLVMModule(module)
-    }
-
     pub fn new_in_context<S: Into<CString>>(name: S, context: &LLVMContext) -> Self {
         let module = unsafe { LLVMModuleCreateWithNameInContext(name.into().as_ptr(), context.0) };
         LLVMModule(module)
@@ -257,11 +249,6 @@ impl Drop for LLVMModule {
 struct LLVMBuilder(LLVMBuilderRef);
 
 impl LLVMBuilder {
-    pub fn new_global() -> Self {
-        let builder = unsafe { LLVMCreateBuilder() };
-        LLVMBuilder(builder)
-    }
-
     pub fn new_in_context(context: &LLVMContext) -> Self {
         let builder = unsafe { LLVMCreateBuilderInContext(context.0) };
         LLVMBuilder(builder)
@@ -283,6 +270,51 @@ impl LLVMBuilder {
     fn negate(&self, value: LLVMValueRef) -> LLVMValueRef {
         let name = CString::new("neg").unwrap();
         unsafe { LLVMBuildNeg(self.0, value, name.as_ptr()) }
+    }
+
+    fn add(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("add").unwrap();
+        unsafe { LLVMBuildAdd(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn subtract(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("sub").unwrap();
+        unsafe { LLVMBuildSub(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn multiply(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("mul").unwrap();
+        unsafe { LLVMBuildMul(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn signed_divide(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("sdiv").unwrap();
+        unsafe { LLVMBuildSDiv(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn unsigned_divide(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("udiv").unwrap();
+        unsafe { LLVMBuildUDiv(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn float_divide(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("fdiv").unwrap();
+        unsafe { LLVMBuildFDiv(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn signed_remainder(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("srem").unwrap();
+        unsafe { LLVMBuildSRem(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn unsigned_remainder(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("urem").unwrap();
+        unsafe { LLVMBuildURem(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn float_remainder(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("frem").unwrap();
+        unsafe { LLVMBuildFRem(self.0, left, right, name.as_ptr()) }
     }
 }
 

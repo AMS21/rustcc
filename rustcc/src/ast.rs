@@ -93,11 +93,25 @@ pub enum UnaryOperator {
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
+pub enum BinaryOperator {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
+    Remainder,
+}
+
+#[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub enum ExpressionKind<'a> {
     IntegerLiteral(u32),
     UnaryOperation {
         operator: UnaryOperator,
         expression: Box<Expression<'a>>,
+    },
+    BinaryOperation {
+        operator: BinaryOperator,
+        left: Box<Expression<'a>>,
+        right: Box<Expression<'a>>,
     },
     Parenthesis(Box<Expression<'a>>),
 }
@@ -119,6 +133,7 @@ impl Expression<'_> {
                     ast_source_range_to_string(&self.range)
                 )
             }
+
             ExpressionKind::UnaryOperation {
                 operator,
                 expression,
@@ -131,12 +146,27 @@ impl Expression<'_> {
                     expression.dump(depth + 1)
                 )
             }
+
             ExpressionKind::Parenthesis(expression) => {
                 format!(
                     "{}Parenthesis {}\n{}",
                     "  ".repeat(depth),
                     ast_source_range_to_string(&self.range),
                     expression.dump(depth + 1)
+                )
+            }
+
+            ExpressionKind::BinaryOperation {
+                operator,
+                left,
+                right,
+            } => {
+                format!(
+                    "{}BinaryOperation {:?}\n{}\n{}",
+                    "  ".repeat(depth),
+                    operator,
+                    left.dump(depth + 1),
+                    right.dump(depth + 1)
                 )
             }
         }

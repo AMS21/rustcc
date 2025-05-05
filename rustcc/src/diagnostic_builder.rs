@@ -6,13 +6,14 @@ use crate::{
     source_range::SourceRange,
 };
 
+#[derive(Debug, Clone)]
 pub struct DiagnosticBuilder<'a> {
     engine: Rc<RefCell<DiagnosticEngine>>,
     diagnostic: Diagnostic<'a>,
 }
 
 impl<'a> DiagnosticBuilder<'a> {
-    pub fn new(engine: Rc<RefCell<DiagnosticEngine>>, diagnostic: Diagnostic<'a>) -> Self {
+    pub const fn new(engine: Rc<RefCell<DiagnosticEngine>>, diagnostic: Diagnostic<'a>) -> Self {
         Self { engine, diagnostic }
     }
 
