@@ -18,7 +18,7 @@ colored = "3.0.0"
 elsa = "1.11.2"
 llvm-sys = "=191.0.0"
 libc = "0.2.171"
-regex = "1.11.1"
+regex = "1.11.2"
 tempfile = "3.19.1"
 
 # Enable full LTO for release builds
