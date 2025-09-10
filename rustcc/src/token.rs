@@ -114,8 +114,11 @@ impl<'a> Token<'a> {
     pub fn new_identifier<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
+        let source_text = range.source_text().unwrap_or("");
+        debug_assert!(!source_text.is_empty(), "Identifier cannot be empty");
+
         Self {
-            kind: TokenKind::from_identifier(range.source_text().unwrap()),
+            kind: TokenKind::from_identifier(source_text),
             range,
         }
     }
@@ -132,7 +135,7 @@ impl<'a> Token<'a> {
     pub fn new_left_parenthesis<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "(");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "(", "Expected '('");
 
         Self {
             kind: TokenKind::LeftParenthesis,
@@ -144,7 +147,7 @@ impl<'a> Token<'a> {
     pub fn new_right_parenthesis<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), ")");
+        debug_assert_eq!(range.source_text().unwrap_or(""), ")", "Expected ')'");
 
         Self {
             kind: TokenKind::RightParenthesis,
@@ -156,7 +159,7 @@ impl<'a> Token<'a> {
     pub fn new_left_brace<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "{");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "{", "Expected '{{'");
 
         Self {
             kind: TokenKind::LeftBrace,
@@ -168,7 +171,7 @@ impl<'a> Token<'a> {
     pub fn new_right_brace<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "}");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "}", "Expected '}}'");
 
         Self {
             kind: TokenKind::RightBrace,
@@ -180,7 +183,7 @@ impl<'a> Token<'a> {
     pub fn new_semicolon<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), ";");
+        debug_assert_eq!(range.source_text().unwrap_or(""), ";", "Expected ';'");
 
         Self {
             kind: TokenKind::Semicolon,
@@ -192,7 +195,7 @@ impl<'a> Token<'a> {
     pub fn new_slash<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "/");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "/", "Expected '/'");
 
         Self {
             kind: TokenKind::Slash,
@@ -204,7 +207,7 @@ impl<'a> Token<'a> {
     pub fn new_tilde<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "~");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "~", "Expected '~'");
 
         Self {
             kind: TokenKind::Tilde,
@@ -216,7 +219,7 @@ impl<'a> Token<'a> {
     pub fn new_minus<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "-");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "-", "Expected '-'");
 
         Self {
             kind: TokenKind::Minus,
@@ -228,7 +231,7 @@ impl<'a> Token<'a> {
     pub fn new_minus_minus<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "--");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "--", "Expected '--'");
 
         Self {
             kind: TokenKind::MinusMinus,
@@ -240,7 +243,7 @@ impl<'a> Token<'a> {
     pub fn new_plus<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "+");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "+", "Expected '+'");
 
         Self {
             kind: TokenKind::Plus,
@@ -252,7 +255,7 @@ impl<'a> Token<'a> {
     pub fn new_plus_plus<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "++");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "++", "Expected '++'");
 
         Self {
             kind: TokenKind::PlusPlus,
@@ -264,7 +267,7 @@ impl<'a> Token<'a> {
     pub fn new_star<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "*");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "*", "Expected '*'");
 
         Self {
             kind: TokenKind::Star,
@@ -276,7 +279,7 @@ impl<'a> Token<'a> {
     pub fn new_percent<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "%");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "%", "Expected '%'");
 
         Self {
             kind: TokenKind::Percent,
@@ -288,7 +291,7 @@ impl<'a> Token<'a> {
     pub fn new_ampersand<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "&");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "&", "Expected '&'");
 
         Self {
             kind: TokenKind::Ampersand,
@@ -300,7 +303,7 @@ impl<'a> Token<'a> {
     pub fn new_caret<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "^");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "^", "Expected '^'");
 
         Self {
             kind: TokenKind::Caret,
@@ -312,7 +315,7 @@ impl<'a> Token<'a> {
     pub fn new_pipe<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "|");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "|", "Expected '|'");
 
         Self {
             kind: TokenKind::Pipe,
@@ -323,7 +326,7 @@ impl<'a> Token<'a> {
     pub fn new_less_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "<");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "<", "Expected '<'");
 
         Self {
             kind: TokenKind::LessThan,
@@ -334,7 +337,7 @@ impl<'a> Token<'a> {
     pub fn new_less_than_equal<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "<=");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "<=", "Expected '<='");
 
         Self {
             kind: TokenKind::LessThanEqual,
@@ -345,7 +348,7 @@ impl<'a> Token<'a> {
     pub fn new_less_than_less_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), "<<");
+        debug_assert_eq!(range.source_text().unwrap_or(""), "<<", "Expected '<<'");
 
         Self {
             kind: TokenKind::LessThanLessThan,
@@ -356,7 +359,7 @@ impl<'a> Token<'a> {
     pub fn new_greater_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), ">");
+        debug_assert_eq!(range.source_text().unwrap_or(""), ">", "Expected '>'");
 
         Self {
             kind: TokenKind::GreaterThan,
@@ -367,7 +370,7 @@ impl<'a> Token<'a> {
     pub fn new_greater_than_equal<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), ">=");
+        debug_assert_eq!(range.source_text().unwrap_or(""), ">=", "Expected '>='");
 
         Self {
             kind: TokenKind::GreaterThanEqual,
@@ -378,7 +381,7 @@ impl<'a> Token<'a> {
     pub fn new_greater_than_greater_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
         let range = range.into();
 
-        debug_assert_eq!(range.source_text().unwrap(), ">>");
+        debug_assert_eq!(range.source_text().unwrap_or(""), ">>", "Expected '>>'");
 
         Self {
             kind: TokenKind::GreaterThanGreaterThan,
