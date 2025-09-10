@@ -1,6 +1,7 @@
-use std::{cell::RefCell, rc::Rc};
+use std::{cell::RefCell, panic::PanicHookInfo, rc::Rc};
 
 use codegen::Codegen;
+use colored::Colorize;
 use diagnostic_consumer::DefaultDiagnosticConsumer;
 use diagnostic_engine::DiagnosticEngine;
 use parser::Parser;
@@ -22,6 +23,9 @@ pub mod source_range;
 pub mod token;
 
 pub fn run_main() {
+    // Set a panic hook
+    std::panic::set_hook(Box::new(panic_handler));
+
     // Handle command line arguments
     let command_line_matches = command_line::command_line().get_matches();
 
@@ -84,4 +88,62 @@ pub fn run_main() {
     if diagnostic_engine.borrow().error_occurred() {
         std::process::exit(1);
     }
+}
+
+pub fn panic_handler(panic_info: &PanicHookInfo<'_>) {
+    eprintln!(
+        "{}\n",
+        "Oh no rustcc encountered an internal error and has sadly crashed!"
+            .bold()
+            .red()
+    );
+
+    // Print location
+    if let Some(location) = panic_info.location() {
+        eprintln!(
+            "Location: {}:{}:{}",
+            location.file(),
+            location.line(),
+            location.column()
+        );
+    } else {
+        eprintln!("Location: {}", "<unknown>".italic());
+    }
+
+    // Print panic message
+    if let Some(string) = panic_info.payload().downcast_ref::<&str>() {
+        eprintln!("Message: {}", string.yellow());
+    } else if let Some(string) = panic_info.payload().downcast_ref::<String>() {
+        eprintln!("Message: {}", string.yellow());
+    } else {
+        eprintln!("Message: {}", "<none>".italic());
+    }
+
+    // Print a backtrace
+    eprintln!("Backtrace:");
+    eprintln!("{}", std::backtrace::Backtrace::force_capture());
+
+    // Print version and system info
+    eprintln!("Version: {}", env!("CARGO_PKG_VERSION"));
+    eprintln!(
+        "System:  {}-{}",
+        std::env::consts::OS,
+        std::env::consts::ARCH
+    );
+
+    // Print command line
+    let command_line_without_self = std::env::args().skip(1).collect::<Vec<String>>().join(" ");
+    eprintln!(
+        "\nCommand line: {}",
+        if command_line_without_self.is_empty() {
+            "<none>".italic().to_string()
+        } else {
+            command_line_without_self
+        }
+    );
+
+    eprintln!(
+        "\nPLEASE submit a bug report to {}",
+        "https://github.com/AMS21/rustcc/issues".underline()
+    );
 }
