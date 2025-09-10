@@ -1,0 +1,30 @@
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:12: error: expected expression
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:10: error: expected expression instead reached end of file
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:12: error: expected 'int' keyword
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected function name
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected '('
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected 'void' keyword for parameter list
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected ')'
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected '{'
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected 'return' keyword
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected 'int' keyword
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:14: error: expected function name
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:14: error: expected '('
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:14: error: expected 'void' keyword for parameter list
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:14: error: expected ')'
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:14: error: expected '{'
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:14: error: expected 'return' keyword
+rustcc/tests/input/binary/invalid/missing_first_op.c:5:14: error: expected 'int' keyword
+rustcc/tests/input/binary/invalid/missing_first_op.c:6:1: error: expected function name
+rustcc/tests/input/binary/invalid/missing_first_op.c:6:1: error: expected '('
+rustcc/tests/input/binary/invalid/missing_first_op.c:6:1: error: expected 'void' keyword for parameter list
+rustcc/tests/input/binary/invalid/missing_first_op.c:6:1: error: expected ')'
+rustcc/tests/input/binary/invalid/missing_first_op.c:6:1: error: expected '{'
+rustcc/tests/input/binary/invalid/missing_first_op.c:6:1: error: expected 'return' keyword
+rustcc/tests/input/binary/invalid/missing_first_op.c:6:1: error: expected 'int' keyword
+<invalid>: error: expected function name
+<invalid>: error: expected '('
+<invalid>: error: expected 'void' keyword for parameter list
+<invalid>: error: expected ')'
+<invalid>: error: expected '{'
+<invalid>: error: expected 'return' keyword

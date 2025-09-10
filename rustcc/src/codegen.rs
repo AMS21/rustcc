@@ -3,10 +3,11 @@ use std::{ffi::CString, ptr};
 use llvm_sys::{
     analysis::{LLVMVerifierFailureAction, LLVMVerifyFunction},
     core::{
-        LLVMAddFunction, LLVMAppendBasicBlockInContext, LLVMBuildAdd, LLVMBuildMul, LLVMBuildNeg,
-        LLVMBuildNot, LLVMBuildRet, LLVMBuildSDiv, LLVMBuildSRem, LLVMBuildSub, LLVMConstInt,
-        LLVMContextCreate, LLVMContextDispose, LLVMCreateBuilderInContext, LLVMDisposeBuilder,
-        LLVMDisposeModule, LLVMDumpModule, LLVMFunctionType, LLVMInt32TypeInContext,
+        LLVMAddFunction, LLVMAppendBasicBlockInContext, LLVMBuildAShr, LLVMBuildAdd, LLVMBuildAnd,
+        LLVMBuildMul, LLVMBuildNeg, LLVMBuildNot, LLVMBuildOr, LLVMBuildRet, LLVMBuildSDiv,
+        LLVMBuildSRem, LLVMBuildShl, LLVMBuildSub, LLVMBuildXor, LLVMConstInt, LLVMContextCreate,
+        LLVMContextDispose, LLVMCreateBuilderInContext, LLVMDisposeBuilder, LLVMDisposeModule,
+        LLVMDumpModule, LLVMFunctionType, LLVMInt32TypeInContext,
         LLVMModuleCreateWithNameInContext, LLVMPositionBuilderAtEnd, LLVMSetSourceFileName,
     },
     prelude::{
@@ -173,6 +174,15 @@ impl Codegen {
             BinaryOperator::Multiply => self.builder.multiply(left_value, right_value),
             BinaryOperator::Divide => self.builder.signed_divide(left_value, right_value),
             BinaryOperator::Remainder => self.builder.signed_remainder(left_value, right_value),
+            BinaryOperator::BitwiseAnd => self.builder.bitwise_and(left_value, right_value),
+            BinaryOperator::BitwiseLeftShift => {
+                self.builder.bitwise_left_shift(left_value, right_value)
+            }
+            BinaryOperator::BitwiseOr => self.builder.bitwise_or(left_value, right_value),
+            BinaryOperator::BitwiseRightShift => {
+                self.builder.bitwise_right_shift(left_value, right_value)
+            }
+            BinaryOperator::BitwiseXor => self.builder.bitwise_xor(left_value, right_value),
         }
     }
 
@@ -299,6 +309,31 @@ impl LLVMBuilder {
     fn signed_remainder(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
         let name = CString::new("srem").unwrap();
         unsafe { LLVMBuildSRem(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn bitwise_and(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("and").unwrap();
+        unsafe { LLVMBuildAnd(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn bitwise_left_shift(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("shl").unwrap();
+        unsafe { LLVMBuildShl(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn bitwise_right_shift(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("shr").unwrap();
+        unsafe { LLVMBuildAShr(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn bitwise_xor(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("xor").unwrap();
+        unsafe { LLVMBuildXor(self.0, left, right, name.as_ptr()) }
+    }
+
+    fn bitwise_or(&self, left: LLVMValueRef, right: LLVMValueRef) -> LLVMValueRef {
+        let name = CString::new("or").unwrap();
+        unsafe { LLVMBuildOr(self.0, left, right, name.as_ptr()) }
     }
 }
 

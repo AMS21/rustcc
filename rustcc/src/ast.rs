@@ -106,14 +106,23 @@ pub enum BinaryOperator {
     Multiply,
     Divide,
     Remainder,
+    BitwiseLeftShift,
+    BitwiseRightShift,
+    BitwiseAnd,
+    BitwiseXor,
+    BitwiseOr,
 }
 
 impl BinaryOperator {
     #[must_use]
     pub const fn precedence(&self) -> u8 {
         match self {
-            Self::Multiply | Self::Divide | Self::Remainder => 20,
-            Self::Add | Self::Subtract => 10,
+            Self::Multiply | Self::Divide | Self::Remainder => 60,
+            Self::Add | Self::Subtract => 50,
+            Self::BitwiseLeftShift | Self::BitwiseRightShift => 40,
+            Self::BitwiseAnd => 30,
+            Self::BitwiseXor => 20,
+            Self::BitwiseOr => 10,
         }
     }
 }

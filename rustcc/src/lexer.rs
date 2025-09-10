@@ -22,6 +22,8 @@ enum LexerState {
     MultiLineCommentAfterStar,
     AfterMinus,
     AfterPlus,
+    AfterLessThan,
+    AfterGreaterThan,
 }
 
 #[derive(Debug)]
@@ -208,6 +210,38 @@ impl<'a> Lexer<'a> {
                     let location = self.current_location();
 
                     self.queued_tokens.push_back(Token::new_percent(location));
+                    self.consume_character();
+                }
+                Some('&') => {
+                    let location = self.current_location();
+
+                    self.queued_tokens.push_back(Token::new_ampersand(location));
+                    self.consume_character();
+                }
+                Some('|') => {
+                    let location = self.current_location();
+
+                    self.queued_tokens.push_back(Token::new_pipe(location));
+                    self.consume_character();
+                }
+                Some('^') => {
+                    let location = self.current_location();
+
+                    self.queued_tokens.push_back(Token::new_caret(location));
+                    self.consume_character();
+                }
+                Some('<') => {
+                    let location = self.current_location();
+                    self.token_begin_location = location;
+
+                    self.state = LexerState::AfterLessThan;
+                    self.consume_character();
+                }
+                Some('>') => {
+                    let location = self.current_location();
+                    self.token_begin_location = location;
+
+                    self.state = LexerState::AfterGreaterThan;
                     self.consume_character();
                 }
 
@@ -440,6 +474,7 @@ impl<'a> Lexer<'a> {
                 }
             },
 
+            #[expect(clippy::single_match_else)]
             LexerState::AfterPlus => match self.peek_next() {
                 Some('+') => {
                     let location =
@@ -454,6 +489,66 @@ impl<'a> Lexer<'a> {
                 _ => {
                     self.queued_tokens
                         .push_back(Token::new_plus(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+            },
+
+            LexerState::AfterLessThan => match self.peek_next() {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_less_than_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+                Some('<') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_less_than_less_than(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    self.queued_tokens
+                        .push_back(Token::new_less_than(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+            },
+
+            LexerState::AfterGreaterThan => match self.peek_next() {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_greater_than_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+                Some('>') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_greater_than_greater_than(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    self.queued_tokens
+                        .push_back(Token::new_greater_than(self.token_begin_location));
 
                     self.state = LexerState::Start;
                 }

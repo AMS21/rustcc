@@ -17,19 +17,28 @@ pub enum TokenKind {
     IntegerLiteral(u32),
 
     // Symbols
-    LeftParenthesis,  // (
-    RightParenthesis, // )
-    LeftBrace,        // {
-    RightBrace,       // }
-    Semicolon,        // ;
-    Slash,            // /
-    Tilde,            // ~
-    Minus,            // -
-    MinusMinus,       // --
-    Plus,             // +
-    PlusPlus,         // ++
-    Star,             // *
-    Percent,          // %
+    LeftParenthesis,        // (
+    RightParenthesis,       // )
+    LeftBrace,              // {
+    RightBrace,             // }
+    Semicolon,              // ;
+    Slash,                  // /
+    Tilde,                  // ~
+    Minus,                  // -
+    MinusMinus,             // --
+    Plus,                   // +
+    PlusPlus,               // ++
+    Star,                   // *
+    Percent,                // %
+    Ampersand,              // &
+    Caret,                  // ^
+    Pipe,                   // |
+    LessThan,               // <
+    LessThanEqual,          // <=
+    LessThanLessThan,       // <<
+    GreaterThan,            // >
+    GreaterThanEqual,       // >=
+    GreaterThanGreaterThan, // >>
 }
 
 impl TokenKind {
@@ -78,6 +87,11 @@ impl TokenKind {
             Self::Star => Some(BinaryOperator::Multiply),
             Self::Slash => Some(BinaryOperator::Divide),
             Self::Percent => Some(BinaryOperator::Remainder),
+            Self::Ampersand => Some(BinaryOperator::BitwiseAnd),
+            Self::Caret => Some(BinaryOperator::BitwiseXor),
+            Self::Pipe => Some(BinaryOperator::BitwiseOr),
+            Self::LessThanLessThan => Some(BinaryOperator::BitwiseLeftShift),
+            Self::GreaterThanGreaterThan => Some(BinaryOperator::BitwiseRightShift),
 
             _ => None,
         }
@@ -266,6 +280,108 @@ impl<'a> Token<'a> {
 
         Self {
             kind: TokenKind::Percent,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_ampersand<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "&");
+
+        Self {
+            kind: TokenKind::Ampersand,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_caret<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "^");
+
+        Self {
+            kind: TokenKind::Caret,
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_pipe<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "|");
+
+        Self {
+            kind: TokenKind::Pipe,
+            range,
+        }
+    }
+
+    pub fn new_less_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "<");
+
+        Self {
+            kind: TokenKind::LessThan,
+            range,
+        }
+    }
+
+    pub fn new_less_than_equal<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "<=");
+
+        Self {
+            kind: TokenKind::LessThanEqual,
+            range,
+        }
+    }
+
+    pub fn new_less_than_less_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), "<<");
+
+        Self {
+            kind: TokenKind::LessThanLessThan,
+            range,
+        }
+    }
+
+    pub fn new_greater_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), ">");
+
+        Self {
+            kind: TokenKind::GreaterThan,
+            range,
+        }
+    }
+
+    pub fn new_greater_than_equal<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), ">=");
+
+        Self {
+            kind: TokenKind::GreaterThanEqual,
+            range,
+        }
+    }
+
+    pub fn new_greater_than_greater_than<R: Into<SourceRange<'a>>>(range: R) -> Self {
+        let range = range.into();
+
+        debug_assert_eq!(range.source_text().unwrap(), ">>");
+
+        Self {
+            kind: TokenKind::GreaterThanGreaterThan,
             range,
         }
     }
