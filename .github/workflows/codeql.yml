@@ -41,7 +41,7 @@ jobs:
         languages: "rust"
 
     - name: Build the project
-      run: cargo build
+      run: cargo build --workspace --all-features --verbose
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
