@@ -37,6 +37,9 @@ jobs:
       with:
         tool: cargo-mutants
 
+    - name: Install LLVM
+      run: meta/ci/install-llvm-ubuntu.sh
+
     - name: Run cargo-mutants
       run: |
         cargo mutants --workspace --no-shuffle -vV --shard ${{ matrix.shard }}/8 --baseline=skip --timeout 300 --in-place --cap-lints true --test-workspace true
