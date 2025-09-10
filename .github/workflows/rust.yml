@@ -100,7 +100,7 @@ jobs:
         toolchain:
           - nightly
           - stable
-          - "1.85" # MSRV
+          - "1.88" # MSRV
 
     steps:
     - name: Checkout
