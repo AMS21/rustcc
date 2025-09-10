@@ -7,6 +7,8 @@ pub const ARG_PRINT_TOKENS: &str = "PRINT_TOKENS";
 pub const ARG_PRINT_AST: &str = "PRINT_AST";
 pub const ARG_PRINT_IR: &str = "PRINT_IR";
 
+pub const HEADING_DEBUGGING: &str = "Debugging";
+
 #[must_use]
 pub fn command_line() -> Command {
     Command::new(crate_name!())
@@ -23,18 +25,21 @@ pub fn command_line() -> Command {
             Arg::new(ARG_PRINT_TOKENS)
                 .long("print-tokens")
                 .action(ArgAction::SetTrue)
-                .help("Print all tokens"),
+                .help("Print all tokens")
+                .help_heading(HEADING_DEBUGGING),
         )
         .arg(
             Arg::new(ARG_PRINT_AST)
                 .long("print-ast")
                 .action(ArgAction::SetTrue)
-                .help("Print the abstract syntax tree"),
+                .help("Print the abstract syntax tree")
+                .help_heading(HEADING_DEBUGGING),
         )
         .arg(
             Arg::new(ARG_PRINT_IR)
                 .long("print-ir")
                 .action(ArgAction::SetTrue)
-                .help("Print the LLVM intermediate representation"),
+                .help("Print the LLVM intermediate representation")
+                .help_heading(HEADING_DEBUGGING),
         )
 }

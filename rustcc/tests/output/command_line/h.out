@@ -5,8 +5,10 @@ Arguments:
   <source_file>  The source file to compile
 
 Options:
+  -h, --help     Print help
+  -V, --version  Print version
+
+Debugging:
       --print-tokens  Print all tokens
       --print-ast     Print the abstract syntax tree
       --print-ir      Print the LLVM intermediate representation
-  -h, --help          Print help
-  -V, --version       Print version
