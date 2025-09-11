@@ -262,9 +262,9 @@ impl<'a> Parser<'a> {
         };
 
         #[expect(clippy::wildcard_enum_match_arm)]
-        match token.kind {
+        match &token.kind {
             TokenKind::IntegerLiteral(_) => self.parse_integer_literal(),
-            TokenKind::Minus | TokenKind::Tilde => self.parse_unary_expression(),
+            x if x.is_unary_operator() => self.parse_unary_expression(),
             TokenKind::LeftParenthesis => self.parse_parenthesis_expression(),
 
             _ => {

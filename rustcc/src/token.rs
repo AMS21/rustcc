@@ -104,6 +104,7 @@ impl TokenKind {
     pub const fn unary_operator(&self) -> Option<UnaryOperator> {
         #[expect(clippy::wildcard_enum_match_arm)]
         match self {
+            Self::Plus => Some(UnaryOperator::Positive),
             Self::Minus => Some(UnaryOperator::Negate),
             Self::Tilde => Some(UnaryOperator::Complement),
 

@@ -194,6 +194,7 @@ impl Codegen {
         let value = self.codegen_expression(expression);
 
         match operator {
+            UnaryOperator::Positive => value,
             UnaryOperator::Negate => self.negate(value),
             UnaryOperator::Complement => self.not(value),
         }
