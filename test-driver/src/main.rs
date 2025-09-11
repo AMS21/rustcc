@@ -1,12 +1,13 @@
-use assert_cmd::cargo::CommandCargoExt;
-use clap::ArgAction;
-use colored::Colorize;
-use regex::RegexBuilder;
 use std::{
     env, fs,
     path::{Path, PathBuf},
     process,
 };
+
+use assert_cmd::cargo::CommandCargoExt;
+use clap::ArgAction;
+use colored::Colorize;
+use regex::RegexBuilder;
 
 const ARG_DIRECTORY: &str = "DIRECTORY";
 const ARG_UPDATE_BASELINE: &str = "UPDATE_BASELINE";

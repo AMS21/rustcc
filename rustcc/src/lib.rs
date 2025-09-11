@@ -1,4 +1,4 @@
-use std::{cell::RefCell, panic::PanicHookInfo, rc::Rc};
+use std::{cell::RefCell, panic::PanicHookInfo, process::ExitCode, rc::Rc};
 
 use codegen::Codegen;
 use colored::Colorize;
@@ -22,7 +22,7 @@ pub mod source_manager;
 pub mod source_range;
 pub mod token;
 
-pub fn run_main() {
+pub fn run_main() -> ExitCode {
     // Set a panic hook
     std::panic::set_hook(Box::new(panic_handler));
 
@@ -30,9 +30,11 @@ pub fn run_main() {
     let command_line_matches = command_line::command_line().get_matches();
 
     // Get the first command line argument as the file path
-    let file_path: &String = command_line_matches
-        .get_one(command_line::ARG_INPUT_FILE)
-        .unwrap();
+    let Some(file_path) = command_line_matches.get_one::<String>(command_line::ARG_INPUT_FILE)
+    else {
+        eprintln!("no input file");
+        return ExitCode::FAILURE;
+    };
 
     // Create our source manager
     let source_manager = RealFSSourceManager::new();
@@ -44,16 +46,13 @@ pub fn run_main() {
     let diagnostic_engine = Rc::new(RefCell::from(DiagnosticEngine::new(diagnostic_consumer)));
 
     // Load the input file into our source manager
-    let source_file = source_manager.load_file(file_path.as_str()).map_or_else(
-        || {
-            eprintln!("Error reading file: '{file_path}'");
-            // TODO: Once we recover the error handling, print the error message here
-            //eprintln!("{error}");
+    let Some(source_file) = source_manager.load_file(file_path.as_str()) else {
+        eprintln!("Error reading file: '{file_path}'");
+        // TODO: Once we recover the error handling, print the error message
+        // here eprintln!("{error}");
 
-            std::process::exit(1);
-        },
-        |source| source,
-    );
+        return ExitCode::FAILURE;
+    };
 
     // Create a lexer
     let mut lexer = lexer::Lexer::new(diagnostic_engine.clone(), source_file);
@@ -86,8 +85,10 @@ pub fn run_main() {
     }
 
     if diagnostic_engine.borrow().error_occurred() {
-        std::process::exit(1);
+        return ExitCode::FAILURE;
     }
+
+    ExitCode::SUCCESS
 }
 
 pub fn panic_handler(panic_info: &PanicHookInfo<'_>) {

@@ -1,3 +1,7 @@
+use std::{cell::RefCell, char, rc::Rc};
+
+use colored::Colorize;
+
 use crate::{
     diagnostic::{Diagnostic, DiagnosticId},
     diagnostic_builder::DiagnosticBuilder,
@@ -7,8 +11,6 @@ use crate::{
     source_range::SourceRange,
     token::{Token, TokenList},
 };
-use colored::Colorize;
-use std::{cell::RefCell, char, rc::Rc};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum LexerState {
@@ -63,7 +65,7 @@ impl<'a> Lexer<'a> {
     }
 
     #[must_use]
-    pub fn is_finished(&self) -> bool {
+    pub const fn is_finished(&self) -> bool {
         self.index >= self.source_file.content.len()
     }
 
@@ -291,23 +293,27 @@ impl<'a> Lexer<'a> {
                 loop {
                     match self.peek_next() {
                         Some(character) if character.is_ascii_digit() => {
-                            // Multiply the current value by 10 and check for any overflow
+                            // Multiply the current value by 10 and check for
+                            // any overflow
                             let Some(temp_value) = value.checked_mul(10) else {
                                 self.state = LexerState::IntegerLiteralOverflow;
                                 break;
                             };
 
-                            // Convert the current character to an actual base 10 number
+                            // Convert the current character to an actual base
+                            // 10 number
                             #[expect(clippy::unwrap_used)]
                             let character_value = character.to_digit(10).unwrap();
 
-                            // Add the current character value to the current value and check for any overflow
+                            // Add the current character value to the current
+                            // value and check for any overflow
                             let Some(temp_value) = temp_value.checked_add(character_value) else {
                                 self.state = LexerState::IntegerLiteralOverflow;
                                 break;
                             };
 
-                            // Update the current value and consume the character
+                            // Update the current value and consume the
+                            // character
                             value = temp_value;
                             self.token_end_location = self.current_location();
                             self.consume_character();
@@ -333,7 +339,8 @@ impl<'a> Lexer<'a> {
                 loop {
                     match self.peek_next() {
                         Some(character) if character.is_ascii_digit() => {
-                            // Consume all digit characters until we reach a non-digit character
+                            // Consume all digit characters until we reach a
+                            // non-digit character
                             self.token_end_location = self.current_location();
                             self.consume_character();
                         }
@@ -357,7 +364,8 @@ impl<'a> Lexer<'a> {
             LexerState::AfterSlash => {
                 match self.peek_next() {
                     Some('/') => {
-                        // Two slashes in a row, the rest of the line thus is a comment
+                        // Two slashes in a row, the rest of the line thus is a
+                        // comment
                         self.consume_character();
                         self.state = LexerState::LineComment;
                     }
@@ -443,7 +451,8 @@ impl<'a> Lexer<'a> {
                     }
 
                     None => {
-                        // TODO: This is an unterminated multipline comment error
+                        // TODO: This is an unterminated multipline comment
+                        // error
                     }
                 }
             }

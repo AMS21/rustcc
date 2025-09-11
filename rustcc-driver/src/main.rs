@@ -16,7 +16,7 @@ fn main() {
     // Get $CC environment variable or use "gcc" as default
     let cc = std::env::var("CC").unwrap_or("gcc".to_string());
 
-    //let preprocessed_file_path = create_temp_file("preprocessed.i");
+    // let preprocessed_file_path = create_temp_file("preprocessed.i");
     let preprocessed_file_path = PathBuf::from(source_file_path).with_extension("i");
 
     println!("Preprocessing file '{source_file_path}'...");

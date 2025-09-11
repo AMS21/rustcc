@@ -1,5 +1,6 @@
 use crate::{diagnostic::Diagnostic, diagnostic_consumer::DiagnosticConsumer};
 
+#[expect(clippy::struct_excessive_bools)]
 #[derive(Debug)]
 pub struct DiagnosticEngine {
     number_of_warnings: u64,

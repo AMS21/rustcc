@@ -39,12 +39,12 @@ impl SourceFile {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     use std::{
         collections::hash_map::DefaultHasher,
         hash::{Hash, Hasher},
     };
+
+    use super::*;
 
     #[test]
     fn test_source_file_creation() {

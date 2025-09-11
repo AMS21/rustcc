@@ -56,7 +56,7 @@ impl Codegen {
     }
 
     #[must_use]
-    fn function_type(&self, return_type: LLVMTypeRef) -> LLVMTypeRef {
+    fn function_type(return_type: LLVMTypeRef) -> LLVMTypeRef {
         unsafe { LLVMFunctionType(return_type, ptr::null_mut(), 0, 0) }
     }
 
@@ -107,7 +107,7 @@ impl Codegen {
 
     fn codegen_function(&self, function: &FunctionDefinition) -> Option<()> {
         // Create the function type
-        let function_type = self.function_type(self.int32_type());
+        let function_type = Self::function_type(self.int32_type());
 
         // Create the function
         let llvm_function = self.function(&function.name, function_type);
@@ -243,7 +243,9 @@ impl LLVMModule {
     }
 
     pub fn set_source_file_name(&self, name: &CString) {
-        unsafe { LLVMSetSourceFileName(self.0, name.as_ptr(), name.as_bytes().len()) };
+        unsafe {
+            LLVMSetSourceFileName(self.0, name.as_ptr(), name.as_bytes().len());
+        }
     }
 
     pub fn add_function(&self, name: &CString, function_type: LLVMTypeRef) -> LLVMValueRef {

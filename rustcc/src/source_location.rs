@@ -1,7 +1,9 @@
-use crate::{source_file::SourceFile, source_range::SourceRange};
 use std::fmt;
 
-// TODO: Maybe custom implementations for PartialOrd and Ord since it makes no sense to compare SourceLocations with different source files
+use crate::{source_file::SourceFile, source_range::SourceRange};
+
+// TODO: Maybe custom implementations for PartialOrd and Ord since it makes no
+// sense to compare SourceLocations with different source files
 /// A location in a source file, represented by a line and column number.
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
 pub struct SourceLocation<'a> {
@@ -12,13 +14,16 @@ pub struct SourceLocation<'a> {
 }
 
 impl<'a> SourceLocation<'a> {
-    /// Creates a new `SourceLocation` with the given source file, line, and column.
+    /// Creates a new `SourceLocation` with the given source file, line, and
+    /// column.
     ///
     /// # Parameters
     ///
-    /// - `source_file`: A reference to the source file associated with this location.
+    /// - `source_file`: A reference to the source file associated with this
+    ///   location.
     /// - `line`: The line number in the source file. Must be greater than 0.
-    /// - `column`: The column number in the source file. Must be greater than 0.
+    /// - `column`: The column number in the source file. Must be greater than
+    ///   0.
     ///
     /// # Panics
     ///
@@ -65,19 +70,22 @@ impl<'a> SourceLocation<'a> {
 
         debug_assert!(
             file_lines >= line as usize,
-            "Line number exceeds the number of lines in the source file.\nExpected at most {file_lines}, found {line}\nSource file: '{}'",
+            "Line number exceeds the number of lines in the source file.\nExpected at most \
+             {file_lines}, found {line}\nSource file: '{}'",
             source_file.path
         );
         if let Some(line_length) = line_length {
             debug_assert!(
                 line_length >= column as usize,
-                "Column number exceeds the number of characters in the line.\nExpected at most {line_length}, found {column}.\nSource file: '{}'\nLine: {line}",
+                "Column number exceeds the number of characters in the line.\nExpected at most \
+                 {line_length}, found {column}.\nSource file: '{}'\nLine: {line}",
                 source_file.path
             );
         }
         debug_assert!(
             index < file_chars,
-            "Index exceeds the number of characters in the source file.\nExpected at most {file_chars}, found {index}.\nSource file: '{}'",
+            "Index exceeds the number of characters in the source file.\nExpected at most \
+             {file_chars}, found {index}.\nSource file: '{}'",
             source_file.path
         );
 
@@ -89,14 +97,16 @@ impl<'a> SourceLocation<'a> {
         }
     }
 
-    /// Creates a new `SourceLocation` with the given line and column, but without a source file.
+    /// Creates a new `SourceLocation` with the given line and column, but
+    /// without a source file.
     ///
     /// This is used for creating `SourceLocation`s for scratch source files.
     ///
     /// # Parameters
     ///
     /// - `line`: The line number in the source file. Must be greater than 0.
-    /// - `column`: The column number in the source file. Must be greater than 0.
+    /// - `column`: The column number in the source file. Must be greater than
+    ///   0.
     ///
     /// # Panics
     ///
@@ -168,7 +178,8 @@ impl<'a> SourceLocation<'a> {
         self.line != 0
     }
 
-    /// Returns a `SourceRange` with the same begin and end locations as this `SourceLocation`.
+    /// Returns a `SourceRange` with the same begin and end locations as this
+    /// `SourceLocation`.
     ///
     /// # Examples
     /// ```
@@ -190,7 +201,8 @@ impl<'a> SourceLocation<'a> {
         }
     }
 
-    /// Returns a `SourceRange` with the same begin and end locations as this `SourceLocation` and consumes the location in the process.
+    /// Returns a `SourceRange` with the same begin and end locations as this
+    /// `SourceLocation` and consumes the location in the process.
     ///
     /// # Examples
     /// ```

@@ -1,9 +1,7 @@
 use std::{cell::RefCell, rc::Rc};
 
 use crate::{
-    ast::{
-        Expression, ExpressionKind, FunctionDefinition, Statement, TranslationUnit, UnaryOperator,
-    },
+    ast::{Expression, ExpressionKind, FunctionDefinition, Statement, TranslationUnit},
     diagnostic::{Diagnostic, DiagnosticId},
     diagnostic_builder::DiagnosticBuilder,
     diagnostic_engine::DiagnosticEngine,
@@ -64,12 +62,12 @@ impl<'a> Parser<'a> {
         token
     }
 
-    fn expect(&self, token_kind: TokenKind) -> Option<&Token<'a>> {
-        if let Some(token) = self.peek_next() {
-            if token.kind == token_kind {
-                self.consume();
-                return Some(token);
-            }
+    fn expect(&self, token_kind: &TokenKind) -> Option<&Token<'a>> {
+        if let Some(token) = self.peek_next()
+            && token.kind == *token_kind
+        {
+            self.consume();
+            return Some(token);
         }
 
         None
@@ -90,7 +88,7 @@ impl<'a> Parser<'a> {
     fn parse_function_definition(&'_ self) -> Option<FunctionDefinition<'_>> {
         // First parse the function return type.
         // TODO: For now we only support 'int' return type.
-        if self.expect(TokenKind::KeywordInt).is_none() {
+        if self.expect(&TokenKind::KeywordInt).is_none() {
             self.diagnostic(
                 DiagnosticId::ExpectedFunctionReturnType,
                 self.current_token_source_range(),
@@ -122,7 +120,7 @@ impl<'a> Parser<'a> {
         }
 
         // Require an open parenthesis
-        if self.expect(TokenKind::LeftParenthesis).is_none() {
+        if self.expect(&TokenKind::LeftParenthesis).is_none() {
             self.diagnostic(
                 DiagnosticId::ExpectedLeftParenthesis,
                 self.current_token_source_range(),
@@ -130,9 +128,9 @@ impl<'a> Parser<'a> {
             );
         }
 
-        // TODO: Now we would parse the function parameters, but for now just skip them
-        // We currently require a void parameter
-        if self.expect(TokenKind::KeywordVoid).is_none() {
+        // TODO: Now we would parse the function parameters, but for now just
+        // skip them We currently require a void parameter
+        if self.expect(&TokenKind::KeywordVoid).is_none() {
             self.diagnostic(
                 DiagnosticId::ExpectedVoidInParameterList,
                 self.current_token_source_range(),
@@ -141,7 +139,7 @@ impl<'a> Parser<'a> {
         }
 
         // Require a closing parenthesis
-        if self.expect(TokenKind::RightParenthesis).is_none() {
+        if self.expect(&TokenKind::RightParenthesis).is_none() {
             self.diagnostic(
                 DiagnosticId::ExpectedRightParenthesis,
                 self.current_token_source_range(),
@@ -150,7 +148,7 @@ impl<'a> Parser<'a> {
         }
 
         // Require an open brace
-        if self.expect(TokenKind::LeftBrace).is_none() {
+        if self.expect(&TokenKind::LeftBrace).is_none() {
             self.diagnostic(
                 DiagnosticId::ExpectedLeftBrace,
                 self.current_token_source_range(),
@@ -162,7 +160,7 @@ impl<'a> Parser<'a> {
         let body = self.parse_statement()?;
 
         // Require a closing brace
-        if self.expect(TokenKind::RightBrace).is_none() {
+        if self.expect(&TokenKind::RightBrace).is_none() {
             self.diagnostic(
                 DiagnosticId::ExpectedRightBrace,
                 self.current_token_source_range(),
@@ -174,13 +172,14 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_statement(&'_ self) -> Option<Statement<'_>> {
-        // TODO: Statement can be all sorts of things, for now we only allow the return statement
+        // TODO: Statement can be all sorts of things, for now we only allow the
+        // return statement
         self.parse_return_statement()
     }
 
     fn parse_return_statement(&'_ self) -> Option<Statement<'_>> {
         // Require the 'return' keyword
-        let Some(return_token) = self.expect(TokenKind::KeywordReturn) else {
+        let Some(return_token) = self.expect(&TokenKind::KeywordReturn) else {
             self.diagnostic(
                 DiagnosticId::ExpectedReturnKeyword,
                 self.current_token_source_range(),
@@ -200,7 +199,7 @@ impl<'a> Parser<'a> {
         };
 
         // Require a semicolon
-        let Some(semicolon_token) = self.expect(TokenKind::Semicolon) else {
+        let Some(semicolon_token) = self.expect(&TokenKind::Semicolon) else {
             self.diagnostic(
                 DiagnosticId::ExpectedSemicolon,
                 self.current_token_source_range(),
@@ -262,10 +261,12 @@ impl<'a> Parser<'a> {
             return None;
         };
 
+        #[expect(clippy::wildcard_enum_match_arm)]
         match token.kind {
             TokenKind::IntegerLiteral(_) => self.parse_integer_literal(),
             TokenKind::Minus | TokenKind::Tilde => self.parse_unary_expression(),
             TokenKind::LeftParenthesis => self.parse_parenthesis_expression(),
+
             _ => {
                 self.diagnostic(
                     DiagnosticId::ExpectedExpression,
@@ -298,13 +299,7 @@ impl<'a> Parser<'a> {
     fn parse_unary_expression(&'_ self) -> Option<Expression<'_>> {
         let operator_token = self.consume_next()?;
 
-        let operator = match operator_token.kind {
-            TokenKind::Minus => UnaryOperator::Negate,
-            TokenKind::Tilde => UnaryOperator::Complement,
-            _ => {
-                unreachable!();
-            }
-        };
+        let operator = operator_token.unary_operator()?;
 
         let expression = self.parse_factor()?;
         let range = SourceRange {
@@ -323,12 +318,12 @@ impl<'a> Parser<'a> {
 
     fn parse_parenthesis_expression(&'_ self) -> Option<Expression<'_>> {
         // Opening parenthesis
-        let opnening_parenthesis_token = self.expect(TokenKind::LeftParenthesis)?;
+        let opnening_parenthesis_token = self.expect(&TokenKind::LeftParenthesis)?;
 
         let expression = self.parse_expression(0)?;
 
         // Closing parenthesis
-        let closing_paren_token = self.expect(TokenKind::RightParenthesis);
+        let closing_paren_token = self.expect(&TokenKind::RightParenthesis);
         if closing_paren_token.is_none() {
             self.diagnostic(
                 DiagnosticId::MissingClosingParenthesis,

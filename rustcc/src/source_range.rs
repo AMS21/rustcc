@@ -43,10 +43,11 @@ impl<'a> SourceRange<'a> {
     /// Panics if any of the following conditions are true:
     /// - The begin and end locations are not in the same source file.
     /// - The begin location is after the end location.
-    /// - The begin location is on the same line as the end location, but the begin column is
-    ///   greater than the end column.
-    /// - The begin location is on the same line as the end location, the begin column is the same as
-    ///   the end column, but the begin index is greater than the end index.
+    /// - The begin location is on the same line as the end location, but the
+    ///   begin column is greater than the end column.
+    /// - The begin location is on the same line as the end location, the begin
+    ///   column is the same as the end column, but the begin index is greater
+    ///   than the end index.
     ///
     /// # Examples
     ///
@@ -68,31 +69,36 @@ impl<'a> SourceRange<'a> {
     pub fn new(begin: SourceLocation<'a>, end: SourceLocation<'a>) -> Self {
         debug_assert!(
             begin.source_file == end.source_file,
-            "Begin and end must be in the same file.\nBegin: {begin}\nEnd:   {end}\nBegin index: {}\nEnd index:   {}",
+            "Begin and end must be in the same file.\nBegin: {begin}\nEnd:   {end}\nBegin index: \
+             {}\nEnd index:   {}",
             begin.index,
             end.index,
         );
         debug_assert!(
             begin.line <= end.line,
-            "Begin location must be before end location.\nBegin: {begin}\nEnd:   {end}\nBegin index: {}\nEnd index:   {}",
+            "Begin location must be before end location.\nBegin: {begin}\nEnd:   {end}\nBegin \
+             index: {}\nEnd index:   {}",
             begin.index,
             end.index,
         );
         debug_assert!(
             begin.line != end.line || begin.column <= end.column,
-            "Begin location must be before end location.\nBegin: {begin}\nEnd:   {end}\nBegin index: {}\nEnd index:   {}",
+            "Begin location must be before end location.\nBegin: {begin}\nEnd:   {end}\nBegin \
+             index: {}\nEnd index:   {}",
             begin.index,
             end.index,
         );
         debug_assert!(
             begin.index <= end.index,
-            "Begin location must be before end location.\nBegin: {begin}\nEnd:   {end}\nBegin index: {}\nEnd index:   {}",
+            "Begin location must be before end location.\nBegin: {begin}\nEnd:   {end}\nBegin \
+             index: {}\nEnd index:   {}",
             begin.index,
             end.index,
         );
         debug_assert!(
             begin.line != end.line || begin.column != end.column || begin.index == end.index,
-            "If begin and end are on the same line and are on the same column they must have the same index.\nBegin: {begin}\nEnd:   {end}\nBegin index: {}\nEnd index:   {}",
+            "If begin and end are on the same line and are on the same column they must have the \
+             same index.\nBegin: {begin}\nEnd:   {end}\nBegin index: {}\nEnd index:   {}",
             begin.index,
             end.index,
         );
@@ -100,15 +106,18 @@ impl<'a> SourceRange<'a> {
         Self { begin, end }
     }
 
-    /// Creates a new `SourceRange` with the given `location` as both the begin and end of the range.
+    /// Creates a new `SourceRange` with the given `location` as both the begin
+    /// and end of the range.
     ///
     /// # Parameters
     ///
-    /// - `location`: The location to use as both the begin and end of the range.
+    /// - `location`: The location to use as both the begin and end of the
+    ///   range.
     ///
     /// # Returns
     ///
-    /// A new `SourceRange` with the given `location` as both the begin and end of the range.
+    /// A new `SourceRange` with the given `location` as both the begin and end
+    /// of the range.
     ///
     /// # Examples
     ///
@@ -135,7 +144,8 @@ impl<'a> SourceRange<'a> {
 
     /// Creates a new invalid `SourceRange`.
     ///
-    /// An invalid `SourceRange` has both the begin and end locations set to invalid locations.
+    /// An invalid `SourceRange` has both the begin and end locations set to
+    /// invalid locations.
     ///
     /// # Returns
     ///
@@ -160,12 +170,13 @@ impl<'a> SourceRange<'a> {
         }
     }
 
-    /// Returns true if both the begin and end locations are valid, and false if either of them are
-    /// invalid.
+    /// Returns true if both the begin and end locations are valid, and false if
+    /// either of them are invalid.
     ///
     /// # Returns
     ///
-    /// `true` if both the begin and end locations are valid, and `false` if either of them are invalid.
+    /// `true` if both the begin and end locations are valid, and `false` if
+    /// either of them are invalid.
     ///
     /// # Examples
     ///
@@ -196,11 +207,13 @@ impl<'a> SourceRange<'a> {
         self.begin.is_valid() && self.end.is_valid()
     }
 
-    /// Returns the source text of the range, or `None` if the source file is not available.
+    /// Returns the source text of the range, or `None` if the source file is
+    /// not available.
     ///
     /// # Returns
     ///
-    /// The source text of the range, or `None` if the source file is not available.
+    /// The source text of the range, or `None` if the source file is not
+    /// available.
     ///
     /// # Examples
     ///
@@ -304,7 +317,8 @@ mod tests {
 
     #[test]
     #[should_panic(
-        expected = "If begin and end are on the same line and are on the same column they must have the same index"
+        expected = "If begin and end are on the same line and are on the same column they must \
+                    have the same index"
     )]
     fn test_new_same_file_invalid_range_same_line_same_column_different_index() {
         let source_file = SourceFile::new("path/to/file", "content");

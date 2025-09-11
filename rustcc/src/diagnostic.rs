@@ -1,5 +1,6 @@
-use crate::source_range::SourceRange;
 use DiagnosticLevel::{Error, Warning};
+
+use crate::source_range::SourceRange;
 
 macro_rules! define_diagnostics {
     ($(

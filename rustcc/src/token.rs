@@ -1,6 +1,9 @@
 use std::collections::VecDeque;
 
-use crate::{ast::BinaryOperator, source_range::SourceRange};
+use crate::{
+    ast::{BinaryOperator, UnaryOperator},
+    source_range::SourceRange,
+};
 
 pub type TokenList<'a> = VecDeque<Token<'a>>;
 
@@ -92,6 +95,17 @@ impl TokenKind {
             Self::Pipe => Some(BinaryOperator::BitwiseOr),
             Self::LessThanLessThan => Some(BinaryOperator::BitwiseLeftShift),
             Self::GreaterThanGreaterThan => Some(BinaryOperator::BitwiseRightShift),
+
+            _ => None,
+        }
+    }
+
+    #[must_use]
+    pub const fn unary_operator(&self) -> Option<UnaryOperator> {
+        #[expect(clippy::wildcard_enum_match_arm)]
+        match self {
+            Self::Minus => Some(UnaryOperator::Negate),
+            Self::Tilde => Some(UnaryOperator::Complement),
 
             _ => None,
         }
@@ -412,6 +426,11 @@ impl<'a> Token<'a> {
     #[must_use]
     pub const fn binary_operator(&self) -> Option<BinaryOperator> {
         self.kind.binary_operator()
+    }
+
+    #[must_use]
+    pub const fn unary_operator(&self) -> Option<UnaryOperator> {
+        self.kind.unary_operator()
     }
 
     #[must_use]

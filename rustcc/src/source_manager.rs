@@ -1,6 +1,8 @@
-use crate::source_file::SourceFile;
-use elsa::FrozenMap;
 use std::{collections::HashMap, fmt::Debug, fs};
+
+use elsa::FrozenMap;
+
+use crate::source_file::SourceFile;
 
 /// This trait defines the interface for a source manager
 /// which is responsible for loading source files
@@ -63,7 +65,8 @@ impl<'a> SourceManager<'a> for RealFSSourceManager {
     }
 }
 
-/// Source manager which has no access to the real filesystem and allows storing virtual files in virtual
+/// Source manager which has no access to the real filesystem and allows storing
+/// virtual files in virtual
 #[derive(Debug, Clone, Default)]
 pub struct VirtualSourceManager {
     source_files: HashMap<String, SourceFile>,
@@ -89,7 +92,8 @@ impl<'a> SourceManager<'a> for VirtualSourceManager {
     }
 }
 
-/// Source manager which doesn't actually manage any files and always fails to load any files.
+/// Source manager which doesn't actually manage any files and always fails to
+/// load any files.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct EmptySourceManager;
 
@@ -108,8 +112,9 @@ impl<'a> SourceManager<'a> for EmptySourceManager {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use std::io::Write;
+
+    use super::*;
 
     #[test]
     fn test_real_fs_source_manager() {

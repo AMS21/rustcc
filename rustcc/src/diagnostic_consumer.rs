@@ -1,6 +1,8 @@
-use crate::diagnostic::{Diagnostic, DiagnosticLevel};
-use colored::Colorize;
 use std::fmt::Debug;
+
+use colored::Colorize;
+
+use crate::diagnostic::{Diagnostic, DiagnosticLevel};
 
 pub trait DiagnosticConsumer: Debug {
     fn report(&self, diagnostic: &Diagnostic);
@@ -13,7 +15,8 @@ pub trait DiagnosticConsumer: Debug {
 pub struct IgnoreDiagnosticConsumer;
 
 impl DiagnosticConsumer for IgnoreDiagnosticConsumer {
-    fn report(&self, _diagnostic: &Diagnostic) {}
+    fn report(&self, _diagnostic: &Diagnostic) {
+    }
 }
 
 // -- Default Diagnostic Consumer --
@@ -36,6 +39,7 @@ impl DiagnosticConsumer for DefaultDiagnosticConsumer {
         let begin_location = &diagnostic.source_range.begin.to_string().bold();
         let message = &diagnostic.message;
 
+        #[expect(clippy::unreachable)]
         match diagnostic.level {
             DiagnosticLevel::Warning => {
                 println!("{begin_location}: {} {message}", "warning:".yellow());

@@ -1,5 +1,6 @@
-use assert_cmd::prelude::*;
 use std::{path::PathBuf, process::Command};
+
+use assert_cmd::prelude::*;
 
 #[test]
 fn no_directory() {
