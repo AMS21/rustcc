@@ -10,7 +10,7 @@ on:
 concurrency:
   # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
   # On main, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
-  group: ${{ github.ref == 'refs/heads/main' && format('ci-main-{0}', github.sha) || format('ci-{0}', github.ref) }}-rust
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-main-{0}', github.sha) || format('ci-{0}', github.ref) }}-${{github.workflow }}
   cancel-in-progress: true
 
 env:
@@ -128,3 +128,32 @@ jobs:
 
     - name: Run tests
       run: cargo hack test --workspace --feature-powerset --verbose
+
+  coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v5
+
+    - name: Install rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: nightly
+
+    - name: Install tarpaulin
+      uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-tarpaulin
+
+    - name: Install LLVM
+      run: meta/ci/install-llvm-ubuntu.sh
+
+    - name: Run cargo-tarpaulin
+      run: cargo tarpaulin --verbose --workspace --all-targets --all-features --follow-exec --locked --post-test-delay 2 --out Xml --engine llvm
+
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        fail_ci_if_error: true
+        token: ${{ secrets.CODECOV_TOKEN }}
