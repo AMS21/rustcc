@@ -1,0 +1,62 @@
+name: ClusterFuzzLite PR fuzzing
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cflite_pr.yml'
+  pull_request:
+    paths:
+      - '**'
+  workflow_dispatch:
+
+permissions: read-all
+
+concurrency:
+  # Documentation suggests ${{ github.head_ref }}, but that's only available on pull_request/pull_request_target triggers, so using ${{ github.ref }}.
+  # On main, we want all builds to complete even if merging happens faster to make it easier to discover at which point something broke.
+  group: ${{ github.ref == 'refs/heads/main' && format('ci-main-{0}', github.sha) || format('ci-{0}', github.ref) }}-${{ github.workflow}}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: "full"
+
+jobs:
+  PR:
+    runs-on: ubuntu-latest
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ matrix.sanitizer }}-${{ github.ref }}
+      cancel-in-progress: true
+
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer:
+        # Clusterfuzz on rust only supports address sanitizer
+        - address
+        # - undefined
+        # - memory
+
+    steps:
+    - name: Build Fuzzers (${{ matrix.sanitizer }})
+      id: build
+      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+      with:
+        language: rust
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        sanitizer: ${{ matrix.sanitizer }}
+        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+
+    - name: Run Fuzzers (${{ matrix.sanitizer }})
+      id: run
+      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        fuzz-seconds: 1800 # 30 minutes
+        mode: 'code-change'
+        sanitizer: ${{ matrix.sanitizer }}
+        output-sarif: true
+        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+        minimize-crashes: true
+        parallel-fuzzing: true

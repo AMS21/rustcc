@@ -1,0 +1,19 @@
+[package]
+name = "rustcc_llvm"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+libc.workspace = true
+semver.workspace = true
+
+[build-dependencies]
+bindgen.workspace = true
+semver.workspace = true
+
+[lints]
+workspace = true

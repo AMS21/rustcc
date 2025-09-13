@@ -1,0 +1,45 @@
+; ModuleID = 'rustcc/tests/input/binary/multi_short_circuit.c'
+source_filename = "rustcc/tests/input/binary/multi_short_circuit.c"
+
+define i32 @main() {
+entry:
+  br i1 false, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  br i1 false, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %lor.rhs
+  br i1 true, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %lor.rhs
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  %icmp_ne = icmp ne i32 %land.phi, 0
+  br i1 %icmp_ne, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %land.end, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %land.end
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  ret i32 %lor.phi
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:29
+      BinaryOperation LogicalOr
+        IntegerLiteral (0) 4:12
+        BinaryOperation LogicalAnd
+          IntegerLiteral (0) 4:17
+          Parenthesis 4:22-4:28
+            BinaryOperation Divide
+              IntegerLiteral (1) 4:23
+              IntegerLiteral (1) 4:27

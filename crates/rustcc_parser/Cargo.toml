@@ -1,0 +1,21 @@
+[package]
+name = "rustcc_parser"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+rustcc_ast = { path = "../rustcc_ast" }
+rustcc_diagnostic = { path = "../rustcc_diagnostic", default-features = false }
+rustcc_lexer = { path = "../rustcc_lexer", default-features = false }
+rustcc_source = { path = "../rustcc_source" }
+
+[features]
+default = ["color"]
+color = ["rustcc_diagnostic/color", "rustcc_lexer/color"]
+
+[lints]
+workspace = true

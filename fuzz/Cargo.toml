@@ -8,10 +8,12 @@ edition = "2024"
 cargo-fuzz = true
 
 [dependencies]
-libfuzzer-sys = "0.4.9"
-
-[dependencies.rustcc]
-path = "../rustcc"
+libfuzzer-sys = "0.4.10"
+rustcc_codegen = { path = "../crates/rustcc_codegen", default-features = false }
+rustcc_diagnostic = { path = "../crates/rustcc_diagnostic", default-features = false }
+rustcc_lexer = { path = "../crates/rustcc_lexer", default-features = false }
+rustcc_parser = { path = "../crates/rustcc_parser", default-features = false }
+rustcc_source = { path = "../crates/rustcc_source", default-features = false }
 
 [profile.release]
 codegen-units = 1

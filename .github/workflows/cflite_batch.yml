@@ -1,0 +1,49 @@
+name: ClusterFuzzLite batch fuzzing
+
+on:
+  push:
+    paths:
+      - '.github/workflows/cflite_batch.yml'
+  schedule:
+    - cron: '0 0/6 * * *'  # Every 6th hour.
+  workflow_dispatch:
+
+permissions: read-all
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: "full"
+
+jobs:
+  BatchFuzzing:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        sanitizer:
+        # Clusterfuzz on rust only supports address sanitizer
+        - address
+        # - undefined
+        # - memory
+
+    steps:
+    - name: Build Fuzzers (${{ matrix.sanitizer }})
+      id: build
+      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+      with:
+        language: rust
+        sanitizer: ${{ matrix.sanitizer }}
+
+    - name: Run Fuzzers (${{ matrix.sanitizer }})
+      id: run
+      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        fuzz-seconds: 10800 # 3 hours
+        mode: 'batch'
+        sanitizer: ${{ matrix.sanitizer }}
+        output-sarif: true
+        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+        minimize-crashes: true
+        parallel-fuzzing: true

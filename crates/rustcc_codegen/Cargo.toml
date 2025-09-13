@@ -1,0 +1,15 @@
+[package]
+name = "rustcc_codegen"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+
+[dependencies]
+rustcc_ast = { path = "../rustcc_ast" }
+rustcc_llvm = { path = "../rustcc_llvm" }
+
+[lints]
+workspace = true

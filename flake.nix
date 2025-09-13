@@ -48,15 +48,13 @@
             cargo-tarpaulin
 
             # LLVM
-            llvmPackages_19.libllvm
+            llvmPackages_21.libllvm
           ];
 
           LD_LIBRARY_PATH = "${pkgs.lib.makeLibraryPath nativeBuildInputs}:${pkgs.stdenv.cc.cc.lib.outPath}/lib:$LD_LIBRARY_PATH";
 
           RUSTC_WRAPPER = "${pkgs.sccache}/bin/sccache";
           RUSTFLAGS = "-Clink-arg=-fuse-ld=mold";
-
-          LLVM_SYS_191_PREFIX = "${pkgs.llvmPackages_19.llvm.dev}";
         };
       }
     );

@@ -1,17 +1,26 @@
 #![no_main]
 
-use libfuzzer_sys::{fuzz_target, Corpus};
-use rustcc::{
-    codegen::Codegen,
-    diagnostic_consumer::IgnoreDiagnosticConsumer,
-    diagnostic_engine::DiagnosticEngine,
-    lexer::Lexer,
-    parser::Parser,
-    source_manager::{SourceManager, VirtualSourceManager},
-};
 use std::{cell::RefCell, rc::Rc};
 
+use libfuzzer_sys::{Corpus, fuzz_target};
+use rustcc_codegen::Codegen;
+use rustcc_diagnostic::{
+    diagnostic_consumer::IgnoreDiagnosticConsumer, diagnostic_engine::DiagnosticEngine,
+};
+use rustcc_lexer::Lexer;
+use rustcc_parser::Parser;
+use rustcc_source::source_manager::{SourceManager, VirtualSourceManager};
+
 const INPUT_FILE: &str = "fuzz.c";
+
+// Reuse a single Codegen instance across fuzz iterations to avoid repeatedly
+// creating and destroying the LLVM context and builder which are expensive.
+// Use thread-local storage to avoid requiring Send/Sync for LLVM pointers.
+thread_local! {
+    static CODEGEN: RefCell<Codegen> = RefCell::new(
+        Codegen::new(INPUT_FILE).expect("Failed to create codegen")
+    );
+}
 
 fuzz_target!(|data: &[u8]| -> Corpus {
     // Convert input data to a string
@@ -43,8 +52,13 @@ fuzz_target!(|data: &[u8]| -> Corpus {
     let translation_unit = parser.parse();
 
     // Codegen
-    let codegen = Codegen::new(INPUT_FILE);
-    codegen.codegen(&translation_unit);
+    CODEGEN.with(|slot| {
+        let mut codegen = slot.borrow_mut();
+        // Create a fresh module inside the existing context
+        let _ = codegen.reset_module(INPUT_FILE);
+
+        codegen.codegen(&translation_unit);
+    });
 
     Corpus::Keep
 });

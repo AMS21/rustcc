@@ -1,0 +1,38 @@
+; ModuleID = 'rustcc/tests/input/binary/precedence_5.c'
+source_filename = "rustcc/tests/input/binary/precedence_5.c"
+
+define i32 @main() {
+entry:
+  br i1 true, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %entry
+  br i1 false, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %entry
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  %add = add i32 %land.phi, 1
+  ret i32 %add
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:42
+      BinaryOperation Add
+        Parenthesis 4:12-4:37
+          BinaryOperation LogicalAnd
+            BinaryOperation Equals
+              IntegerLiteral (0) 4:13
+              IntegerLiteral (0) 4:18
+            BinaryOperation Equals
+              IntegerLiteral (3) 4:23
+              BinaryOperation GreaterThan
+                BinaryOperation Add
+                  IntegerLiteral (2) 4:28
+                  IntegerLiteral (1) 4:32
+                IntegerLiteral (1) 4:36
+        IntegerLiteral (1) 4:41

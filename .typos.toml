@@ -1,2 +1,5 @@
 [files]
-extend-exclude = ["*/tests/input/*", "*/tests/output/*"]
+extend-exclude = ["crates/rustcc/tests/input/*", "crates/rustcc/tests/output/*"]
+
+[default.extend-words]
+"typ" = "typ"

@@ -1,6 +1,17 @@
 [workspace]
 resolver = "2"
-members = ["rustcc", "rustcc-driver", "test-driver"]
+members = [
+  "crates/rustcc",
+  "crates/rustcc_ast",
+  "crates/rustcc_codegen",
+  "crates/rustcc_diagnostic",
+  "crates/rustcc_driver",
+  "crates/rustcc_lexer",
+  "crates/rustcc_llvm",
+  "crates/rustcc_parser",
+  "crates/rustcc_source",
+  "crates/test-driver",
+]
 exclude = ["fuzz"]
 
 [workspace.package]
@@ -13,12 +24,14 @@ version = "0.1.0"
 
 [workspace.dependencies]
 assert_cmd = "2.0.17"
-clap = "4.5.47"
+bindgen = "0.72.1"
+clap = "4.5.48"
+cmake = "0.1.54"
 colored = "3.0.0"
 elsa = "1.11.2"
-llvm-sys = "201.0.1"
 libc = "0.2.175"
 regex = "1.11.2"
+semver = "1.0.27"
 tempfile = "3.22.0"
 
 # Enable full LTO for release builds
@@ -35,6 +48,8 @@ opt-level = 3
 #unknown_lints = "warn"
 non_ascii_idents = "deny"
 missing_debug_implementations = "deny"
+unexpected_cfgs = { level = "warn", check-cfg = ['cfg(fuzzing)'] }
+
 
 [workspace.lints.clippy]
 # Allowed lints
@@ -66,7 +81,6 @@ rc_buffer = "warn"
 rc_mutex = "warn"
 redundant_type_annotations = "warn"
 rest_pat_in_fully_bound_structs = "warn"
-str_to_string = "warn"
 string_lit_chars_any = "warn"
 string_to_string = "warn"
 try_err = "warn"

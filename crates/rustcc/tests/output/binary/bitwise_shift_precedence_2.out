@@ -1,0 +1,17 @@
+; ModuleID = 'rustcc/tests/input/binary/bitwise_shift_precedence_2.c'
+source_filename = "rustcc/tests/input/binary/bitwise_shift_precedence_2.c"
+
+define i32 @main() {
+entry:
+  ret i32 1
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:29
+      BinaryOperation LessThanOrEqual
+        BinaryOperation BitwiseRightShift
+          IntegerLiteral (20) 4:12-4:13
+          IntegerLiteral (4) 4:18
+        BinaryOperation BitwiseLeftShift
+          IntegerLiteral (3) 4:23
+          IntegerLiteral (1) 4:28

@@ -1,0 +1,20 @@
+; ModuleID = 'rustcc/tests/input/binary/ge_true.c'
+source_filename = "rustcc/tests/input/binary/ge_true.c"
+
+define i32 @main() {
+entry:
+  ret i32 2
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:32
+      BinaryOperation Add
+        Parenthesis 4:12-4:19
+          BinaryOperation GreaterThanOrEqual
+            IntegerLiteral (1) 4:13
+            IntegerLiteral (1) 4:18
+        Parenthesis 4:23-4:31
+          BinaryOperation GreaterThanOrEqual
+            IntegerLiteral (1) 4:24
+            UnaryOperation Negate 4:29-4:30
+              IntegerLiteral (4) 4:30

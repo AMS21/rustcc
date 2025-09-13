@@ -14,10 +14,15 @@ JOBS=$(($(nproc) / 2))
 
 echo "Setting up baseline corpus..."
 
-for i in 2 4 8 16 32 64 128; do
+shopt -s globstar nullglob
+SEED_DIRS=(crates/rustcc/tests/input/**/)
+DICT="fuzz/dictionaries/c.dict"
+
+for i in 2 4 8 16 32 64 128 256; do
     echo "Generating corpus with maximum input length $i..."
 
-    cargo +nightly fuzz run fuzz_compile -- -max_len=$i -runs=1000000 -jobs=$JOBS
+    cargo +nightly fuzz run fuzz_compile --release --debug-assertions --jobs=$JOBS -- \
+        -dict=$DICT -max_len=$i -runs=1000000 fuzz/corpus/fuzz_compile "${SEED_DIRS[@]}"
 
     echo "Successfully generated corpus with maximum input length $i."
 done

@@ -1,0 +1,28 @@
+; ModuleID = 'rustcc/tests/input/binary/precedence_4.c'
+source_filename = "rustcc/tests/input/binary/precedence_4.c"
+
+define i32 @main() {
+entry:
+  br i1 true, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  br i1 false, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  ret i32 %lor.phi
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:23
+      BinaryOperation LogicalOr
+        BinaryOperation Equals
+          IntegerLiteral (2) 4:12
+          IntegerLiteral (2) 4:17
+        IntegerLiteral (0) 4:22

@@ -1,0 +1,26 @@
+[package]
+name = "rustcc-compiler"
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+version.workspace = true
+default-run = "rustcc"
+
+[[bin]]
+name = "rustcc"
+path = "src/main.rs"
+
+[dependencies]
+rustcc_driver = { path = "../rustcc_driver" }
+
+[dev-dependencies]
+assert_cmd.workspace = true
+
+[features]
+default = ["color"]
+color = ["rustcc_driver/color"]
+
+[lints]
+workspace = true

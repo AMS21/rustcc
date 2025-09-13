@@ -17,6 +17,10 @@ env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: "full"
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   audit:
     runs-on: ubuntu-latest
@@ -29,7 +33,16 @@ jobs:
       uses: actions-rust-lang/audit@v1
 
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
 
     steps:
     - name: Checkout
@@ -45,8 +58,31 @@ jobs:
       with:
         tool: cargo-hack
 
-    - name: Install LLVM
-      run: meta/ci/install-llvm-ubuntu.sh
+    - name: Install LLVM tools (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install llvm
+        echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
+
+    - name: Install LLVM tools (windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd $HOME
+
+        # Download source release directly from github
+        curl -L -o llvm.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.1/clang+llvm-21.1.1-x86_64-pc-windows-msvc.tar.xz
+
+        # Extract to a known location
+        mkdir llvm -p
+        tar -xf llvm.tar.xz -C llvm --strip-components=1
+        rm -f llvm.tar.xz
+
+        # Add LLVM tools to PATH
+        echo "$HOME/llvm/bin" >> $GITHUB_PATH
+        echo "RUSTCC_LLVM_CONFIG_PATH=$HOME/llvm/bin/llvm-config.exe" >> $GITHUB_ENV
+
+        # Print version
+        $HOME/llvm/bin/llvm-config.exe --version
 
     - name: Clippy
       run: cargo hack clippy --workspace --feature-powerset --verbose -- -D warnings
@@ -79,9 +115,6 @@ jobs:
       with:
         toolchain: stable
 
-    - name: Install LLVM
-      run: meta/ci/install-llvm-ubuntu.sh
-
     - name: Build documentation
       env:
         RUSTDOCFLAGS: -D warnings
@@ -95,8 +128,9 @@ jobs:
 
       matrix:
         os:
-          - ubuntu-latest
           - macos-latest
+          - ubuntu-latest
+          - windows-latest
 
         toolchain:
           - nightly
@@ -112,17 +146,36 @@ jobs:
       with:
         toolchain: ${{ matrix.toolchain }}
 
-    - name: Install LLVM (Linux)
-      if: runner.os == 'Linux'
-      run: meta/ci/install-llvm-ubuntu.sh
-
-    - name: Install LLVM (macOS)
-      if: runner.os == 'macOS'
-      run: meta/ci/install-llvm-macos.sh
-
-    - uses: taiki-e/install-action@v2
+    - name: Install cargo-hack
+      uses: taiki-e/install-action@v2
       with:
         tool: cargo-hack
+
+    - name: Install LLVM tools (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install llvm
+        echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
+
+    - name: Install LLVM tools (windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        cd $HOME
+
+        # Download source release directly from github
+        curl -L -o llvm.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.1/clang+llvm-21.1.1-x86_64-pc-windows-msvc.tar.xz
+
+        # Extract to a known location
+        mkdir llvm -p
+        tar -xf llvm.tar.xz -C llvm --strip-components=1
+        rm -f llvm.tar.xz
+
+        # Add LLVM tools to PATH
+        echo "$HOME/llvm/bin" >> $GITHUB_PATH
+        echo "RUSTCC_LLVM_CONFIG_PATH=$HOME/llvm/bin/llvm-config.exe" >> $GITHUB_ENV
+
+        # Print version
+        $HOME/llvm/bin/llvm-config.exe --version
 
     - name: Build
       run: cargo build --workspace --verbose
@@ -146,9 +199,6 @@ jobs:
       uses: taiki-e/install-action@v2
       with:
         tool: cargo-tarpaulin
-
-    - name: Install LLVM
-      run: meta/ci/install-llvm-ubuntu.sh
 
     - name: Run cargo-tarpaulin
       run: cargo tarpaulin --verbose --workspace --all-targets --all-features --follow-exec --locked --post-test-delay 2 --out Xml --engine llvm

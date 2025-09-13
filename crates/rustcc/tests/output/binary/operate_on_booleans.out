@@ -1,0 +1,50 @@
+; ModuleID = 'rustcc/tests/input/binary/operate_on_booleans.c'
+source_filename = "rustcc/tests/input/binary/operate_on_booleans.c"
+
+define i32 @main() {
+entry:
+  br i1 false, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %entry
+  br i1 true, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %entry
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  %not = xor i32 %land.phi, -1
+  br i1 true, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %land.end
+  br i1 true, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %land.end
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  %neg = sub i32 0, %lor.phi
+  %sub = sub i32 %not, %neg
+  ret i32 %sub
+}
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:33
+      BinaryOperation Subtract
+        UnaryOperation Complement 4:12-4:20
+          Parenthesis 4:13-4:20
+            BinaryOperation LogicalAnd
+              IntegerLiteral (0) 4:14
+              IntegerLiteral (1) 4:19
+        UnaryOperation Negate 4:24-4:32
+          Parenthesis 4:25-4:32
+            BinaryOperation LogicalOr
+              IntegerLiteral (4) 4:26
+              IntegerLiteral (3) 4:31
