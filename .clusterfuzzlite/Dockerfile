@@ -2,7 +2,7 @@ FROM gcr.io/oss-fuzz-base/base-builder-rust:v1
 RUN apt update -y && \
     apt upgrade -y && \
     apt install -y --no-install-recommends clang cmake git liblzma-dev libpthread-stubs0-dev libz-dev ninja-build zip
-RUN git clone https://github.com/llvm/llvm-project.git /llvm-project --branch llvmorg-21.1.1 --depth 1 --single-branch --no-tags
+RUN git clone https://github.com/llvm/llvm-project.git /llvm-project --branch llvmorg-21.1.2 --depth 1 --single-branch --no-tags
 RUN cmake -G "Ninja" \
         -S /llvm-project/llvm \
         -B /llvm-project/build \

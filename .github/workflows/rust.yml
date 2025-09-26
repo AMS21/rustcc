@@ -16,6 +16,7 @@ concurrency:
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: "full"
+  LLVM_DOWNLOAD_LINK_WINDOWS: "https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.2/clang+llvm-21.1.2-x86_64-pc-windows-msvc.tar.xz"
 
 defaults:
   run:
@@ -70,7 +71,7 @@ jobs:
         cd $HOME
 
         # Download source release directly from github
-        curl -L -o llvm.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.1/clang+llvm-21.1.1-x86_64-pc-windows-msvc.tar.xz
+        curl -L -o llvm.tar.xz ${{ env.LLVM_DOWNLOAD_LINK_WINDOWS }}
 
         # Extract to a known location
         mkdir llvm -p
@@ -163,7 +164,7 @@ jobs:
         cd $HOME
 
         # Download source release directly from github
-        curl -L -o llvm.tar.xz https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.1/clang+llvm-21.1.1-x86_64-pc-windows-msvc.tar.xz
+        curl -L -o llvm.tar.xz ${{ env.LLVM_DOWNLOAD_LINK_WINDOWS }}
 
         # Extract to a known location
         mkdir llvm -p

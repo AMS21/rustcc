@@ -29,10 +29,10 @@ clap = "4.5.48"
 cmake = "0.1.54"
 colored = "3.0.0"
 elsa = "1.11.2"
-libc = "0.2.175"
-regex = "1.11.2"
+libc = "0.2.176"
+regex = "1.11.3"
 semver = "1.0.27"
-tempfile = "3.22.0"
+tempfile = "3.23.0"
 
 # Enable full LTO for release builds
 [profile.release]
