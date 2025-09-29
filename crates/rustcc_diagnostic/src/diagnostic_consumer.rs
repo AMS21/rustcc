@@ -16,8 +16,7 @@ pub trait DiagnosticConsumer: Debug {
 pub struct IgnoreDiagnosticConsumer;
 
 impl DiagnosticConsumer for IgnoreDiagnosticConsumer {
-    fn report(&self, _diagnostic: &Diagnostic) {
-    }
+    fn report(&self, _diagnostic: &Diagnostic) {}
 }
 
 // -- Default Diagnostic Consumer --

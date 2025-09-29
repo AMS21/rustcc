@@ -32,8 +32,7 @@ pub enum CodegenError {
     FailedBuilderCreation,
 }
 
-impl std::error::Error for CodegenError {
-}
+impl std::error::Error for CodegenError {}
 
 impl std::fmt::Display for CodegenError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

@@ -34,11 +34,9 @@ mod shim {
         }
     }
 
-    impl Colorize for &str {
-    }
+    impl Colorize for &str {}
 
-    impl Colorize for String {
-    }
+    impl Colorize for String {}
 }
 
 #[cfg(not(feature = "color"))]
