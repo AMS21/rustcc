@@ -2,9 +2,35 @@ name: Rust
 
 on:
   pull_request:
-    branches: ["*"]
+    paths:
+      # Workflow file itself
+      - '.github/workflows/rust.yml'
+      # Rust files
+      - '**.rs'
+      # C files
+      - '**.c'
+      - '**.h'
+      # Cargo files
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      # Configuration files
+      - '.rustfmt.toml'
+      - '.clippy.toml'
   push:
-    branches: ["main", "develop"]
+    paths:
+      # Workflow file itself
+      - '.github/workflows/rust.yml'
+      # Rust files
+      - '**.rs'
+      # C files
+      - '**.c'
+      - '**.h'
+      # Cargo files
+      - 'Cargo.lock'
+      - 'Cargo.toml'
+      # Configuration files
+      - '.rustfmt.toml'
+      - '.clippy.toml'
   workflow_dispatch:
 
 concurrency:
@@ -15,8 +41,9 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  RUST_BACKTRACE: "full"
-  LLVM_DOWNLOAD_LINK_WINDOWS: "https://github.com/llvm/llvm-project/releases/download/llvmorg-21.1.2/clang+llvm-21.1.2-x86_64-pc-windows-msvc.tar.xz"
+  RUST_BACKTRACE: full
+  LLVM_VERSION: 21
+  LLVM_VERSION_MACOS: 22
 
 defaults:
   run:
@@ -59,37 +86,16 @@ jobs:
       with:
         tool: cargo-hack
 
-    - name: Install LLVM tools (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install llvm
-        echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
-
-    - name: Install LLVM tools (windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        cd $HOME
-
-        # Download source release directly from github
-        curl -L -o llvm.tar.xz ${{ env.LLVM_DOWNLOAD_LINK_WINDOWS }}
-
-        # Extract to a known location
-        mkdir llvm -p
-        tar -xf llvm.tar.xz -C llvm --strip-components=1
-        rm -f llvm.tar.xz
-
-        # Add LLVM tools to PATH
-        echo "$HOME/llvm/bin" >> $GITHUB_PATH
-        echo "RUSTCC_LLVM_CONFIG_PATH=$HOME/llvm/bin/llvm-config.exe" >> $GITHUB_ENV
-
-        # Print version
-        $HOME/llvm/bin/llvm-config.exe --version
+    - name: Install LLVM tools
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
 
     - name: Clippy
       run: cargo hack clippy --workspace --feature-powerset --verbose -- -D warnings
 
   formatting:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     steps:
     - name: Checkout
@@ -116,6 +122,11 @@ jobs:
       with:
         toolchain: stable
 
+    - name: Install LLVM tools
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: ${{ env.LLVM_VERSION }}
+
     - name: Build documentation
       env:
         RUSTDOCFLAGS: -D warnings
@@ -130,7 +141,9 @@ jobs:
       matrix:
         os:
           - macos-latest
+          - macos-26-intel
           - ubuntu-latest
+          - ubuntu-24.04-arm
           - windows-latest
 
         toolchain:
@@ -152,31 +165,10 @@ jobs:
       with:
         tool: cargo-hack
 
-    - name: Install LLVM tools (macOS)
-      if: matrix.os == 'macos-latest'
-      run: |
-        brew install llvm
-        echo "$(brew --prefix llvm)/bin" >> $GITHUB_PATH
-
-    - name: Install LLVM tools (windows)
-      if: matrix.os == 'windows-latest'
-      run: |
-        cd $HOME
-
-        # Download source release directly from github
-        curl -L -o llvm.tar.xz ${{ env.LLVM_DOWNLOAD_LINK_WINDOWS }}
-
-        # Extract to a known location
-        mkdir llvm -p
-        tar -xf llvm.tar.xz -C llvm --strip-components=1
-        rm -f llvm.tar.xz
-
-        # Add LLVM tools to PATH
-        echo "$HOME/llvm/bin" >> $GITHUB_PATH
-        echo "RUSTCC_LLVM_CONFIG_PATH=$HOME/llvm/bin/llvm-config.exe" >> $GITHUB_ENV
-
-        # Print version
-        $HOME/llvm/bin/llvm-config.exe --version
+    - name: Install LLVM tools
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
 
     - name: Build
       run: cargo build --workspace --verbose
@@ -196,6 +188,11 @@ jobs:
       with:
         toolchain: nightly
 
+    - name: Install LLVM tools
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: ${{ env.LLVM_VERSION }}
+
     - name: Install tarpaulin
       uses: taiki-e/install-action@v2
       with:
@@ -209,3 +206,89 @@ jobs:
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
+
+  careful:
+    runs-on: ${{ matrix.os }}
+
+    env:
+      ASAN_OPTIONS: "detect_stack_use_after_return=1"
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os:
+          - ubuntu-latest
+          - ubuntu-24.04-arm
+
+        flags:
+          - ""
+          - "-Zcareful-sanitizer=address"
+          - "-Zcareful-sanitizer=leak"
+          - "-Zcareful-sanitizer=thread"
+
+        include:
+          - os: macos-latest
+            flags: ""
+          - os: macos-26-intel
+            flags: ""
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Install rust toolchain
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: nightly
+
+    - name: Install cargo-hack
+      uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-hack
+
+    - name: Install cargo-careful
+      uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-careful
+
+    - name: Install LLVM tools
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
+
+    - name: Build
+      run: cargo careful build --workspace --verbose ${{ matrix.flags }}
+
+    - name: Run tests
+      run: cargo hack careful test --workspace --feature-powerset --verbose ${{ matrix.flags }}
+
+  unused-dependencies:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Install cargo-shear
+      uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-shear
+
+    - name: Check for unused dependencies
+      run: cargo shear
+
+  unused-features:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v6
+
+    - name: Install cargo-features-manager
+      uses: taiki-e/install-action@v2
+      with:
+        tool: cargo-features-manager
+
+    - name: Check for unused features
+      run: cargo features prune --no-tmp

@@ -1,16 +1,16 @@
 [workspace]
 resolver = "2"
 members = [
-  "crates/rustcc",
-  "crates/rustcc_ast",
-  "crates/rustcc_codegen",
-  "crates/rustcc_diagnostic",
-  "crates/rustcc_driver",
-  "crates/rustcc_lexer",
-  "crates/rustcc_llvm",
-  "crates/rustcc_parser",
-  "crates/rustcc_source",
-  "crates/test-driver",
+    "crates/rustcc",
+    "crates/rustcc_ast",
+    "crates/rustcc_codegen",
+    "crates/rustcc_diagnostic",
+    "crates/rustcc_driver",
+    "crates/rustcc_lexer",
+    "crates/rustcc_llvm",
+    "crates/rustcc_parser",
+    "crates/rustcc_source",
+    "crates/test-driver",
 ]
 exclude = ["fuzz"]
 
@@ -23,25 +23,17 @@ rust-version = "1.88"
 version = "0.1.0"
 
 [workspace.dependencies]
-assert_cmd = "2.0.17"
-bindgen = "0.72.1"
-clap = "4.5.53"
-cmake = "0.1.54"
-colored = "3.0.0"
+assert_cmd = "2.1.2"
+bindgen = { version = "0.72.1", default-features = false }
+clap = "4.5.60"
+colored = "3.1.1"
 elsa = "1.11.2"
-libc = "0.2.176"
-regex = "1.11.3"
-semver = "1.0.27"
-tempfile = "3.23.0"
-
-# Enable full LTO for release builds
-[profile.release]
-codegen-units = 1
-lto = "fat"
-
-# Enable high optimizations for dependencies but not for our code
-[profile.dev.package."*"]
-opt-level = 3
+pastey = "0.2.1"
+phf = { version = "0.13.1", features = ["macros"] }
+regex = "1.12.3"
+rustc-hash = "2.1.1"
+semver = { version = "1.0.27", default-features = false }
+tempfile = { version = "3.26.0", default-features = false }
 
 # Configure lints
 [workspace.lints.rust]
@@ -49,7 +41,6 @@ opt-level = 3
 non_ascii_idents = "deny"
 missing_debug_implementations = "deny"
 unexpected_cfgs = { level = "warn", check-cfg = ['cfg(fuzzing)'] }
-
 
 [workspace.lints.clippy]
 # Allowed lints
@@ -69,6 +60,7 @@ empty_enum_variants_with_brackets = "warn"
 empty_structs_with_brackets = "warn"
 format_push_string = "warn"
 if_then_some_else_none = "warn"
+implicit_clone = "warn"
 impl_trait_in_params = "warn"
 indexing_slicing = "warn"
 infinite_loop = "warn"
@@ -82,7 +74,6 @@ rc_mutex = "warn"
 redundant_type_annotations = "warn"
 rest_pat_in_fully_bound_structs = "warn"
 string_lit_chars_any = "warn"
-string_to_string = "warn"
 try_err = "warn"
 undocumented_unsafe_blocks = "warn"
 unnecessary_safety_comment = "warn"
@@ -106,3 +97,12 @@ unimplemented = "deny"
 unreachable = "deny"
 unwrap_in_result = "deny"
 unwrap_used = "deny"
+
+# Enable full LTO for release builds
+[profile.release]
+codegen-units = 1
+lto = "fat"
+
+# Enable high optimizations for dependencies but not for our code
+[profile.dev.package."*"]
+opt-level = 3

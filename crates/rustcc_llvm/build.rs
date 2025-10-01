@@ -20,6 +20,7 @@ use semver::Version; // For validating minimum supported LLVM version
 // version >= MIN_VERSION       enforced in `is_usable_llvm_config`.
 #[cfg(not(windows))]
 const LLVM_CONFIG_CANDIDATES: &[&str] = &[
+    "llvm-config-22",
     "llvm-config-21",
     "llvm-config-20",
     "llvm-config-19",
@@ -138,22 +139,20 @@ fn link_with_system_llvm(llvm_config: &Path) {
 }
 
 fn emit_from_llvm_config(llvm_config: &Path, static_link: bool) {
-    let libdir = run(llvm_config, &["--libdir"]).trim().to_owned();
+    let libdir = run(llvm_config, &["--libdir"]);
     println!("cargo:rustc-link-search=native={libdir}");
 
     let libs = if static_link {
         run(llvm_config, &["--link-static", "--libs", "engine"])
-            .trim()
-            .to_owned()
     } else {
-        run(llvm_config, &["--libs", "engine"]).trim().to_owned()
+        run(llvm_config, &["--libs", "engine"])
     };
     emit_link_libs(&libs, static_link);
 
-    let system_libs = run(llvm_config, &["--system-libs"]).trim().to_owned();
+    let system_libs = run(llvm_config, &["--system-libs"]);
     emit_system_libs(&system_libs);
 
-    let include_dir = run(llvm_config, &["--includedir"]).trim().to_owned();
+    let include_dir = run(llvm_config, &["--includedir"]);
     generate_bindings(&include_dir);
 }
 
@@ -195,11 +194,14 @@ fn emit_link_libs(libs: &str, static_link: bool) {
     }
 }
 
+#[cfg(windows)]
+const IGNORED_SYSTEM_LIBS: &[&str] = &["libxml2s.lib", "xml2s.lib"];
+
 fn emit_system_libs(system_libs: &str) {
     for token in system_libs.split_whitespace() {
         // Skip libxml2s which is not needed and not inside the prebuild archive.
         #[cfg(windows)]
-        if token.contains("libxml2s.lib") {
+        if IGNORED_SYSTEM_LIBS.contains(&token.to_ascii_lowercase().as_str()) {
             continue;
         }
 
@@ -234,7 +236,7 @@ fn emit_system_libs(system_libs: &str) {
             // Windows-specific: ignore libxml2s which is not needed and not inside the
             // prebuild archive.
             #[cfg(windows)]
-            if token.eq_ignore_ascii_case("xml2s.lib") {
+            if IGNORED_SYSTEM_LIBS.contains(&token.to_ascii_lowercase().as_str()) {
                 continue;
             }
 
@@ -330,7 +332,10 @@ fn run(executable: &Path, args: &[&str]) -> String {
         .expect("Failed to run command (executable missing?)");
 
     if out.status.success() {
-        String::from_utf8(out.stdout).expect("Command output not UTF-8")
+        String::from_utf8(out.stdout)
+            .expect("Command output not UTF-8")
+            .trim()
+            .to_owned()
     } else {
         panic!(
             "Command '{} {}' failed with status {}\n--- stdout:\n{}\n--- stderr:\n{}",

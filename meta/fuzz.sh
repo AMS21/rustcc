@@ -15,19 +15,23 @@ if [ ! -d "fuzz/corpus" ]; then
     echo "No corpus found, generating one..."
 
     "$SCRIPT_DIR/fuzz-setup-corpus.sh"
+
+    "$SCRIPT_DIR/fuzz-minimize-corpus.sh"
 fi
 
 MAX_LEN=512
 JOBS=$(($(nproc) / 2))
 
 # Fuzz the compiler
+echo "Using $JOBS parallel jobs for fuzzing."
 echo "Fuzzing the compiler..."
 
 # Use dictionary and merge seeds from tests as additional corpus directory
 DICT="fuzz/dictionaries/c.dict"
-shopt -s globstar nullglob
-SEED_DIRS=(crates/rustcc/tests/input/**/)
+SEED_DIR="crates/rustcc/tests/input/"
 
-cargo +nightly fuzz run fuzz_compile --release --debug-assertions --jobs=$JOBS -- \
-    -only_ascii=1 -max_len=$MAX_LEN -close_fd_mask=3 \
-    -dict=$DICT fuzz/corpus/fuzz_compile "${SEED_DIRS[@]}"
+cargo +nightly fuzz run fuzz_compile \
+    fuzz/corpus/fuzz_compile "${SEED_DIR}" \
+    --release --debug-assertions -- \
+    -only_ascii=1 -max_len=$MAX_LEN -close_fd_mask=1 \
+    -jobs=$JOBS -workers=$JOBS -dict=$DICT

@@ -1,0 +1,16 @@
+; ModuleID = 'rustcc/tests/input/parser/return_var.c'
+source_filename = "rustcc/tests/input/parser/return_var.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 2, ptr %a, align 4
+  %a.load = load i32, ptr %a, align 4
+  ret i32 %a.load
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (2) 4:13
+    ReturnStatement 5:5-5:13
+      Variable (a)

@@ -8,7 +8,6 @@ rust-version.workspace = true
 version.workspace = true
 
 [dependencies]
-libc.workspace = true
 semver.workspace = true
 
 [build-dependencies]

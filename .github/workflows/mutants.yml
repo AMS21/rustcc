@@ -2,9 +2,29 @@ name: cargo-mutants
 
 on:
   pull_request:
-    branches: ["*"]
+    paths:
+      # Workflow file itself
+      - '.github/workflows/mutants.yml'
+      # Rust files
+      - '**.rs'
+      # C files
+      - '**.c'
+      - '**.h'
+      # Cargo files
+      - 'Cargo.lock'
+      - 'Cargo.toml'
   push:
-    branches: ["main", "develop"]
+    paths:
+      # Workflow file itself
+      - '.github/workflows/mutants.yml'
+      # Rust files
+      - '**.rs'
+      # C files
+      - '**.c'
+      - '**.h'
+      # Cargo files
+      - 'Cargo.lock'
+      - 'Cargo.toml'
   workflow_dispatch:
 
 concurrency:
@@ -15,6 +35,8 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+  LLVM_VERSION: 21
 
 jobs:
   cargo-mutants:
@@ -32,17 +54,25 @@ jobs:
     - name: Install rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
 
+    - name: Install LLVM tools
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: ${{ env.LLVM_VERSION }}
+
     - uses: taiki-e/install-action@v2
       name: Install cargo-mutants
       with:
         tool: cargo-mutants
 
+    - name: Build project
+      run: cargo build --workspace
+
     - name: Run cargo-mutants
       run: |
-        cargo mutants --workspace --no-shuffle -vV --shard ${{ matrix.shard }}/8 --baseline=skip --timeout 300 --in-place --cap-lints true --test-workspace true
+        cargo mutants --workspace --no-shuffle -vV --shard ${{ matrix.shard }}/8 --timeout 300 --in-place --cap-lints true --test-workspace true
 
     - name: Archive mutants.out
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         path: mutants.out

@@ -2,9 +2,23 @@ name: "CodeQL Analysis"
 
 on:
   pull_request:
-    branches: ["*"]
+    paths:
+      # Workflow file itself
+      - '.github/workflows/codeql.yml'
+      # Rust files
+      - '**.rs'
+      # Cargo files
+      - 'Cargo.lock'
+      - 'Cargo.toml'
   push:
-    branches: ["main", "develop"]
+    paths:
+      # Workflow file itself
+      - '.github/workflows/codeql.yml'
+      # Rust files
+      - '**.rs'
+      # Cargo files
+      - 'Cargo.lock'
+      - 'Cargo.toml'
   schedule:
     - cron: '0 0 * * 0'  # Runs weekly
   workflow_dispatch:
@@ -17,6 +31,8 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+  LLVM_VERSION: 21
 
 jobs:
   analyze:
@@ -34,6 +50,11 @@ jobs:
 
     - name: Install rust toolchain
       uses: actions-rust-lang/setup-rust-toolchain@v1
+
+    - name: Install LLVM tools
+      uses: ZhongRuoyu/setup-llvm@v0
+      with:
+        llvm-version: ${{ env.LLVM_VERSION }}
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3

@@ -1,4 +1,4 @@
-// RUN: ${{rustcc}} --print-tokens
+// RUN: ${{rustcc}}
 // EXPECT-FAILURE
 
 /* '1foo' is not a valid token, because identifier can't start with digits. */

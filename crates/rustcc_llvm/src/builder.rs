@@ -4,11 +4,12 @@ use crate::{
     basic_block::LLVMBasicBlock,
     context::LLVMContext,
     ffi::{
-        LLVMBuildAShr, LLVMBuildAdd, LLVMBuildAnd, LLVMBuildBr, LLVMBuildCondBr, LLVMBuildICmp,
-        LLVMBuildMul, LLVMBuildNeg, LLVMBuildNot, LLVMBuildOr, LLVMBuildPhi, LLVMBuildRet,
-        LLVMBuildSDiv, LLVMBuildSExt, LLVMBuildSRem, LLVMBuildShl, LLVMBuildSub, LLVMBuildXor,
-        LLVMBuildZExt, LLVMBuilderRef, LLVMCreateBuilderInContext, LLVMDisposeBuilder,
-        LLVMGetInsertBlock, LLVMIntPredicate, LLVMPositionBuilderAtEnd,
+        LLVMBuildAShr, LLVMBuildAdd, LLVMBuildAlloca, LLVMBuildAnd, LLVMBuildBr, LLVMBuildCondBr,
+        LLVMBuildICmp, LLVMBuildLoad2, LLVMBuildMul, LLVMBuildNeg, LLVMBuildNot, LLVMBuildOr,
+        LLVMBuildPhi, LLVMBuildRet, LLVMBuildSDiv, LLVMBuildSExt, LLVMBuildSRem, LLVMBuildShl,
+        LLVMBuildStore, LLVMBuildSub, LLVMBuildUnreachable, LLVMBuildXor, LLVMBuildZExt,
+        LLVMBuilderRef, LLVMCreateBuilderInContext, LLVMDisposeBuilder, LLVMGetInsertBlock,
+        LLVMIntPredicate, LLVMPositionBuilderAtEnd,
     },
     phi::LLVMPhi,
     to_cstring,
@@ -50,9 +51,44 @@ impl LLVMBuilder {
         }
     }
 
+    /// Returns true if the current insert block has a terminator instruction.
+    #[must_use]
+    pub fn has_insert_block_terminator(&self) -> bool {
+        self.get_insert_block()
+            .and_then(|basic_block| basic_block.terminator())
+            .is_some()
+    }
+
     pub fn ret(&self, value: LLVMValue) {
         // Safety: LLVMBuildRet is safe to call with valid parameters.
         unsafe { LLVMBuildRet(self.0, value.as_raw()) };
+    }
+
+    #[must_use]
+    pub fn alloca(&self, typ: LLVMType, name: &str) -> LLVMValue {
+        let name = to_cstring(name);
+        // Safety: LLVMBuildAlloca is safe to call with valid parameters.
+        LLVMValue::from_raw(unsafe { LLVMBuildAlloca(self.0, typ.as_raw(), name.as_ptr()) })
+    }
+
+    #[expect(
+        clippy::must_use_candidate,
+        reason = "The store instruction does not produce a value that can be used in further \
+                  computations."
+    )]
+    pub fn store(&self, value: LLVMValue, ptr: LLVMValue) -> LLVMValue {
+        // Safety: LLVMBuildStore is safe to call with valid parameters.
+        LLVMValue::from_raw(unsafe { LLVMBuildStore(self.0, value.as_raw(), ptr.as_raw()) })
+    }
+
+    #[must_use]
+    pub fn load(&self, typ: LLVMType, ptr: LLVMValue, name: &str) -> LLVMValue {
+        let load_name = format!("{name}.load");
+        let name = to_cstring(&*load_name);
+        // Safety: LLVMBuildLoad2 is safe to call with valid parameters.
+        LLVMValue::from_raw(unsafe {
+            LLVMBuildLoad2(self.0, typ.as_raw(), ptr.as_raw(), name.as_ptr())
+        })
     }
 
     #[must_use]
@@ -323,6 +359,12 @@ impl LLVMBuilder {
         let name = to_cstring(name.into());
         // Safety: LLVMBuildPhi is safe to call with valid parameters.
         LLVMPhi::from_raw(unsafe { LLVMBuildPhi(self.0, typ.as_raw(), name.as_ptr()) })
+    }
+
+    #[expect(clippy::must_use_candidate)]
+    pub fn unreachable(&self) -> LLVMValue {
+        // Safety: LLVMBuildUnreachable is safe to call with valid parameters.
+        LLVMValue::from_raw(unsafe { LLVMBuildUnreachable(self.0) })
     }
 }
 

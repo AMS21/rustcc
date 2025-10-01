@@ -12,15 +12,15 @@ default-run = "rustcc"
 name = "rustcc"
 path = "src/main.rs"
 
-[dependencies]
-rustcc_driver = { path = "../rustcc_driver" }
-
-[dev-dependencies]
-assert_cmd.workspace = true
-
 [features]
 default = ["color"]
 color = ["rustcc_driver/color"]
+
+[dependencies]
+rustcc_driver = { path = "../rustcc_driver", default-features = false }
+
+[dev-dependencies]
+assert_cmd.workspace = true
 
 [lints]
 workspace = true

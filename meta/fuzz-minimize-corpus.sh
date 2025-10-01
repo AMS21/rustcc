@@ -11,10 +11,6 @@ cd "$SCRIPT_DIR/.."
 "$SCRIPT_DIR/fuzz-setup.sh"
 
 # Minimize the corpus
-echo "Minimizing the corpus..."
-shopt -s globstar nullglob
-SEED_DIRS=(crates/rustcc/tests/input/**/)
+cargo +nightly fuzz cmin fuzz_compile --release --debug-assertions
 
-cargo +nightly fuzz cmin fuzz_compile --release --debug-assertions -- \
-    fuzz/corpus fuzz/corpus/fuzz_compile "${SEED_DIRS[@]}"
 echo "Minimization complete."

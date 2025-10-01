@@ -7,14 +7,16 @@ repository.workspace = true
 rust-version.workspace = true
 version.workspace = true
 
-[dependencies]
-rustcc_ast = { path = "../rustcc_ast" }
-rustcc_source = { path = "../rustcc_source" }
-rustcc_diagnostic = { path = "../rustcc_diagnostic", default-features = false }
-
 [features]
 default = ["color"]
 color = ["rustcc_diagnostic/color"]
+
+[dependencies]
+pastey.workspace = true
+phf.workspace = true
+rustcc_ast = { path = "../rustcc_ast" }
+rustcc_diagnostic = { path = "../rustcc_diagnostic", default-features = false }
+rustcc_source = { path = "../rustcc_source" }
 
 [lints]
 workspace = true

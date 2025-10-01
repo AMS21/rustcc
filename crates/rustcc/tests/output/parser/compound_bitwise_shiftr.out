@@ -1,0 +1,23 @@
+; ModuleID = 'rustcc/tests/input/parser/compound_bitwise_shiftr.c'
+source_filename = "rustcc/tests/input/parser/compound_bitwise_shiftr.c"
+
+define i32 @main() {
+entry:
+  %to_shiftr = alloca i32, align 4
+  store i32 382574, ptr %to_shiftr, align 4
+  %to_shiftr.load = load i32, ptr %to_shiftr, align 4
+  %ashr = ashr i32 %to_shiftr.load, 4
+  store i32 %ashr, ptr %to_shiftr, align 4
+  %to_shiftr.load1 = load i32, ptr %to_shiftr, align 4
+  ret i32 %to_shiftr.load1
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (to_shiftr)
+      IntegerLiteral (382574) 4:21-4:26
+    ExpressionStatement
+      BinaryOperation BitwiseRightShiftAssign
+        Variable (to_shiftr)
+        IntegerLiteral (4) 5:19
+    ReturnStatement 6:5-6:21
+      Variable (to_shiftr)

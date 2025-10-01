@@ -1,0 +1,10 @@
+; ModuleID = 'rustcc/tests/input/parser/empty_fn2.c'
+source_filename = "rustcc/tests/input/parser/empty_fn2.c"
+
+define i32 @a() {
+entry:
+  unreachable
+}
+TranslationUnit
+  FunctionDefinition "a"
+    NullStatement

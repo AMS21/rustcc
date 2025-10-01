@@ -1,0 +1,1 @@
+rustcc/tests/input/parser/invalid/prefix_incr_non_lvalue.c:6:7: error: cannot apply unary operator pre-increment to an rvalue

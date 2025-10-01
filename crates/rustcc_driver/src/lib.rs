@@ -70,21 +70,25 @@ pub fn main() -> ExitCode {
         println!("{}", translation_unit.dump());
     }
 
+    // If any errors occurred, exit with a failure code and don't codegen
+    if diagnostic_engine.borrow().error_occurred() {
+        return ExitCode::FAILURE;
+    }
+
     // Codegen the translation unit
     let Ok(codegen) = Codegen::new(file_path) else {
         eprintln!("Error initializing codegen");
         return ExitCode::FAILURE;
     };
 
-    codegen.codegen(&translation_unit);
+    if !codegen.codegen(&translation_unit) {
+        eprintln!("Error generating code");
+        return ExitCode::FAILURE;
+    }
 
     // Print the LLVM intermediate representation (IR)
     if command_line_matches.get_flag(command_line::ARG_PRINT_IR) {
         codegen.dump();
-    }
-
-    if diagnostic_engine.borrow().error_occurred() {
-        return ExitCode::FAILURE;
     }
 
     ExitCode::SUCCESS
@@ -93,7 +97,7 @@ pub fn main() -> ExitCode {
 pub fn panic_handler(panic_info: &PanicHookInfo<'_>) {
     eprintln!(
         "{}\n",
-        "Oh no rustcc encountered an internal error and has sadly crashed!"
+        "Oh no rustcc encountered an internal error and has sadly crashed! :("
             .bold()
             .red()
     );

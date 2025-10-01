@@ -1,0 +1,1 @@
+rustcc/tests/input/parser/invalid/mixed_precedence_assignment.c:7:9: error: cannot apply assigning operator assignment to an rvalue

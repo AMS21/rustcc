@@ -1,0 +1,78 @@
+; ModuleID = 'rustcc/tests/input/parser/incr_expression_statement.c'
+source_filename = "rustcc/tests/input/parser/incr_expression_statement.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 0, ptr %a, align 4
+  %b = alloca i32, align 4
+  store i32 0, ptr %b, align 4
+  %a.load = load i32, ptr %a, align 4
+  %add = add i32 %a.load, 1
+  store i32 %add, ptr %a, align 4
+  %a.load1 = load i32, ptr %a, align 4
+  %add2 = add i32 %a.load1, 1
+  store i32 %add2, ptr %a, align 4
+  %a.load3 = load i32, ptr %a, align 4
+  %add4 = add i32 %a.load3, 1
+  store i32 %add4, ptr %a, align 4
+  %b.load = load i32, ptr %b, align 4
+  %sub = sub i32 %b.load, 1
+  store i32 %sub, ptr %b, align 4
+  %b.load5 = load i32, ptr %b, align 4
+  %sub6 = sub i32 %b.load5, 1
+  store i32 %sub6, ptr %b, align 4
+  %a.load7 = load i32, ptr %a, align 4
+  %icmp_eq = icmp eq i32 %a.load7, 3
+  %zext = zext i1 %icmp_eq to i32
+  %icmp_ne = icmp ne i32 %zext, 0
+  br i1 %icmp_ne, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %entry
+  %b.load8 = load i32, ptr %b, align 4
+  %icmp_eq9 = icmp eq i32 %b.load8, -2
+  %zext10 = zext i1 %icmp_eq9 to i32
+  %icmp_ne11 = icmp ne i32 %zext10, 0
+  br i1 %icmp_ne11, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %entry
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  ret i32 %land.phi
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (0) 4:13
+    Declaration (b)
+      IntegerLiteral (0) 5:13
+    ExpressionStatement
+      UnaryOperation PostIncrement 6:5-6:7
+        Variable (a)
+    ExpressionStatement
+      UnaryOperation PreIncrement 7:5-7:7
+        Variable (a)
+    ExpressionStatement
+      UnaryOperation PreIncrement 8:5-8:7
+        Variable (a)
+    ExpressionStatement
+      UnaryOperation PostDecrement 9:5-9:7
+        Variable (b)
+    ExpressionStatement
+      UnaryOperation PreDecrement 10:5-10:7
+        Variable (b)
+    ReturnStatement 11:5-11:31
+      Parenthesis 11:12-11:30
+        BinaryOperation LogicalAnd
+          BinaryOperation Equals
+            Variable (a)
+            IntegerLiteral (3) 11:18
+          BinaryOperation Equals
+            Variable (b)
+            UnaryOperation Negate 11:28-11:29
+              IntegerLiteral (2) 11:29

@@ -7,8 +7,15 @@ edition = "2024"
 [package.metadata]
 cargo-fuzz = true
 
+[[bin]]
+name = "fuzz_compile"
+path = "fuzz_targets/fuzz_compile.rs"
+test = false
+doc = false
+bench = false
+
 [dependencies]
-libfuzzer-sys = "0.4.10"
+libfuzzer-sys = "0.4"
 rustcc_codegen = { path = "../crates/rustcc_codegen", default-features = false }
 rustcc_diagnostic = { path = "../crates/rustcc_diagnostic", default-features = false }
 rustcc_lexer = { path = "../crates/rustcc_lexer", default-features = false }
@@ -18,10 +25,3 @@ rustcc_source = { path = "../crates/rustcc_source", default-features = false }
 [profile.release]
 codegen-units = 1
 lto = "thin"
-
-[[bin]]
-name = "fuzz_compile"
-path = "fuzz_targets/fuzz_compile.rs"
-test = false
-doc = false
-bench = false

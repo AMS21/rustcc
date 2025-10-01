@@ -1,0 +1,10 @@
+; ModuleID = 'rustcc/tests/input/parser/empty_main2.c'
+source_filename = "rustcc/tests/input/parser/empty_main2.c"
+
+define i32 @main() {
+entry:
+  ret i32 0
+}
+TranslationUnit
+  FunctionDefinition "main"
+    NullStatement

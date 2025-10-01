@@ -1,0 +1,23 @@
+; ModuleID = 'rustcc/tests/input/parser/compound_divide.c'
+source_filename = "rustcc/tests/input/parser/compound_divide.c"
+
+define i32 @main() {
+entry:
+  %to_divide = alloca i32, align 4
+  store i32 8, ptr %to_divide, align 4
+  %to_divide.load = load i32, ptr %to_divide, align 4
+  %sdiv = sdiv i32 %to_divide.load, 4
+  store i32 %sdiv, ptr %to_divide, align 4
+  %to_divide.load1 = load i32, ptr %to_divide, align 4
+  ret i32 %to_divide.load1
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (to_divide)
+      IntegerLiteral (8) 4:21
+    ExpressionStatement
+      BinaryOperation DivideAssign
+        Variable (to_divide)
+        IntegerLiteral (4) 5:18
+    ReturnStatement 6:5-6:21
+      Variable (to_divide)

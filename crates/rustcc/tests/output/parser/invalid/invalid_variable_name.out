@@ -1,0 +1,8 @@
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:12: error: expected declaration name
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:12: error: expected '}'
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:12: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:14: error: expected function name
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:14: error: expected '('
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:14: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:14: error: expected ')'
+rustcc/tests/input/parser/invalid/invalid_variable_name.c:6:14: error: expected '{'

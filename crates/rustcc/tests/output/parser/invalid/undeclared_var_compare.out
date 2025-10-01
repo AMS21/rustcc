@@ -1,0 +1,1 @@
+rustcc/tests/input/parser/invalid/undeclared_var_compare.c:5:12: error: variable 'a' not declared

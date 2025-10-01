@@ -60,9 +60,17 @@ define_diagnostics! {
     ExpectedIntegerLiteral(Error, ""),
     ExpectedVoidInParameterList(Error, ""),
     ExpectedExpression(Error, ""),
+    ExpectedStatement(Error, ""),
+    ExpectedTypeSpecifier(Error, ""),
+    ExpectedDeclarationName(Error, ""),
     MissingClosingParenthesis(Error, ""),
+    InvalidDeclaration(Error, ""),
+    ExpressionNestingLimitReached(Error, ""),
 
-    // Parser fatal errors
+    // Sema check errors
+    VariableAlreadyDeclared(Error, ""),
+    VariableNotDeclared(Error, ""),
+    AssignToRValue(Error, ""),
 }
 
 #[derive(Debug, PartialEq, Eq, Hash, Clone, Copy, PartialOrd, Ord)]

@@ -1,7 +1,11 @@
+use std::cell::RefCell;
+
+use rustc_hash::FxHashMap;
 use rustcc_ast::{
     binary_operator::BinaryOperator,
+    declaration::Declaration,
     expression::{Expression, ExpressionKind},
-    function_definition::FunctionDefinition,
+    function_definition::{BlockItem, FunctionDefinition},
     statement::{Statement, StatementKind},
     translation_unit::TranslationUnit,
     unary_operator::UnaryOperator,
@@ -23,6 +27,9 @@ pub struct Codegen {
     builder: LLVMBuilder,
     module: LLVMModule,
     context: LLVMContext,
+
+    // Variable name -> ptr to the variable in LLVM IR
+    symbol_table: RefCell<FxHashMap<String, LLVMValue>>,
 }
 
 #[derive(Debug)]
@@ -56,6 +63,7 @@ impl Codegen {
             builder,
             module,
             context,
+            symbol_table: RefCell::new(FxHashMap::default()),
         })
     }
 
@@ -71,6 +79,7 @@ impl Codegen {
             .ok_or(CodegenError::FailedModuleCreation)?;
         // Replace the module; old module will be disposed via Drop.
         self.module = new_module;
+        self.symbol_table.borrow_mut().clear();
         Ok(())
     }
 
@@ -104,6 +113,14 @@ impl Codegen {
     }
 
     #[must_use]
+    fn new_stack_variable(&self, name: &str) -> LLVMValue {
+        let ptr = self.builder.alloca(self.int32_type(), name);
+        self.symbol_table.borrow_mut().insert(name.to_string(), ptr);
+
+        ptr
+    }
+
+    #[must_use]
     #[expect(clippy::expect_used)]
     fn get_current_function(&self) -> LLVMFunctionValue {
         self.builder
@@ -133,14 +150,43 @@ impl Codegen {
         self.builder.zero_extend(value, self.int32_type())
     }
 
-    pub fn codegen(&self, translation_unit: &TranslationUnit) {
-        // Code gen all functions
-        for function in &translation_unit.function {
-            self.codegen_function(function);
-        }
+    #[expect(clippy::panic)]
+    fn load_variable(&self, name: &str) -> LLVMValue {
+        let symbol_table = self.symbol_table.borrow();
+        let ptr = symbol_table
+            .get(name)
+            .unwrap_or_else(|| panic!("Variable {name} not found in symbol table"));
+
+        self.builder.load(self.int32_type(), *ptr, name)
     }
 
+    #[expect(clippy::panic)]
+    fn store_variable(&self, name: &str, value: LLVMValue) {
+        let symbol_table = self.symbol_table.borrow();
+        let ptr = symbol_table
+            .get(name)
+            .unwrap_or_else(|| panic!("Variable {name} not found in symbol table"));
+
+        self.builder.store(value, *ptr);
+    }
+
+    #[must_use]
+    pub fn codegen(&self, translation_unit: &TranslationUnit) -> bool {
+        // Codegen all functions
+        for function in &translation_unit.function {
+            if !self.codegen_function(function) {
+                return false;
+            }
+        }
+
+        true
+    }
+
+    #[must_use]
     fn codegen_function(&self, function: &FunctionDefinition) -> bool {
+        // Clear the symbol table for the new function scope
+        self.symbol_table.borrow_mut().clear();
+
         // Create the function type
         let function_type = function_type(self.int32_type());
 
@@ -152,7 +198,37 @@ impl Codegen {
         self.function_basic_block("entry", llvm_function);
 
         // Codegen the function body
-        self.codegen_statement(&function.body);
+        for statement in &function.body {
+            if self.builder.has_insert_block_terminator() {
+                // if the current block has a terminator, don't generate anything since it's
+                // unreachable
+                // TODO: Warn about unreachable code
+                break;
+            }
+
+            match statement {
+                BlockItem::Statement(statement) => self.codegen_statement(statement),
+                BlockItem::Declaration(declaration) => {
+                    self.codegen_declaration(declaration);
+                }
+            }
+        }
+
+        // Check if the last block has a terminator
+        #[expect(clippy::expect_used)]
+        let basic_block = self.builder.get_insert_block().expect("No insert block");
+
+        if basic_block.terminator().is_none() {
+            // TODO: What about void function
+            if function.name == "main" {
+                // If main is missing a terminator add return 0
+                let zero = self.const_int(0);
+                self.builder.ret(zero);
+            } else {
+                // For all other functions add unreachable
+                self.builder.unreachable();
+            }
+        }
 
         // Verify generated function and when fuzzing abort on failure
         #[cfg(not(fuzzing))]
@@ -179,6 +255,24 @@ impl Codegen {
 
                 self.builder.ret(value);
             }
+            StatementKind::Expression(expression) => {
+                self.codegen_expression(expression);
+            }
+            StatementKind::Null => {
+                // Literally nothing todo
+            }
+        }
+    }
+
+    fn codegen_declaration(&self, declaration: &Declaration) {
+        // Allocate space for the variable on the stack
+        let ptr = self.new_stack_variable(&declaration.name);
+
+        // If the declaration has an initializer, codegen the initializer and store it
+        // in the variable
+        if let Some(initializer) = &declaration.initializer {
+            let value = self.codegen_expression(initializer);
+            self.builder.store(value, ptr);
         }
     }
 
@@ -197,8 +291,11 @@ impl Codegen {
                 left,
                 right,
             } => self.codegen_binary_operation(operator, left, right),
+            ExpressionKind::Variable(name) => self.load_variable(name),
         }
     }
+
+    // -- Binary operations --
 
     fn codegen_binary_operation(
         &self,
@@ -207,9 +304,12 @@ impl Codegen {
         right: &Expression,
     ) -> LLVMValue {
         use BinaryOperator::{
-            Add, Assignment, BitwiseAnd, BitwiseLeftShift, BitwiseOr, BitwiseRightShift,
-            BitwiseXor, Divide, Equals, GreaterThan, GreaterThanOrEqual, LessThan, LessThanOrEqual,
-            LogicalAnd, LogicalOr, Multiply, NotEquals, Remainder, Subtract,
+            Add, AddAssign, Assignment, BitwiseAnd, BitwiseAndAssign, BitwiseLeftShift,
+            BitwiseLeftShiftAssign, BitwiseOr, BitwiseOrAssign, BitwiseRightShift,
+            BitwiseRightShiftAssign, BitwiseXor, BitwiseXorAssign, Divide, DivideAssign, Equals,
+            GreaterThan, GreaterThanOrEqual, LessThan, LessThanOrEqual, LogicalAnd, LogicalOr,
+            Multiply, MultiplyAssign, NotEquals, Remainder, RemainderAssign, Subtract,
+            SubtractAssign,
         };
 
         match operator {
@@ -225,34 +325,23 @@ impl Codegen {
             BitwiseXor => self.codegen_binary_bitwise_xor(left, right),
             LogicalAnd => self.codegen_binary_logical_and(left, right),
             LogicalOr => self.codegen_binary_logical_or(left, right),
-            Assignment => {
-                // TODO: For now, we don't support variables, so just evaluate the right-hand
-                // side
-                self.codegen_expression(right)
-            }
+            Assignment => self.codegen_binary_assignment(left, self.codegen_expression(right)),
             Equals => self.codegen_binary_equals(left, right),
             NotEquals => self.codegen_binary_not_equals(left, right),
             LessThan => self.codegen_binary_less_than(left, right),
             LessThanOrEqual => self.codegen_binary_less_than_or_equal(left, right),
             GreaterThan => self.codegen_binary_greater_than(left, right),
             GreaterThanOrEqual => self.codegen_binary_greater_than_or_equal(left, right),
-        }
-    }
-
-    fn codegen_unary_operation(
-        &self,
-        operator: &UnaryOperator,
-        expression: &Expression,
-    ) -> LLVMValue {
-        use UnaryOperator::{Complement, LogicalNot, Negate, Positive};
-
-        let value = self.codegen_expression(expression);
-
-        match operator {
-            Positive => value,
-            Negate => self.negate(value),
-            Complement => self.complement(value),
-            LogicalNot => self.logical_not(value),
+            AddAssign => self.codegen_binary_add_assign(left, right),
+            SubtractAssign => self.codegen_binary_subtract_assign(left, right),
+            MultiplyAssign => self.codegen_binary_multiply_assign(left, right),
+            DivideAssign => self.codegen_binary_divide_assign(left, right),
+            RemainderAssign => self.codegen_binary_remainder_assign(left, right),
+            BitwiseLeftShiftAssign => self.codegen_binary_bitwise_left_shift_assign(left, right),
+            BitwiseRightShiftAssign => self.codegen_binary_bitwise_right_shift_assign(left, right),
+            BitwiseAndAssign => self.codegen_binary_bitwise_and_assign(left, right),
+            BitwiseXorAssign => self.codegen_binary_bitwise_xor_assign(left, right),
+            BitwiseOrAssign => self.codegen_binary_bitwise_or_assign(left, right),
         }
     }
 
@@ -468,6 +557,21 @@ impl Codegen {
         phi.value()
     }
 
+    #[expect(clippy::panic)]
+    fn codegen_binary_assignment(&self, left: &Expression, right_value: LLVMValue) -> LLVMValue {
+        // The left-hand side of an assignment must be an l-value.
+        let Some(name) = left.as_variable_name() else {
+            panic!("left-hand side of assignment must be an l-value");
+        };
+
+        // Store the right-hand side value into the existing variable
+        self.store_variable(name, right_value);
+
+        // The value of an assignment expression is the value that was assigned, so
+        // return the codegened right value
+        right_value
+    }
+
     fn codegen_binary_equals(&self, left: &Expression, right: &Expression) -> LLVMValue {
         let left_value = self.codegen_expression(left);
         let right_value = self.codegen_expression(right);
@@ -530,5 +634,202 @@ impl Codegen {
             .builder
             .integer_signed_greater_than_or_equal(left_value, right_value);
         self.builder.zero_extend(value, self.int32_type())
+    }
+
+    fn codegen_binary_add_assign(&self, left: &Expression, right: &Expression) -> LLVMValue {
+        // An add assignment is just an addition followed by an assignment, so we
+        // can reuse the codegen for those operations.
+        let add = self.codegen_binary_add(left, right);
+        self.codegen_binary_assignment(left, add)
+    }
+
+    fn codegen_binary_subtract_assign(&self, left: &Expression, right: &Expression) -> LLVMValue {
+        let subtract = self.codegen_binary_subtract(left, right);
+        self.codegen_binary_assignment(left, subtract)
+    }
+
+    fn codegen_binary_multiply_assign(&self, left: &Expression, right: &Expression) -> LLVMValue {
+        let multiply = self.codegen_binary_multiply(left, right);
+        self.codegen_binary_assignment(left, multiply)
+    }
+
+    fn codegen_binary_divide_assign(&self, left: &Expression, right: &Expression) -> LLVMValue {
+        let divide = self.codegen_binary_divide(left, right);
+        self.codegen_binary_assignment(left, divide)
+    }
+
+    fn codegen_binary_remainder_assign(&self, left: &Expression, right: &Expression) -> LLVMValue {
+        let remainder = self.codegen_binary_remainder(left, right);
+        self.codegen_binary_assignment(left, remainder)
+    }
+
+    fn codegen_binary_bitwise_left_shift_assign(
+        &self,
+        left: &Expression,
+        right: &Expression,
+    ) -> LLVMValue {
+        let left_shift = self.codegen_binary_bitwise_left_shift(left, right);
+        self.codegen_binary_assignment(left, left_shift)
+    }
+
+    fn codegen_binary_bitwise_right_shift_assign(
+        &self,
+        left: &Expression,
+        right: &Expression,
+    ) -> LLVMValue {
+        let right_shift = self.codegen_binary_bitwise_right_shift(left, right);
+        self.codegen_binary_assignment(left, right_shift)
+    }
+
+    fn codegen_binary_bitwise_and_assign(
+        &self,
+        left: &Expression,
+        right: &Expression,
+    ) -> LLVMValue {
+        let bitwise_and = self.codegen_binary_bitwise_and(left, right);
+        self.codegen_binary_assignment(left, bitwise_and)
+    }
+
+    fn codegen_binary_bitwise_xor_assign(
+        &self,
+        left: &Expression,
+        right: &Expression,
+    ) -> LLVMValue {
+        let bitwise_xor = self.codegen_binary_bitwise_xor(left, right);
+        self.codegen_binary_assignment(left, bitwise_xor)
+    }
+
+    fn codegen_binary_bitwise_or_assign(&self, left: &Expression, right: &Expression) -> LLVMValue {
+        let bitwise_or = self.codegen_binary_bitwise_or(left, right);
+        self.codegen_binary_assignment(left, bitwise_or)
+    }
+
+    // -- Unary operations --
+
+    fn codegen_unary_operation(
+        &self,
+        operator: &UnaryOperator,
+        expression: &Expression,
+    ) -> LLVMValue {
+        use UnaryOperator::{
+            Complement, LogicalNot, Negate, Positive, PostDecrement, PostIncrement, PreDecrement,
+            PreIncrement,
+        };
+
+        match operator {
+            Positive => self.codegen_unary_positive(expression),
+            Negate => self.codegen_unary_negate(expression),
+            Complement => self.codegen_unary_complement(expression),
+            LogicalNot => self.codegen_unary_logical_not(expression),
+            PreIncrement => self.codegen_unary_prefix_increment(expression),
+            PreDecrement => self.codegen_unary_prefix_decrement(expression),
+            PostIncrement => self.codegen_unary_postfix_increment(expression),
+            PostDecrement => self.codegen_unary_postfix_decrement(expression),
+        }
+    }
+
+    fn codegen_unary_positive(&self, expression: &Expression) -> LLVMValue {
+        self.codegen_expression(expression)
+    }
+
+    fn codegen_unary_negate(&self, expression: &Expression) -> LLVMValue {
+        let value = self.codegen_expression(expression);
+        self.negate(value)
+    }
+
+    fn codegen_unary_complement(&self, expression: &Expression) -> LLVMValue {
+        let value = self.codegen_expression(expression);
+        self.complement(value)
+    }
+
+    fn codegen_unary_logical_not(&self, expression: &Expression) -> LLVMValue {
+        let value = self.codegen_expression(expression);
+        self.logical_not(value)
+    }
+
+    #[expect(clippy::panic)]
+    fn codegen_unary_prefix_increment(&self, expression: &Expression) -> LLVMValue {
+        // The operand of a prefix increment must be an l-value.
+        let Some(name) = expression.as_variable_name() else {
+            panic!("operand of prefix increment must be an l-value");
+        };
+
+        // First load the current value of the variable
+        let current_value = self.load_variable(name);
+
+        // Then add 1 to it
+        let one = self.const_int(1);
+        let new_value = self.builder.add(current_value, one);
+
+        // Then store the new value back in the variable
+        self.store_variable(name, new_value);
+
+        // The value of a prefix increment expression is the new value, so return it
+        new_value
+    }
+
+    #[expect(clippy::panic)]
+    fn codegen_unary_prefix_decrement(&self, expression: &Expression) -> LLVMValue {
+        // The operand of a prefix decrement must be an l-value.
+        let Some(name) = expression.as_variable_name() else {
+            panic!("operand of prefix decrement must be an l-value");
+        };
+
+        // First load the current value of the variable
+        let current_value = self.load_variable(name);
+
+        // Then subtract 1 from it
+        let one = self.const_int(1);
+        let new_value = self.builder.subtract(current_value, one);
+
+        // Then store the new value back in the variable
+        self.store_variable(name, new_value);
+
+        // The value of a prefix decrement expression is the new value, so return it
+        new_value
+    }
+
+    #[expect(clippy::panic)]
+    fn codegen_unary_postfix_increment(&self, expression: &Expression) -> LLVMValue {
+        // The operand of a postfix increment must be an l-value.
+        let Some(name) = expression.as_variable_name() else {
+            panic!("operand of postfix increment must be an l-value");
+        };
+
+        // First load the current value of the variable
+        let current_value = self.load_variable(name);
+
+        // Then add 1 to it
+        let one = self.const_int(1);
+        let new_value = self.builder.add(current_value, one);
+
+        // Then store the new value back in the variable
+        self.store_variable(name, new_value);
+
+        // The value of a postfix increment expression is the old value, so return the
+        // current value
+        current_value
+    }
+
+    #[expect(clippy::panic)]
+    fn codegen_unary_postfix_decrement(&self, expression: &Expression) -> LLVMValue {
+        // The operand of a postfix decrement must be an l-value.
+        let Some(name) = expression.as_variable_name() else {
+            panic!("operand of postfix decrement must be an l-value");
+        };
+
+        // First load the current value of the variable
+        let current_value = self.load_variable(name);
+
+        // Then subtract 1 from it
+        let one = self.const_int(1);
+        let new_value = self.builder.subtract(current_value, one);
+
+        // Then store the new value back in the variable
+        self.store_variable(name, new_value);
+
+        // The value of a postfix decrement expression is the old value, so return the
+        // current value
+        current_value
     }
 }

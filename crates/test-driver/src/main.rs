@@ -11,6 +11,7 @@ use regex::RegexBuilder;
 
 const ARG_DIRECTORY: &str = "DIRECTORY";
 const ARG_UPDATE_BASELINE: &str = "UPDATE_BASELINE";
+const CRASH_STRING: &str = "Oh no rustcc encountered an internal error and has sadly crashed!";
 
 /// Normalize tool output for cross-platform comparison.
 /// - Convert Windows backslashes to forward slashes
@@ -156,6 +157,7 @@ fn main() -> ExitCode {
         let expect_failure = expect_failure_regex.is_match(&input);
 
         // Run executable on the input file
+        #[expect(deprecated)]
         let Ok(mut command) = process::Command::cargo_bin(executable) else {
             println!("{}", "TEST ERROR".red());
             println!("Executable '{executable}' not found");
@@ -208,6 +210,14 @@ fn main() -> ExitCode {
         let output_str = format!("{}{}", stderr_str, stdout_str);
         let normalized_output_str = normalize_output_for_compare(&output_str);
 
+        if stdout_str.contains(CRASH_STRING) || stderr_str.contains(CRASH_STRING) {
+            println!("{}", "FAIL".red());
+            println!("Test crashed!");
+
+            failed_tests.push(input_path);
+            continue;
+        }
+
         if update_baseline {
             fs::create_dir_all(output_path.parent().unwrap())
                 .expect("Failed to create output directory");
@@ -239,7 +249,27 @@ fn main() -> ExitCode {
     }
 
     if update_baseline {
-        return ExitCode::SUCCESS;
+        if failed_tests.is_empty() {
+            println!(
+                "\nAll {} baselines updated successfully!",
+                input_files.len().to_string().green()
+            );
+
+            return ExitCode::SUCCESS;
+        } else {
+            println!(
+                "\n{} of {} baselines were updated, but {} tests still failed!",
+                (input_files.len() - failed_tests.len()).to_string().green(),
+                input_files.len().to_string().yellow(),
+                failed_tests.len().to_string().red()
+            );
+            println!("Failed tests:");
+            for test in failed_tests {
+                println!("{}", test.display());
+            }
+
+            return ExitCode::FAILURE;
+        }
     }
 
     // Print the summary

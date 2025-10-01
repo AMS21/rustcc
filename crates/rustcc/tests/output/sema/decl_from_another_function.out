@@ -1,0 +1,7 @@
+rustcc/tests/input/sema/decl_from_another_function.c:6:16: error: variable 'b' not declared
+TranslationUnit
+  FunctionDefinition "f1"
+    Declaration (b)
+      <uninitialized>  FunctionDefinition "f2"
+    ExpressionStatement
+      Variable (b)

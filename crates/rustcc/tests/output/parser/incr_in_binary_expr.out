@@ -1,0 +1,87 @@
+; ModuleID = 'rustcc/tests/input/parser/incr_in_binary_expr.c'
+source_filename = "rustcc/tests/input/parser/incr_in_binary_expr.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 2, ptr %a, align 4
+  %b = alloca i32, align 4
+  %a.load = load i32, ptr %a, align 4
+  %add = add i32 %a.load, 1
+  store i32 %add, ptr %a, align 4
+  %add1 = add i32 3, %a.load
+  store i32 %add1, ptr %b, align 4
+  %c = alloca i32, align 4
+  %b.load = load i32, ptr %b, align 4
+  %add2 = add i32 %b.load, 1
+  store i32 %add2, ptr %b, align 4
+  %add3 = add i32 4, %add2
+  store i32 %add3, ptr %c, align 4
+  %a.load4 = load i32, ptr %a, align 4
+  %icmp_eq = icmp eq i32 %a.load4, 3
+  %zext = zext i1 %icmp_eq to i32
+  %icmp_ne = icmp ne i32 %zext, 0
+  br i1 %icmp_ne, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %entry
+  %b.load5 = load i32, ptr %b, align 4
+  %icmp_eq6 = icmp eq i32 %b.load5, 6
+  %zext7 = zext i1 %icmp_eq6 to i32
+  %icmp_ne8 = icmp ne i32 %zext7, 0
+  br i1 %icmp_ne8, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %entry
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  %icmp_ne9 = icmp ne i32 %land.phi, 0
+  br i1 %icmp_ne9, label %land.rhs10, label %land.false14
+
+land.rhs10:                                       ; preds = %land.end
+  %c.load = load i32, ptr %c, align 4
+  %icmp_eq11 = icmp eq i32 %c.load, 10
+  %zext12 = zext i1 %icmp_eq11 to i32
+  %icmp_ne13 = icmp ne i32 %zext12, 0
+  br i1 %icmp_ne13, label %land.true15, label %land.false14
+
+land.false14:                                     ; preds = %land.rhs10, %land.end
+  br label %land.end17
+
+land.true15:                                      ; preds = %land.rhs10
+  br label %land.end17
+
+land.end17:                                       ; preds = %land.false14, %land.true15
+  %land.phi16 = phi i32 [ 1, %land.true15 ], [ 0, %land.false14 ]
+  ret i32 %land.phi16
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (2) 4:13
+    Declaration (b)
+      BinaryOperation Add
+        IntegerLiteral (3) 5:13
+        UnaryOperation PostIncrement 5:17-5:19
+          Variable (a)
+    Declaration (c)
+      BinaryOperation Add
+        IntegerLiteral (4) 6:13
+        UnaryOperation PreIncrement 6:17-6:19
+          Variable (b)
+    ReturnStatement 7:5-7:41
+      Parenthesis 7:12-7:40
+        BinaryOperation LogicalAnd
+          BinaryOperation LogicalAnd
+            BinaryOperation Equals
+              Variable (a)
+              IntegerLiteral (3) 7:18
+            BinaryOperation Equals
+              Variable (b)
+              IntegerLiteral (6) 7:28
+          BinaryOperation Equals
+            Variable (c)
+            IntegerLiteral (10) 7:38-7:39

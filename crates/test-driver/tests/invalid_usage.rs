@@ -1,19 +1,15 @@
-use std::{path::PathBuf, process::Command};
+use std::path::PathBuf;
 
-use assert_cmd::prelude::*;
+use assert_cmd::cargo::cargo_bin_cmd;
 
 #[test]
 fn no_directory() {
-    Command::cargo_bin("test-driver")
-        .unwrap()
-        .assert()
-        .failure();
+    cargo_bin_cmd!("test-driver").assert().failure();
 }
 
 #[test]
 fn directory_which_doesnt_exist() {
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg("this-directory-doesnt-exist-hopefully")
         .assert()
@@ -25,8 +21,7 @@ fn directory_with_no_tests() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_directory = manifest_dir.join("src");
 
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg(test_directory)
         .assert()
@@ -38,8 +33,7 @@ fn missing_output() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_directory = manifest_dir.join("tests/missing_output");
 
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg(test_directory)
         .assert()
@@ -51,8 +45,7 @@ fn missing_run_binary() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_directory = manifest_dir.join("tests/missing_binary");
 
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg(test_directory)
         .assert()
@@ -64,8 +57,7 @@ fn missing_run() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_directory = manifest_dir.join("tests/missing_run");
 
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg(test_directory)
         .assert()
@@ -77,8 +69,7 @@ fn output_mismatch() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_directory = manifest_dir.join("tests/output_mismatch");
 
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg(test_directory)
         .assert()
@@ -90,8 +81,7 @@ fn executable_not_found() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_directory = manifest_dir.join("tests/executable_not_found");
 
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg(test_directory)
         .assert()
@@ -103,8 +93,7 @@ fn unexpected_pass() {
     let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
     let test_directory = manifest_dir.join("tests/unexpected_pass");
 
-    Command::cargo_bin("test-driver")
-        .unwrap()
+    cargo_bin_cmd!("test-driver")
         .arg("--directory")
         .arg(test_directory)
         .assert()

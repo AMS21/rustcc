@@ -17,6 +17,7 @@ pub enum ExpressionKind<'a> {
         right: Box<Expression<'a>>,
     },
     Parenthesis(Box<Expression<'a>>),
+    Variable(String),
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -25,7 +26,87 @@ pub struct Expression<'a> {
     pub range: SourceRange<'a>,
 }
 
-impl Expression<'_> {
+impl<'a> Expression<'a> {
+    #[must_use]
+    pub const fn new_integer_literal(value: u32, range: SourceRange<'a>) -> Self {
+        Self {
+            kind: ExpressionKind::IntegerLiteral(value),
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_unary_operation(
+        operator: UnaryOperator,
+        expression: Self,
+        range: SourceRange<'a>,
+    ) -> Self {
+        Self {
+            kind: ExpressionKind::UnaryOperation {
+                operator,
+                expression: Box::new(expression),
+            },
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_binary_operation(
+        operator: BinaryOperator,
+        left: Self,
+        right: Self,
+        range: SourceRange<'a>,
+    ) -> Self {
+        Self {
+            kind: ExpressionKind::BinaryOperation {
+                operator,
+                left: Box::new(left),
+                right: Box::new(right),
+            },
+            range,
+        }
+    }
+
+    #[must_use]
+    pub fn new_parenthesis(expression: Self, range: SourceRange<'a>) -> Self {
+        Self {
+            kind: ExpressionKind::Parenthesis(Box::new(expression)),
+            range,
+        }
+    }
+
+    #[must_use]
+    pub const fn new_variable(name: String, range: SourceRange<'a>) -> Self {
+        Self {
+            kind: ExpressionKind::Variable(name),
+            range,
+        }
+    }
+
+    #[must_use]
+    #[expect(clippy::wildcard_enum_match_arm)]
+    pub fn is_lvalue(&self) -> bool {
+        match &self.kind {
+            ExpressionKind::Variable(_) => true,
+            ExpressionKind::Parenthesis(inner) => inner.is_lvalue(),
+
+            _ => false,
+        }
+    }
+
+    /// Returns the variable name if this expression is a (possibly
+    /// parenthesized) variable.
+    #[must_use]
+    #[expect(clippy::wildcard_enum_match_arm)]
+    pub fn as_variable_name(&self) -> Option<&str> {
+        match &self.kind {
+            ExpressionKind::Variable(name) => Some(name),
+            ExpressionKind::Parenthesis(inner) => inner.as_variable_name(),
+
+            _ => None,
+        }
+    }
+
     #[must_use]
     pub fn dump(&self, depth: usize) -> String {
         match &self.kind {
@@ -72,6 +153,10 @@ impl Expression<'_> {
                     left.dump(depth + 1),
                     right.dump(depth + 1)
                 )
+            }
+
+            ExpressionKind::Variable(name) => {
+                format!("{}Variable ({})", "  ".repeat(depth), name,)
             }
         }
     }

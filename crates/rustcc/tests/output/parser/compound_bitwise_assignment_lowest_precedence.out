@@ -1,0 +1,251 @@
+; ModuleID = 'rustcc/tests/input/parser/compound_bitwise_assignment_lowest_precedence.c'
+source_filename = "rustcc/tests/input/parser/compound_bitwise_assignment_lowest_precedence.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 11, ptr %a, align 4
+  %b = alloca i32, align 4
+  store i32 12, ptr %b, align 4
+  %a.load = load i32, ptr %a, align 4
+  br i1 false, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  %b.load = load i32, ptr %b, align 4
+  %icmp_ne = icmp ne i32 %b.load, 0
+  br i1 %icmp_ne, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  %and = and i32 %a.load, %lor.phi
+  store i32 %and, ptr %a, align 4
+  %b.load1 = load i32, ptr %b, align 4
+  %a.load2 = load i32, ptr %a, align 4
+  %icmp_ne3 = icmp ne i32 %a.load2, 0
+  br i1 %icmp_ne3, label %lor.true5, label %lor.rhs4
+
+lor.rhs4:                                         ; preds = %lor.end
+  br i1 true, label %lor.true5, label %lor.false6
+
+lor.true5:                                        ; preds = %lor.rhs4, %lor.end
+  br label %lor.end8
+
+lor.false6:                                       ; preds = %lor.rhs4
+  br label %lor.end8
+
+lor.end8:                                         ; preds = %lor.false6, %lor.true5
+  %lor.phi7 = phi i32 [ 1, %lor.true5 ], [ 0, %lor.false6 ]
+  %xor = xor i32 %b.load1, %lor.phi7
+  store i32 %xor, ptr %b, align 4
+  %c = alloca i32, align 4
+  store i32 14, ptr %c, align 4
+  %c.load = load i32, ptr %c, align 4
+  %a.load9 = load i32, ptr %a, align 4
+  %icmp_ne10 = icmp ne i32 %a.load9, 0
+  br i1 %icmp_ne10, label %lor.true14, label %lor.rhs11
+
+lor.rhs11:                                        ; preds = %lor.end8
+  %b.load12 = load i32, ptr %b, align 4
+  %icmp_ne13 = icmp ne i32 %b.load12, 0
+  br i1 %icmp_ne13, label %lor.true14, label %lor.false15
+
+lor.true14:                                       ; preds = %lor.rhs11, %lor.end8
+  br label %lor.end17
+
+lor.false15:                                      ; preds = %lor.rhs11
+  br label %lor.end17
+
+lor.end17:                                        ; preds = %lor.false15, %lor.true14
+  %lor.phi16 = phi i32 [ 1, %lor.true14 ], [ 0, %lor.false15 ]
+  %or = or i32 %c.load, %lor.phi16
+  store i32 %or, ptr %c, align 4
+  %d = alloca i32, align 4
+  store i32 16, ptr %d, align 4
+  %d.load = load i32, ptr %d, align 4
+  %c.load18 = load i32, ptr %c, align 4
+  %icmp_ne19 = icmp ne i32 %c.load18, 0
+  br i1 %icmp_ne19, label %lor.true23, label %lor.rhs20
+
+lor.rhs20:                                        ; preds = %lor.end17
+  %d.load21 = load i32, ptr %d, align 4
+  %icmp_ne22 = icmp ne i32 %d.load21, 0
+  br i1 %icmp_ne22, label %lor.true23, label %lor.false24
+
+lor.true23:                                       ; preds = %lor.rhs20, %lor.end17
+  br label %lor.end26
+
+lor.false24:                                      ; preds = %lor.rhs20
+  br label %lor.end26
+
+lor.end26:                                        ; preds = %lor.false24, %lor.true23
+  %lor.phi25 = phi i32 [ 1, %lor.true23 ], [ 0, %lor.false24 ]
+  %ashr = ashr i32 %d.load, %lor.phi25
+  store i32 %ashr, ptr %d, align 4
+  %e = alloca i32, align 4
+  store i32 18, ptr %e, align 4
+  %e.load = load i32, ptr %e, align 4
+  %c.load27 = load i32, ptr %c, align 4
+  %icmp_ne28 = icmp ne i32 %c.load27, 0
+  br i1 %icmp_ne28, label %lor.true32, label %lor.rhs29
+
+lor.rhs29:                                        ; preds = %lor.end26
+  %d.load30 = load i32, ptr %d, align 4
+  %icmp_ne31 = icmp ne i32 %d.load30, 0
+  br i1 %icmp_ne31, label %lor.true32, label %lor.false33
+
+lor.true32:                                       ; preds = %lor.rhs29, %lor.end26
+  br label %lor.end35
+
+lor.false33:                                      ; preds = %lor.rhs29
+  br label %lor.end35
+
+lor.end35:                                        ; preds = %lor.false33, %lor.true32
+  %lor.phi34 = phi i32 [ 1, %lor.true32 ], [ 0, %lor.false33 ]
+  %shl = shl i32 %e.load, %lor.phi34
+  store i32 %shl, ptr %e, align 4
+  %a.load36 = load i32, ptr %a, align 4
+  %icmp_eq = icmp eq i32 %a.load36, 1
+  %zext = zext i1 %icmp_eq to i32
+  %icmp_ne37 = icmp ne i32 %zext, 0
+  br i1 %icmp_ne37, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %lor.end35
+  %b.load38 = load i32, ptr %b, align 4
+  %icmp_eq39 = icmp eq i32 %b.load38, 13
+  %zext40 = zext i1 %icmp_eq39 to i32
+  %icmp_ne41 = icmp ne i32 %zext40, 0
+  br i1 %icmp_ne41, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %lor.end35
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  %icmp_ne42 = icmp ne i32 %land.phi, 0
+  br i1 %icmp_ne42, label %land.rhs43, label %land.false48
+
+land.rhs43:                                       ; preds = %land.end
+  %c.load44 = load i32, ptr %c, align 4
+  %icmp_eq45 = icmp eq i32 %c.load44, 15
+  %zext46 = zext i1 %icmp_eq45 to i32
+  %icmp_ne47 = icmp ne i32 %zext46, 0
+  br i1 %icmp_ne47, label %land.true49, label %land.false48
+
+land.false48:                                     ; preds = %land.rhs43, %land.end
+  br label %land.end51
+
+land.true49:                                      ; preds = %land.rhs43
+  br label %land.end51
+
+land.end51:                                       ; preds = %land.false48, %land.true49
+  %land.phi50 = phi i32 [ 1, %land.true49 ], [ 0, %land.false48 ]
+  %icmp_ne52 = icmp ne i32 %land.phi50, 0
+  br i1 %icmp_ne52, label %land.rhs53, label %land.false58
+
+land.rhs53:                                       ; preds = %land.end51
+  %d.load54 = load i32, ptr %d, align 4
+  %icmp_eq55 = icmp eq i32 %d.load54, 8
+  %zext56 = zext i1 %icmp_eq55 to i32
+  %icmp_ne57 = icmp ne i32 %zext56, 0
+  br i1 %icmp_ne57, label %land.true59, label %land.false58
+
+land.false58:                                     ; preds = %land.rhs53, %land.end51
+  br label %land.end61
+
+land.true59:                                      ; preds = %land.rhs53
+  br label %land.end61
+
+land.end61:                                       ; preds = %land.false58, %land.true59
+  %land.phi60 = phi i32 [ 1, %land.true59 ], [ 0, %land.false58 ]
+  %icmp_ne62 = icmp ne i32 %land.phi60, 0
+  br i1 %icmp_ne62, label %land.rhs63, label %land.false68
+
+land.rhs63:                                       ; preds = %land.end61
+  %e.load64 = load i32, ptr %e, align 4
+  %icmp_eq65 = icmp eq i32 %e.load64, 36
+  %zext66 = zext i1 %icmp_eq65 to i32
+  %icmp_ne67 = icmp ne i32 %zext66, 0
+  br i1 %icmp_ne67, label %land.true69, label %land.false68
+
+land.false68:                                     ; preds = %land.rhs63, %land.end61
+  br label %land.end71
+
+land.true69:                                      ; preds = %land.rhs63
+  br label %land.end71
+
+land.end71:                                       ; preds = %land.false68, %land.true69
+  %land.phi70 = phi i32 [ 1, %land.true69 ], [ 0, %land.false68 ]
+  ret i32 %land.phi70
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (11) 7:13-7:14
+    Declaration (b)
+      IntegerLiteral (12) 8:13-8:14
+    ExpressionStatement
+      BinaryOperation BitwiseAndAssign
+        Variable (a)
+        BinaryOperation LogicalOr
+          IntegerLiteral (0) 9:10
+          Variable (b)
+    ExpressionStatement
+      BinaryOperation BitwiseXorAssign
+        Variable (b)
+        BinaryOperation LogicalOr
+          Variable (a)
+          IntegerLiteral (1) 10:15
+    Declaration (c)
+      IntegerLiteral (14) 12:13-12:14
+    ExpressionStatement
+      BinaryOperation BitwiseOrAssign
+        Variable (c)
+        BinaryOperation LogicalOr
+          Variable (a)
+          Variable (b)
+    Declaration (d)
+      IntegerLiteral (16) 15:13-15:14
+    ExpressionStatement
+      BinaryOperation BitwiseRightShiftAssign
+        Variable (d)
+        BinaryOperation LogicalOr
+          Variable (c)
+          Variable (d)
+    Declaration (e)
+      IntegerLiteral (18) 18:13-18:14
+    ExpressionStatement
+      BinaryOperation BitwiseLeftShiftAssign
+        Variable (e)
+        BinaryOperation LogicalOr
+          Variable (c)
+          Variable (d)
+    ReturnStatement 20:5-20:63
+      Parenthesis 20:12-20:62
+        BinaryOperation LogicalAnd
+          BinaryOperation LogicalAnd
+            BinaryOperation LogicalAnd
+              BinaryOperation LogicalAnd
+                BinaryOperation Equals
+                  Variable (a)
+                  IntegerLiteral (1) 20:18
+                BinaryOperation Equals
+                  Variable (b)
+                  IntegerLiteral (13) 20:28-20:29
+              BinaryOperation Equals
+                Variable (c)
+                IntegerLiteral (15) 20:39-20:40
+            BinaryOperation Equals
+              Variable (d)
+              IntegerLiteral (8) 20:50
+          BinaryOperation Equals
+            Variable (e)
+            IntegerLiteral (36) 20:60-20:61

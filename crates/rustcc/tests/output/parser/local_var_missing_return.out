@@ -1,0 +1,22 @@
+; ModuleID = 'rustcc/tests/input/parser/local_var_missing_return.c'
+source_filename = "rustcc/tests/input/parser/local_var_missing_return.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 3, ptr %a, align 4
+  %a.load = load i32, ptr %a, align 4
+  %add = add i32 %a.load, 5
+  store i32 %add, ptr %a, align 4
+  ret i32 0
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (3) 4:13
+    ExpressionStatement
+      BinaryOperation Assignment
+        Variable (a)
+        BinaryOperation Add
+          Variable (a)
+          IntegerLiteral (5) 5:13

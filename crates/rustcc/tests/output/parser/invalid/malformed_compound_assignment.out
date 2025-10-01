@@ -1,0 +1,9 @@
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:8: error: expected expression
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:8: error: expected '}'
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:8: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:10: error: expected function name
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:10: error: expected '('
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:10: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:10: error: expected ')'
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:10:10: error: expected '{'
+rustcc/tests/input/parser/invalid/malformed_compound_assignment.c:11:12: error: variable 'a' not declared

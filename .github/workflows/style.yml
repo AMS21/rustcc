@@ -2,9 +2,7 @@ name: StyleCheck
 
 on:
   pull_request:
-    branches: ["*"]
   push:
-    branches: ["main", "develop"]
   workflow_dispatch:
 
 concurrency:
@@ -15,38 +13,11 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
 
 jobs:
-  toml-formatting:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v6
-
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-
-    - name: Install taplo
-      uses: taiki-e/install-action@v2
-      with:
-        tool: taplo-cli
-
-    - name: Run Taplo
-      id: taplo
-      run: taplo fmt --check --diff
-
-    - name: Taplo info
-      if: failure()
-      run: |
-          echo 'To fix toml fmt, please run `taplo fmt`'
-          echo 'To check for a diff, run `taplo fmt --check --diff'
-          echo 'You can find taplo here: https://taplo.tamasfe.dev/'
-          echo 'Or if you use VSCode, use the `Even Better Toml` extension with 2 spaces'
-          echo 'You can find the extension here: https://marketplace.visualstudio.com/items?itemName=tamasfe.even-better-toml'
-
   typos:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
 
     steps:
       - name: Checkout
@@ -63,3 +34,17 @@ jobs:
           echo 'You can find typos here: https://crates.io/crates/typos'
           echo 'if you use VSCode, you can also install `Typos Spell Checker'
           echo 'You can find the extension here: https://marketplace.visualstudio.com/items?itemName=tekumara.typos-vscode'
+
+  sort-toml:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-sort
+
+      - name: Sort Cargo.toml
+        run: cargo sort --workspace --check

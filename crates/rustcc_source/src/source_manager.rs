@@ -1,6 +1,7 @@
-use std::{collections::HashMap, fmt::Debug, fs};
+use std::{fmt::Debug, fs};
 
 use elsa::FrozenMap;
+use rustc_hash::FxHashMap;
 
 use crate::source_file::SourceFile;
 
@@ -69,14 +70,14 @@ impl<'a> SourceManager<'a> for RealFSSourceManager {
 /// virtual files in virtual
 #[derive(Debug, Clone, Default)]
 pub struct VirtualSourceManager {
-    source_files: HashMap<String, SourceFile>,
+    source_files: FxHashMap<String, SourceFile>,
 }
 
 impl VirtualSourceManager {
     #[must_use]
     pub fn new() -> Self {
         Self {
-            source_files: HashMap::new(),
+            source_files: FxHashMap::default(),
         }
     }
 

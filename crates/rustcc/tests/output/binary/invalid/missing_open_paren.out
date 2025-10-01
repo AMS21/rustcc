@@ -1,22 +1,8 @@
 rustcc/tests/input/binary/invalid/missing_open_paren.c:5:17: error: expected ';'
+rustcc/tests/input/binary/invalid/missing_open_paren.c:5:17: error: expected '}'
 rustcc/tests/input/binary/invalid/missing_open_paren.c:5:17: error: expected 'int' keyword
 rustcc/tests/input/binary/invalid/missing_open_paren.c:5:18: error: expected function name
 rustcc/tests/input/binary/invalid/missing_open_paren.c:5:18: error: expected '('
 rustcc/tests/input/binary/invalid/missing_open_paren.c:5:18: error: expected 'void' keyword for parameter list
 rustcc/tests/input/binary/invalid/missing_open_paren.c:5:18: error: expected ')'
 rustcc/tests/input/binary/invalid/missing_open_paren.c:5:18: error: expected '{'
-rustcc/tests/input/binary/invalid/missing_open_paren.c:5:18: error: expected 'return' keyword
-rustcc/tests/input/binary/invalid/missing_open_paren.c:5:18: error: expected 'int' keyword
-rustcc/tests/input/binary/invalid/missing_open_paren.c:6:1: error: expected function name
-rustcc/tests/input/binary/invalid/missing_open_paren.c:6:1: error: expected '('
-rustcc/tests/input/binary/invalid/missing_open_paren.c:6:1: error: expected 'void' keyword for parameter list
-rustcc/tests/input/binary/invalid/missing_open_paren.c:6:1: error: expected ')'
-rustcc/tests/input/binary/invalid/missing_open_paren.c:6:1: error: expected '{'
-rustcc/tests/input/binary/invalid/missing_open_paren.c:6:1: error: expected 'return' keyword
-rustcc/tests/input/binary/invalid/missing_open_paren.c:6:1: error: expected 'int' keyword
-<invalid>: error: expected function name
-<invalid>: error: expected '('
-<invalid>: error: expected 'void' keyword for parameter list
-<invalid>: error: expected ')'
-<invalid>: error: expected '{'
-<invalid>: error: expected 'return' keyword

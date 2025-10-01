@@ -2,7 +2,7 @@ use std::ptr;
 
 use crate::{
     basic_block::LLVMBasicBlock,
-    ffi::{LLVMAppendExistingBasicBlock, LLVMTypeRef, LLVMValueRef},
+    ffi::{LLVMAppendExistingBasicBlock, LLVMGetLastBasicBlock, LLVMTypeRef, LLVMValueRef},
     typ::LLVMType,
     value::LLVMValue,
 };
@@ -46,6 +46,17 @@ impl LLVMFunctionValue {
     pub fn append_existing_basic_block(&self, basic_block: LLVMBasicBlock) {
         // Safety: LLVMAppendExistingBasicBlock is safe to call with valid parameters.
         unsafe { LLVMAppendExistingBasicBlock(self.as_raw(), basic_block.as_raw()) };
+    }
+
+    #[must_use]
+    pub fn last_basic_block(&self) -> Option<LLVMBasicBlock> {
+        // Safety: LLVMGetLastBasicBlock is safe to call with valid parameters.
+        let basic_block = unsafe { LLVMGetLastBasicBlock(self.as_raw()) };
+        if basic_block.is_null() {
+            None
+        } else {
+            Some(LLVMBasicBlock::from_raw(basic_block))
+        }
     }
 
     #[must_use]
