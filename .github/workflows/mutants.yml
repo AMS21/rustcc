@@ -42,7 +42,7 @@ jobs:
         cargo mutants --workspace --no-shuffle -vV --shard ${{ matrix.shard }}/8 --baseline=skip --timeout 300 --in-place --cap-lints true --test-workspace true
 
     - name: Archive mutants.out
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       if: always()
       with:
         path: mutants.out
