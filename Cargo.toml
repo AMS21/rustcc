@@ -25,7 +25,7 @@ version = "0.1.0"
 [workspace.dependencies]
 assert_cmd = "2.0.17"
 bindgen = "0.72.1"
-clap = "4.5.53"
+clap = "4.5.56"
 cmake = "0.1.54"
 colored = "3.0.0"
 elsa = "1.11.2"
