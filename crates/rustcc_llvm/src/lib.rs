@@ -5,6 +5,7 @@ pub mod basic_block;
 pub mod builder;
 pub mod context;
 pub mod function;
+pub mod instruction;
 pub mod module;
 pub mod phi;
 pub mod typ;
@@ -42,6 +43,7 @@ mod tests {
         let mut llvm_major = 0;
         let mut llvm_minor = 0;
         let mut llvm_patch = 0;
+
         // Safety: LLVMGetVersion is safe to call with valid pointers.
         unsafe {
             LLVMGetVersion(

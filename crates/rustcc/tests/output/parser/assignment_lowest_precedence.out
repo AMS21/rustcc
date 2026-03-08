@@ -1,0 +1,35 @@
+; ModuleID = 'rustcc/tests/input/parser/assignment_lowest_precedence.c'
+source_filename = "rustcc/tests/input/parser/assignment_lowest_precedence.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  br i1 false, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  br i1 true, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  store i32 %lor.phi, ptr %a, align 4
+  %a.load = load i32, ptr %a, align 4
+  ret i32 %a.load
+}
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      <uninitialized>
+    ExpressionStatement
+      BinaryOperation Assignment
+        Variable (a)
+        BinaryOperation LogicalOr
+          IntegerLiteral (0) 5:9
+          IntegerLiteral (5) 5:14
+    ReturnStatement 6:5-6:13
+      Variable (a)

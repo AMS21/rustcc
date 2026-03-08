@@ -1,4 +1,4 @@
-use crate::ffi::LLVMValueRef;
+use crate::ffi::{LLVMIsAInstruction, LLVMValueRef};
 
 #[derive(Debug, Clone, Copy)]
 #[repr(transparent)]
@@ -16,5 +16,11 @@ impl LLVMValue {
     pub(crate) fn as_raw(&self) -> LLVMValueRef {
         assert!(!self.0.is_null(), "LLVMValue contains null pointer");
         self.0
+    }
+
+    #[must_use]
+    pub fn is_instruction(&self) -> bool {
+        // Safety: LLVMIsAInstruction is safe to call with a valid LLVMValueRef.
+        unsafe { !LLVMIsAInstruction(self.as_raw()).is_null() }
     }
 }

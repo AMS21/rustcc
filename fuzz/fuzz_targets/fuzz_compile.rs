@@ -51,13 +51,18 @@ fuzz_target!(|data: &[u8]| -> Corpus {
     let mut parser = Parser::new(diagnostic_engine.clone(), tokens);
     let translation_unit = parser.parse();
 
+    // If any errors occurred, reject this input and don't codegen
+    if diagnostic_engine.borrow().error_occurred() {
+        return Corpus::Keep;
+    }
+
     // Codegen
     CODEGEN.with(|slot| {
         let mut codegen = slot.borrow_mut();
         // Create a fresh module inside the existing context
         let _ = codegen.reset_module(INPUT_FILE);
 
-        codegen.codegen(&translation_unit);
+        assert!(codegen.codegen(&translation_unit));
     });
 
     Corpus::Keep

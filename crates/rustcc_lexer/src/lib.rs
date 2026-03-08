@@ -14,6 +14,11 @@ use crate::token::{Token, TokenList};
 
 pub mod token;
 
+// TODO: There is a big problem with the current lexer design. If we are in a
+// state for multi character symbols like AfterStar and then reach end of file,
+// we will never emit the single star character and instead just end the lexing
+// process.
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 enum LexerState {
     Start,
@@ -26,8 +31,13 @@ enum LexerState {
     MultiLineCommentAfterStar,
     AfterMinus,
     AfterPlus,
+    AfterStar,
+    AfterPercent,
+    AfterCaret,
     AfterLessThan,
+    AfterLessThanLessThan,
     AfterGreaterThan,
+    AfterGreaterThanGreaterThan,
     AfterAmpersand,
     AfterPipe,
     AfterEquals,
@@ -209,15 +219,15 @@ impl<'a> Lexer<'a> {
                     self.consume_character();
                 }
                 Some('*') => {
-                    let location = self.current_location();
+                    self.token_begin_location = self.current_location();
 
-                    self.queued_tokens.push_back(Token::new_star(location));
+                    self.state = LexerState::AfterStar;
                     self.consume_character();
                 }
                 Some('%') => {
-                    let location = self.current_location();
+                    self.token_begin_location = self.current_location();
 
-                    self.queued_tokens.push_back(Token::new_percent(location));
+                    self.state = LexerState::AfterPercent;
                     self.consume_character();
                 }
                 Some('&') => {
@@ -235,9 +245,9 @@ impl<'a> Lexer<'a> {
                     self.consume_character();
                 }
                 Some('^') => {
-                    let location = self.current_location();
+                    self.token_begin_location = self.current_location();
 
-                    self.queued_tokens.push_back(Token::new_caret(location));
+                    self.state = LexerState::AfterCaret;
                     self.consume_character();
                 }
                 Some('<') => {
@@ -397,6 +407,17 @@ impl<'a> Lexer<'a> {
                         self.state = LexerState::MultiLineComment;
                     }
 
+                    Some('=') => {
+                        let location =
+                            SourceRange::new(self.token_begin_location, self.current_location());
+
+                        self.consume_character();
+                        self.queued_tokens
+                            .push_back(Token::new_slash_equal(location));
+
+                        self.state = LexerState::Start;
+                    }
+
                     Some(_) => {
                         self.queued_tokens
                             .push_back(Token::new_slash(self.token_begin_location));
@@ -491,17 +512,22 @@ impl<'a> Lexer<'a> {
                     self.state = LexerState::Start;
                 }
 
-                Some(_) => {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
                     self.queued_tokens
-                        .push_back(Token::new_minus(self.token_begin_location));
+                        .push_back(Token::new_minus_equal(location));
 
                     self.state = LexerState::Start;
                 }
 
-                None => {
-                    let location =
-                        SourceRange::new(self.token_begin_location, self.current_location());
-                    self.queued_tokens.push_back(Token::new_minus(location));
+                _ => {
+                    self.queued_tokens
+                        .push_back(Token::new_minus(self.token_begin_location));
+
+                    self.state = LexerState::Start;
                 }
             },
 
@@ -516,9 +542,80 @@ impl<'a> Lexer<'a> {
                     self.state = LexerState::Start;
                 }
 
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_plus_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+
                 _ => {
                     self.queued_tokens
                         .push_back(Token::new_plus(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+            },
+
+            LexerState::AfterStar => match self.peek_next() {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_star_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    self.queued_tokens
+                        .push_back(Token::new_star(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+            },
+
+            LexerState::AfterPercent => match self.peek_next() {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_percent_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    self.queued_tokens
+                        .push_back(Token::new_percent(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+            },
+
+            LexerState::AfterCaret => match self.peek_next() {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_caret_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    self.queued_tokens
+                        .push_back(Token::new_caret(self.token_begin_location));
 
                     self.state = LexerState::Start;
                 }
@@ -536,19 +633,36 @@ impl<'a> Lexer<'a> {
                     self.state = LexerState::Start;
                 }
                 Some('<') => {
-                    let location =
-                        SourceRange::new(self.token_begin_location, self.current_location());
-
+                    self.token_end_location = self.current_location();
                     self.consume_character();
-                    self.queued_tokens
-                        .push_back(Token::new_less_than_less_than(location));
-
-                    self.state = LexerState::Start;
+                    self.state = LexerState::AfterLessThanLessThan;
                 }
 
                 _ => {
                     self.queued_tokens
                         .push_back(Token::new_less_than(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+            },
+
+            LexerState::AfterLessThanLessThan => match self.peek_next() {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_less_than_less_than_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.token_end_location);
+                    self.queued_tokens
+                        .push_back(Token::new_less_than_less_than(location));
 
                     self.state = LexerState::Start;
                 }
@@ -566,19 +680,36 @@ impl<'a> Lexer<'a> {
                     self.state = LexerState::Start;
                 }
                 Some('>') => {
-                    let location =
-                        SourceRange::new(self.token_begin_location, self.current_location());
-
+                    self.token_end_location = self.current_location();
                     self.consume_character();
-                    self.queued_tokens
-                        .push_back(Token::new_greater_than_greater_than(location));
-
-                    self.state = LexerState::Start;
+                    self.state = LexerState::AfterGreaterThanGreaterThan;
                 }
 
                 _ => {
                     self.queued_tokens
                         .push_back(Token::new_greater_than(self.token_begin_location));
+
+                    self.state = LexerState::Start;
+                }
+            },
+
+            LexerState::AfterGreaterThanGreaterThan => match self.peek_next() {
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_greater_than_greater_than_equal(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                _ => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.token_end_location);
+                    self.queued_tokens
+                        .push_back(Token::new_greater_than_greater_than(location));
 
                     self.state = LexerState::Start;
                 }
@@ -592,6 +723,17 @@ impl<'a> Lexer<'a> {
                     self.consume_character();
                     self.queued_tokens
                         .push_back(Token::new_ampersand_ampersand(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_ampersand_equal(location));
 
                     self.state = LexerState::Start;
                 }
@@ -611,6 +753,17 @@ impl<'a> Lexer<'a> {
 
                     self.consume_character();
                     self.queued_tokens.push_back(Token::new_pipe_pipe(location));
+
+                    self.state = LexerState::Start;
+                }
+
+                Some('=') => {
+                    let location =
+                        SourceRange::new(self.token_begin_location, self.current_location());
+
+                    self.consume_character();
+                    self.queued_tokens
+                        .push_back(Token::new_pipe_equal(location));
 
                     self.state = LexerState::Start;
                 }

@@ -1,0 +1,17 @@
+; ModuleID = 'rustcc/tests/input/crash/crash-21cc05ead2f8d26c51e503074125c943e75d9e8c6568592669e456e53c6c3565.c'
+source_filename = "rustcc/tests/input/crash/crash-21cc05ead2f8d26c51e503074125c943e75d9e8c6568592669e456e53c6c3565.c"
+
+define i32 @n() {
+entry:
+  ret i32 0
+}
+TranslationUnit
+  FunctionDefinition "n"
+    ReturnStatement 3:13-3:22
+      Parenthesis 3:19-3:21
+        IntegerLiteral (0) 3:20
+    ExpressionStatement
+      Parenthesis 3:23-3:28
+        BinaryOperation LogicalOr
+          IntegerLiteral (0) 3:24
+          IntegerLiteral (3) 3:27

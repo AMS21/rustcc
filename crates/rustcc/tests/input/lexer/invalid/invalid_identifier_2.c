@@ -1,4 +1,4 @@
-// RUN: ${{rustcc}} --print-tokens
+// RUN: ${{rustcc}}
 // EXPECT-FAILURE
 
 int main(void)

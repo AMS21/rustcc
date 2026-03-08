@@ -1,0 +1,1 @@
+rustcc/tests/input/parser/invalid/postfix_decr_non_lvalue.c:9:12: error: cannot apply unary post-decrement to an rvalue

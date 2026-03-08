@@ -1,0 +1,24 @@
+; ModuleID = 'rustcc/tests/input/codegen/assign_in_short_circuit_or_initializer.c'
+source_filename = "rustcc/tests/input/codegen/assign_in_short_circuit_or_initializer.c"
+
+define i32 @a() {
+entry:
+  %a = alloca i32, align 4
+  br i1 true, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  store i32 5, ptr %a, align 4
+  br i1 true, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  store i32 %lor.phi, ptr %a, align 4
+  %a.load = load i32, ptr %a, align 4
+  unreachable
+}

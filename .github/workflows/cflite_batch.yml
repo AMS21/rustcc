@@ -8,11 +8,12 @@ on:
     - cron: '0 0/6 * * *'  # Every 6th hour.
   workflow_dispatch:
 
-permissions: read-all
+permissions:
+  contents: read
 
 env:
   CARGO_TERM_COLOR: always
-  RUST_BACKTRACE: "full"
+  RUST_BACKTRACE: full
 
 jobs:
   BatchFuzzing:
@@ -47,3 +48,27 @@ jobs:
         storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
         minimize-crashes: true
         parallel-fuzzing: true
+        report-unreproducible-crashes: true
+
+  ReportCrash:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      issues: write
+
+    needs: BatchFuzzing
+    if: ${{ always() && needs.BatchFuzzing.result == 'failure' && github.ref == 'refs/heads/main' }}
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Create issue
+      id: report
+      uses: JasonEtco/create-an-issue@v2
+      with:
+        filename: .github/fuzz_failure.md
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        RUN_ID: ${{ github.run_id }}

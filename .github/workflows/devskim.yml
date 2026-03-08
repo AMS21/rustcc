@@ -2,7 +2,6 @@ name: DevSkim
 
 on:
   pull_request:
-    branches: ["*"]
     paths:
       # Workflow file itself
       - '.github/workflows/devskim.yml'
@@ -12,7 +11,6 @@ on:
       - 'Cargo.lock'
       - 'Cargo.toml'
   push:
-    branches: ["main", "develop"]
     paths:
       # Workflow file itself
       - '.github/workflows/devskim.yml'
@@ -33,6 +31,7 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
 
 jobs:
   devskim:

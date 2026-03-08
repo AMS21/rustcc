@@ -1,0 +1,16 @@
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:14: error: expected ';'
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:14: error: expected '}'
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:14: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected function name
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected '('
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected ')'
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected '{'
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected expression
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected '}'
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:16: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:18: error: expected function name
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:18: error: expected '('
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:18: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:18: error: expected ')'
+rustcc/tests/input/parser/invalid/malformed_not_equal.c:9:18: error: expected '{'

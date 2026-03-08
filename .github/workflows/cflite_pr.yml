@@ -6,7 +6,13 @@ on:
       - '.github/workflows/cflite_pr.yml'
   pull_request:
     paths:
-      - '**'
+      # Workflow file itself
+      - '.github/workflows/cflite_pr.yml'
+      # Rust files
+      - '**.rs'
+      # Cargo files
+      - 'Cargo.lock'
+      - 'Cargo.toml'
   workflow_dispatch:
 
 permissions: read-all
@@ -19,7 +25,7 @@ concurrency:
 
 env:
   CARGO_TERM_COLOR: always
-  RUST_BACKTRACE: "full"
+  RUST_BACKTRACE: full
 
 jobs:
   PR:

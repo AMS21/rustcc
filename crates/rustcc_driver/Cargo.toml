@@ -7,18 +7,18 @@ repository.workspace = true
 rust-version.workspace = true
 version.workspace = true
 
-[dependencies]
-clap = { workspace = true, features = ["cargo"] }
-rustcc_diagnostic = { path = "../rustcc_diagnostic", default-features = false }
-rustcc_codegen = { path = "../rustcc_codegen" }
-rustcc_source = { path = "../rustcc_source" }
-rustcc_parser = { path = "../rustcc_parser", default-features = false }
-rustcc_lexer = { path = "../rustcc_lexer", default-features = false }
-rustcc_llvm = { path = "../rustcc_llvm" }
-
 [features]
 default = ["color"]
 color = ["rustcc_diagnostic/color", "rustcc_parser/color", "rustcc_lexer/color"]
+
+[dependencies]
+clap = { workspace = true, features = ["cargo"] }
+rustcc_codegen = { path = "../rustcc_codegen" }
+rustcc_diagnostic = { path = "../rustcc_diagnostic", default-features = false }
+rustcc_lexer = { path = "../rustcc_lexer", default-features = false }
+rustcc_llvm = { path = "../rustcc_llvm" }
+rustcc_parser = { path = "../rustcc_parser", default-features = false }
+rustcc_source = { path = "../rustcc_source" }
 
 [lints]
 workspace = true

@@ -1,6 +1,7 @@
 use crate::{
-    ffi::{LLVMBasicBlockRef, LLVMGetBasicBlockParent},
+    ffi::{LLVMBasicBlockRef, LLVMGetBasicBlockParent, LLVMGetBasicBlockTerminator},
     function::LLVMFunctionValue,
+    instruction::LLVMInstruction,
 };
 
 #[derive(Debug, Copy, Clone)]
@@ -31,6 +32,18 @@ impl LLVMBasicBlock {
             None
         } else {
             Some(LLVMFunctionValue::from_raw(func))
+        }
+    }
+
+    #[must_use]
+    pub fn terminator(&self) -> Option<LLVMInstruction> {
+        // Safety: LLVMGetBasicBlockTerminator is safe to call with a valid
+        // LLVMBasicBlockRef.
+        let terminator = unsafe { LLVMGetBasicBlockTerminator(self.as_raw()) };
+        if terminator.is_null() {
+            None
+        } else {
+            Some(LLVMInstruction::from_raw(terminator))
         }
     }
 }

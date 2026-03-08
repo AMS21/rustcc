@@ -1,0 +1,1 @@
+rustcc/tests/input/parser/invalid/undeclared_compound_assignment_use.c:6:10: error: variable 'a' not declared

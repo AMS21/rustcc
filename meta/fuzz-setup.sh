@@ -10,6 +10,6 @@ cd "$SCRIPT_DIR/.."
 echo "Installing required tools..."
 
 rustup install nightly
-cargo install cargo-fuzz
+cargo install cargo-fuzz --locked
 
 echo "Successfully installed required tools."

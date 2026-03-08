@@ -4,5 +4,5 @@ rustcc/tests/input/lexer/crash/crash-f1534392279bddbf9d43dde8701cb5be14b82f76ec6
 <invalid>: error: expected 'void' keyword for parameter list
 <invalid>: error: expected ')'
 <invalid>: error: expected '{'
-<invalid>: error: expected 'return' keyword
+<invalid>: error: expected '}'
 IntegerLiteral(0) 4:1-4:2 - '00'

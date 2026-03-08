@@ -1,4 +1,5 @@
 pub mod binary_operator;
+pub mod declaration;
 pub mod expression;
 pub mod function_definition;
 pub mod statement;

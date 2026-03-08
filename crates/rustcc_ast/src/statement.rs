@@ -5,6 +5,8 @@ use crate::{ast_source_range_to_string, expression::Expression};
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
 pub enum StatementKind<'a> {
     Return(Expression<'a>),
+    Expression(Expression<'a>),
+    Null,
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Hash)]
@@ -25,6 +27,16 @@ impl<'a> Statement<'a> {
     }
 
     #[must_use]
+    pub const fn new_expression(expression: Expression<'a>, range: SourceRange<'a>) -> Self {
+        Self::new(StatementKind::Expression(expression), range)
+    }
+
+    #[must_use]
+    pub const fn new_null(range: SourceRange<'a>) -> Self {
+        Self::new(StatementKind::Null, range)
+    }
+
+    #[must_use]
     pub fn dump(&self, depth: usize) -> String {
         match &self.kind {
             StatementKind::Return(expression) => {
@@ -34,6 +46,16 @@ impl<'a> Statement<'a> {
                     ast_source_range_to_string(&self.range),
                     expression.dump(depth + 1)
                 )
+            }
+            StatementKind::Expression(expression) => {
+                format!(
+                    "{}ExpressionStatement\n{}",
+                    "  ".repeat(depth),
+                    expression.dump(depth + 1)
+                )
+            }
+            StatementKind::Null => {
+                format!("{}NullStatement", "  ".repeat(depth),)
             }
         }
     }

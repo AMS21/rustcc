@@ -1,0 +1,1 @@
+rustcc/tests/input/parser/invalid/missing_semicolon.c:6:5: error: expected ';'

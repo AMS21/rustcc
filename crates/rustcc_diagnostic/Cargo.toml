@@ -7,14 +7,14 @@ repository.workspace = true
 rust-version.workspace = true
 version.workspace = true
 
-[dependencies]
-colored = { workspace = true, optional = true }
-rustcc_source = { path = "../rustcc_source" }
-
 [features]
 default = ["color"]
 # Enable terminal color output using the `colored` crate
 color = ["dep:colored"]
+
+[dependencies]
+colored = { workspace = true, optional = true }
+rustcc_source = { path = "../rustcc_source" }
 
 [lints]
 workspace = true

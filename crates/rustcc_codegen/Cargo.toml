@@ -8,6 +8,7 @@ rust-version.workspace = true
 version.workspace = true
 
 [dependencies]
+rustc-hash.workspace = true
 rustcc_ast = { path = "../rustcc_ast" }
 rustcc_llvm = { path = "../rustcc_llvm" }
 

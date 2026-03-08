@@ -1,0 +1,6 @@
+rustcc/tests/input/sema/postdecrement_rvalue.c:4:15: error: cannot apply unary post-decrement to an rvalue
+TranslationUnit
+  FunctionDefinition "p"
+    ExpressionStatement
+      UnaryOperation PostDecrement 4:15-4:17
+        IntegerLiteral (1) 4:15

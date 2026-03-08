@@ -61,7 +61,7 @@ impl<'a> SourceLocation<'a> {
             source_file.path
         );
 
-        let file_lines = source_file.content.lines().count();
+        let file_lines = source_file.content.chars().filter(|c| *c == '\n').count() + 1;
         let line_length = source_file
             .content
             .lines()

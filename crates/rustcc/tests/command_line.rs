@@ -1,6 +1,6 @@
-use assert_cmd::Command;
+use assert_cmd::cargo::cargo_bin_cmd;
 
 #[test]
 fn command_line_no_arguments() {
-    Command::cargo_bin("rustcc").unwrap().assert().failure();
+    cargo_bin_cmd!("rustcc").assert().failure();
 }

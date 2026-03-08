@@ -1,0 +1,17 @@
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:16: error: expected declaration name
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:16: error: expected '}'
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:16: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:18: error: expected function name
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:18: error: expected '('
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:18: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:18: error: expected ')'
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:5:18: error: expected '{'
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:12: error: expected expression
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:10: error: expected expression instead reached end of file
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:12: error: expected '}'
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:12: error: expected 'int' keyword
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:19: error: expected function name
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:19: error: expected '('
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:19: error: expected 'void' keyword for parameter list
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:19: error: expected ')'
+rustcc/tests/input/parser/invalid/declare_keyword_as_var.c:6:19: error: expected '{'

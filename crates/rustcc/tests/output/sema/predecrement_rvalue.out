@@ -1,0 +1,6 @@
+rustcc/tests/input/sema/predecrement_rvalue.c:4:17: error: cannot apply unary operator pre-decrement to an rvalue
+TranslationUnit
+  FunctionDefinition "p"
+    ExpressionStatement
+      UnaryOperation PreDecrement 4:15-4:17
+        IntegerLiteral (1) 4:17

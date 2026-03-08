@@ -91,3 +91,8 @@
 "\x0a"
 "\x09"
 " "
+
+"int f(void) {}"
+"int main(void) {}"
+"int a;"
+"int a = 3;"
