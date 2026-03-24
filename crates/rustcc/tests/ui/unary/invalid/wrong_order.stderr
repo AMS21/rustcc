@@ -1,0 +1,9 @@
+wrong_order.c:5:14: error: expected expression
+wrong_order.c:5:10: error: expected expression instead reached end of file
+wrong_order.c:5:14: error: expected '}'
+wrong_order.c:5:14: error: expected 'int' keyword
+wrong_order.c:6:1: error: expected function name
+wrong_order.c:6:1: error: expected '('
+wrong_order.c:6:1: error: expected 'void' keyword for parameter list
+wrong_order.c:6:1: error: expected ')'
+wrong_order.c:6:1: error: expected '{'

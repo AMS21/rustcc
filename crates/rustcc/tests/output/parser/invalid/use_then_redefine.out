@@ -1,2 +1,0 @@
-rustcc/tests/input/parser/invalid/use_then_redefine.c:7:5: error: variable 'a' was already declared
-rustcc/tests/input/parser/invalid/use_then_redefine.c:5:5: note: previously declared here

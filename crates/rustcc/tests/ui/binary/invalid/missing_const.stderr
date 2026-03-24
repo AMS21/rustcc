@@ -1,0 +1,8 @@
+missing_const.c:6:12: error: expected expression
+missing_const.c:6:12: error: expected '}'
+missing_const.c:6:12: error: expected 'int' keyword
+missing_const.c:7:1: error: expected function name
+missing_const.c:7:1: error: expected '('
+missing_const.c:7:1: error: expected 'void' keyword for parameter list
+missing_const.c:7:1: error: expected ')'
+missing_const.c:7:1: error: expected '{'

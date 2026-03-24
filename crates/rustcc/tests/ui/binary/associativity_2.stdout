@@ -1,0 +1,15 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:21
+      BinaryOperation Divide
+        BinaryOperation Divide
+          IntegerLiteral (6) 4:12
+          IntegerLiteral (3) 4:16
+        IntegerLiteral (2) 4:20
+; ModuleID = 'associativity_2.c'
+source_filename = "associativity_2.c"
+
+define i32 @main() {
+entry:
+  ret i32 1
+}

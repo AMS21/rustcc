@@ -1,0 +1,6 @@
+TranslationUnit
+  FunctionDefinition "f1"
+    Declaration (b)
+      <uninitialized>  FunctionDefinition "f2"
+    ExpressionStatement
+      Variable (b)

@@ -1,0 +1,9 @@
+compound_initializer.c:5:11: error: invalid declaration. Expected semicolon or initializer
+compound_initializer.c:5:11: error: expected '}'
+compound_initializer.c:5:11: error: expected 'int' keyword
+compound_initializer.c:5:14: error: expected function name
+compound_initializer.c:5:14: error: expected '('
+compound_initializer.c:5:14: error: expected 'void' keyword for parameter list
+compound_initializer.c:5:14: error: expected ')'
+compound_initializer.c:5:14: error: expected '{'
+compound_initializer.c:6:12: error: variable 'a' not declared

@@ -1,0 +1,13 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:15
+      UnaryOperation Positive 4:12-4:14
+        UnaryOperation Negate 4:13-4:14
+          IntegerLiteral (5) 4:14
+; ModuleID = 'plus_minus.c'
+source_filename = "plus_minus.c"
+
+define i32 @main() {
+entry:
+  ret i32 -5
+}

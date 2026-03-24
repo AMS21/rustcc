@@ -1,0 +1,5 @@
+TranslationUnit
+  FunctionDefinition "p"
+    ExpressionStatement
+      UnaryOperation PreIncrement 4:15-4:17
+        IntegerLiteral (1) 4:17

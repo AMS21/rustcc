@@ -1,0 +1,15 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ExpressionStatement
+      BinaryOperation Add
+        IntegerLiteral (2) 4:5
+        IntegerLiteral (2) 4:9
+    ReturnStatement 5:5-5:13
+      IntegerLiteral (0) 5:12
+; ModuleID = 'unused_exp.c'
+source_filename = "unused_exp.c"
+
+define i32 @main() {
+entry:
+  ret i32 0
+}

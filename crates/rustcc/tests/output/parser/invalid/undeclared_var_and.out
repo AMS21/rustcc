@@ -1,1 +1,0 @@
-rustcc/tests/input/parser/invalid/undeclared_var_and.c:5:17: error: variable 'a' not declared

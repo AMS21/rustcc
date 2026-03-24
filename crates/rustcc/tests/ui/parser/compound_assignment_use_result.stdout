@@ -1,0 +1,52 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (x)
+      IntegerLiteral (1) 4:13
+    Declaration (y)
+      BinaryOperation AddAssign
+        Variable (x)
+        IntegerLiteral (3) 5:18
+    ReturnStatement 6:5-6:30
+      Parenthesis 6:12-6:29
+        BinaryOperation LogicalAnd
+          BinaryOperation Equals
+            Variable (x)
+            IntegerLiteral (4) 6:18
+          BinaryOperation Equals
+            Variable (y)
+            IntegerLiteral (4) 6:28
+; ModuleID = 'compound_assignment_use_result.c'
+source_filename = "compound_assignment_use_result.c"
+
+define i32 @main() {
+entry:
+  %x = alloca i32, align 4
+  store i32 1, ptr %x, align 4
+  %y = alloca i32, align 4
+  %x.load = load i32, ptr %x, align 4
+  %add = add i32 %x.load, 3
+  store i32 %add, ptr %x, align 4
+  store i32 %add, ptr %y, align 4
+  %x.load1 = load i32, ptr %x, align 4
+  %icmp_eq = icmp eq i32 %x.load1, 4
+  %zext = zext i1 %icmp_eq to i32
+  %icmp_ne = icmp ne i32 %zext, 0
+  br i1 %icmp_ne, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %entry
+  %y.load = load i32, ptr %y, align 4
+  %icmp_eq2 = icmp eq i32 %y.load, 4
+  %zext3 = zext i1 %icmp_eq2 to i32
+  %icmp_ne4 = icmp ne i32 %zext3, 0
+  br i1 %icmp_ne4, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %entry
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  ret i32 %land.phi
+}

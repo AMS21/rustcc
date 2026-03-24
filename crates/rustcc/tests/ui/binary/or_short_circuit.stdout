@@ -1,0 +1,29 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:24
+      BinaryOperation LogicalOr
+        IntegerLiteral (1) 4:12
+        Parenthesis 4:17-4:23
+          BinaryOperation Divide
+            IntegerLiteral (1) 4:18
+            IntegerLiteral (0) 4:22
+; ModuleID = 'or_short_circuit.c'
+source_filename = "or_short_circuit.c"
+
+define i32 @main() {
+entry:
+  br i1 true, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  br i1 poison, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  ret i32 %lor.phi
+}

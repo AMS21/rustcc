@@ -1,0 +1,9 @@
+malformed_compound_assignment.c:10:8: error: expected expression
+malformed_compound_assignment.c:10:8: error: expected '}'
+malformed_compound_assignment.c:10:8: error: expected 'int' keyword
+malformed_compound_assignment.c:10:10: error: expected function name
+malformed_compound_assignment.c:10:10: error: expected '('
+malformed_compound_assignment.c:10:10: error: expected 'void' keyword for parameter list
+malformed_compound_assignment.c:10:10: error: expected ')'
+malformed_compound_assignment.c:10:10: error: expected '{'
+malformed_compound_assignment.c:11:12: error: variable 'a' not declared

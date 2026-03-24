@@ -1,0 +1,1 @@
+undeclared_compound_assignment.c:5:5: error: variable 'a' not declared

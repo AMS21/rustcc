@@ -11,6 +11,7 @@ cd "$SCRIPT_DIR/.."
 "$SCRIPT_DIR/fuzz-setup.sh"
 
 # Minimize the corpus
-cargo +nightly fuzz cmin fuzz_compile --release --debug-assertions
+RUSTFLAGS="-Cdebuginfo=1 -Cforce-frame-pointers" cargo \
+    +nightly fuzz cmin fuzz_compile --release --debug-assertions
 
 echo "Minimization complete."

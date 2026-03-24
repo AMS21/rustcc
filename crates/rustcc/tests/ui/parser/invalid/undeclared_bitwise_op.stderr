@@ -1,0 +1,1 @@
+undeclared_bitwise_op.c:5:12: error: variable 'a' not declared

@@ -1,0 +1,8 @@
+missing_open_paren.c:5:17: error: expected ';'
+missing_open_paren.c:5:17: error: expected '}'
+missing_open_paren.c:5:17: error: expected 'int' keyword
+missing_open_paren.c:5:18: error: expected function name
+missing_open_paren.c:5:18: error: expected '('
+missing_open_paren.c:5:18: error: expected 'void' keyword for parameter list
+missing_open_paren.c:5:18: error: expected ')'
+missing_open_paren.c:5:18: error: expected '{'

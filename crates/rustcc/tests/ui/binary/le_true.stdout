@@ -1,0 +1,19 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:31
+      BinaryOperation Add
+        Parenthesis 4:12-4:19
+          BinaryOperation LessThanOrEqual
+            IntegerLiteral (0) 4:13
+            IntegerLiteral (2) 4:18
+        Parenthesis 4:23-4:30
+          BinaryOperation LessThanOrEqual
+            IntegerLiteral (0) 4:24
+            IntegerLiteral (0) 4:29
+; ModuleID = 'le_true.c'
+source_filename = "le_true.c"
+
+define i32 @main() {
+entry:
+  ret i32 2
+}

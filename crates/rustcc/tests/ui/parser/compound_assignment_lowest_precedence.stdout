@@ -1,0 +1,199 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (10) 4:13-4:14
+    Declaration (b)
+      IntegerLiteral (12) 5:13-5:14
+    ExpressionStatement
+      BinaryOperation AddAssign
+        Variable (a)
+        BinaryOperation LogicalOr
+          IntegerLiteral (0) 6:10
+          Variable (b)
+    ExpressionStatement
+      BinaryOperation MultiplyAssign
+        Variable (b)
+        BinaryOperation LogicalAnd
+          Variable (a)
+          IntegerLiteral (0) 7:15
+    Declaration (c)
+      IntegerLiteral (14) 9:13-9:14
+    ExpressionStatement
+      BinaryOperation SubtractAssign
+        Variable (c)
+        BinaryOperation LogicalOr
+          Variable (a)
+          Variable (b)
+    Declaration (d)
+      IntegerLiteral (16) 12:13-12:14
+    ExpressionStatement
+      BinaryOperation DivideAssign
+        Variable (d)
+        BinaryOperation LogicalOr
+          Variable (c)
+          Variable (d)
+    ReturnStatement 14:5-14:53
+      Parenthesis 14:12-14:52
+        BinaryOperation LogicalAnd
+          BinaryOperation LogicalAnd
+            BinaryOperation LogicalAnd
+              BinaryOperation Equals
+                Variable (a)
+                IntegerLiteral (11) 14:18-14:19
+              BinaryOperation Equals
+                Variable (b)
+                IntegerLiteral (0) 14:29
+            BinaryOperation Equals
+              Variable (c)
+              IntegerLiteral (13) 14:39-14:40
+          BinaryOperation Equals
+            Variable (d)
+            IntegerLiteral (16) 14:50-14:51
+; ModuleID = 'compound_assignment_lowest_precedence.c'
+source_filename = "compound_assignment_lowest_precedence.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 10, ptr %a, align 4
+  %b = alloca i32, align 4
+  store i32 12, ptr %b, align 4
+  %a.load = load i32, ptr %a, align 4
+  br i1 false, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  %b.load = load i32, ptr %b, align 4
+  %icmp_ne = icmp ne i32 %b.load, 0
+  br i1 %icmp_ne, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  %add = add i32 %a.load, %lor.phi
+  store i32 %add, ptr %a, align 4
+  %b.load1 = load i32, ptr %b, align 4
+  %a.load2 = load i32, ptr %a, align 4
+  %icmp_ne3 = icmp ne i32 %a.load2, 0
+  br i1 %icmp_ne3, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %lor.end
+  br i1 false, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %lor.end
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  %mul = mul i32 %b.load1, %land.phi
+  store i32 %mul, ptr %b, align 4
+  %c = alloca i32, align 4
+  store i32 14, ptr %c, align 4
+  %c.load = load i32, ptr %c, align 4
+  %a.load4 = load i32, ptr %a, align 4
+  %icmp_ne5 = icmp ne i32 %a.load4, 0
+  br i1 %icmp_ne5, label %lor.true9, label %lor.rhs6
+
+lor.rhs6:                                         ; preds = %land.end
+  %b.load7 = load i32, ptr %b, align 4
+  %icmp_ne8 = icmp ne i32 %b.load7, 0
+  br i1 %icmp_ne8, label %lor.true9, label %lor.false10
+
+lor.true9:                                        ; preds = %lor.rhs6, %land.end
+  br label %lor.end12
+
+lor.false10:                                      ; preds = %lor.rhs6
+  br label %lor.end12
+
+lor.end12:                                        ; preds = %lor.false10, %lor.true9
+  %lor.phi11 = phi i32 [ 1, %lor.true9 ], [ 0, %lor.false10 ]
+  %sub = sub i32 %c.load, %lor.phi11
+  store i32 %sub, ptr %c, align 4
+  %d = alloca i32, align 4
+  store i32 16, ptr %d, align 4
+  %d.load = load i32, ptr %d, align 4
+  %c.load13 = load i32, ptr %c, align 4
+  %icmp_ne14 = icmp ne i32 %c.load13, 0
+  br i1 %icmp_ne14, label %lor.true18, label %lor.rhs15
+
+lor.rhs15:                                        ; preds = %lor.end12
+  %d.load16 = load i32, ptr %d, align 4
+  %icmp_ne17 = icmp ne i32 %d.load16, 0
+  br i1 %icmp_ne17, label %lor.true18, label %lor.false19
+
+lor.true18:                                       ; preds = %lor.rhs15, %lor.end12
+  br label %lor.end21
+
+lor.false19:                                      ; preds = %lor.rhs15
+  br label %lor.end21
+
+lor.end21:                                        ; preds = %lor.false19, %lor.true18
+  %lor.phi20 = phi i32 [ 1, %lor.true18 ], [ 0, %lor.false19 ]
+  %sdiv = sdiv i32 %d.load, %lor.phi20
+  store i32 %sdiv, ptr %d, align 4
+  %a.load22 = load i32, ptr %a, align 4
+  %icmp_eq = icmp eq i32 %a.load22, 11
+  %zext = zext i1 %icmp_eq to i32
+  %icmp_ne23 = icmp ne i32 %zext, 0
+  br i1 %icmp_ne23, label %land.rhs24, label %land.false29
+
+land.rhs24:                                       ; preds = %lor.end21
+  %b.load25 = load i32, ptr %b, align 4
+  %icmp_eq26 = icmp eq i32 %b.load25, 0
+  %zext27 = zext i1 %icmp_eq26 to i32
+  %icmp_ne28 = icmp ne i32 %zext27, 0
+  br i1 %icmp_ne28, label %land.true30, label %land.false29
+
+land.false29:                                     ; preds = %land.rhs24, %lor.end21
+  br label %land.end32
+
+land.true30:                                      ; preds = %land.rhs24
+  br label %land.end32
+
+land.end32:                                       ; preds = %land.false29, %land.true30
+  %land.phi31 = phi i32 [ 1, %land.true30 ], [ 0, %land.false29 ]
+  %icmp_ne33 = icmp ne i32 %land.phi31, 0
+  br i1 %icmp_ne33, label %land.rhs34, label %land.false39
+
+land.rhs34:                                       ; preds = %land.end32
+  %c.load35 = load i32, ptr %c, align 4
+  %icmp_eq36 = icmp eq i32 %c.load35, 13
+  %zext37 = zext i1 %icmp_eq36 to i32
+  %icmp_ne38 = icmp ne i32 %zext37, 0
+  br i1 %icmp_ne38, label %land.true40, label %land.false39
+
+land.false39:                                     ; preds = %land.rhs34, %land.end32
+  br label %land.end42
+
+land.true40:                                      ; preds = %land.rhs34
+  br label %land.end42
+
+land.end42:                                       ; preds = %land.false39, %land.true40
+  %land.phi41 = phi i32 [ 1, %land.true40 ], [ 0, %land.false39 ]
+  %icmp_ne43 = icmp ne i32 %land.phi41, 0
+  br i1 %icmp_ne43, label %land.rhs44, label %land.false49
+
+land.rhs44:                                       ; preds = %land.end42
+  %d.load45 = load i32, ptr %d, align 4
+  %icmp_eq46 = icmp eq i32 %d.load45, 16
+  %zext47 = zext i1 %icmp_eq46 to i32
+  %icmp_ne48 = icmp ne i32 %zext47, 0
+  br i1 %icmp_ne48, label %land.true50, label %land.false49
+
+land.false49:                                     ; preds = %land.rhs44, %land.end42
+  br label %land.end52
+
+land.true50:                                      ; preds = %land.rhs44
+  br label %land.end52
+
+land.end52:                                       ; preds = %land.false49, %land.true50
+  %land.phi51 = phi i32 [ 1, %land.true50 ], [ 0, %land.false49 ]
+  ret i32 %land.phi51
+}

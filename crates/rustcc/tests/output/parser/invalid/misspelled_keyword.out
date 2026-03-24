@@ -1,2 +1,0 @@
-rustcc/tests/input/parser/invalid/misspelled_keyword.c:5:5: error: variable 'returns' not declared
-rustcc/tests/input/parser/invalid/misspelled_keyword.c:5:13: error: expected ';'

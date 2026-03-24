@@ -1,0 +1,16 @@
+invalid_specifier.c:5:13: error: invalid declaration. Expected semicolon or initializer
+invalid_specifier.c:5:13: error: expected '}'
+invalid_specifier.c:5:13: error: expected 'int' keyword
+invalid_specifier.c:5:17: error: expected '('
+invalid_specifier.c:5:17: error: expected 'void' keyword for parameter list
+invalid_specifier.c:5:17: error: expected ')'
+invalid_specifier.c:5:17: error: expected '{'
+invalid_specifier.c:5:17: error: expected expression
+invalid_specifier.c:5:17: error: expected '}'
+invalid_specifier.c:5:17: error: expected 'int' keyword
+invalid_specifier.c:5:19: error: expected function name
+invalid_specifier.c:5:19: error: expected '('
+invalid_specifier.c:5:19: error: expected 'void' keyword for parameter list
+invalid_specifier.c:5:19: error: expected ')'
+invalid_specifier.c:5:19: error: expected '{'
+invalid_specifier.c:6:12: error: variable 'bar' not declared

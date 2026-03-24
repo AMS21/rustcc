@@ -1,0 +1,107 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (1) 4:13
+    Declaration (b)
+      IntegerLiteral (2) 5:13
+    Declaration (c)
+      UnaryOperation PreIncrement 6:13-6:15
+        Variable (a)
+    Declaration (d)
+      UnaryOperation PreDecrement 7:13-7:15
+        Variable (b)
+    ReturnStatement 8:5-8:50
+      Parenthesis 8:12-8:49
+        BinaryOperation LogicalAnd
+          BinaryOperation LogicalAnd
+            BinaryOperation LogicalAnd
+              BinaryOperation Equals
+                Variable (a)
+                IntegerLiteral (2) 8:18
+              BinaryOperation Equals
+                Variable (b)
+                IntegerLiteral (1) 8:28
+            BinaryOperation Equals
+              Variable (c)
+              IntegerLiteral (2) 8:38
+          BinaryOperation Equals
+            Variable (d)
+            IntegerLiteral (1) 8:48
+; ModuleID = 'prefix_incr_and_decr.c'
+source_filename = "prefix_incr_and_decr.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 1, ptr %a, align 4
+  %b = alloca i32, align 4
+  store i32 2, ptr %b, align 4
+  %c = alloca i32, align 4
+  %a.load = load i32, ptr %a, align 4
+  %add = add i32 %a.load, 1
+  store i32 %add, ptr %a, align 4
+  store i32 %add, ptr %c, align 4
+  %d = alloca i32, align 4
+  %b.load = load i32, ptr %b, align 4
+  %sub = sub i32 %b.load, 1
+  store i32 %sub, ptr %b, align 4
+  store i32 %sub, ptr %d, align 4
+  %a.load1 = load i32, ptr %a, align 4
+  %icmp_eq = icmp eq i32 %a.load1, 2
+  %zext = zext i1 %icmp_eq to i32
+  %icmp_ne = icmp ne i32 %zext, 0
+  br i1 %icmp_ne, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %entry
+  %b.load2 = load i32, ptr %b, align 4
+  %icmp_eq3 = icmp eq i32 %b.load2, 1
+  %zext4 = zext i1 %icmp_eq3 to i32
+  %icmp_ne5 = icmp ne i32 %zext4, 0
+  br i1 %icmp_ne5, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %entry
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  %icmp_ne6 = icmp ne i32 %land.phi, 0
+  br i1 %icmp_ne6, label %land.rhs7, label %land.false11
+
+land.rhs7:                                        ; preds = %land.end
+  %c.load = load i32, ptr %c, align 4
+  %icmp_eq8 = icmp eq i32 %c.load, 2
+  %zext9 = zext i1 %icmp_eq8 to i32
+  %icmp_ne10 = icmp ne i32 %zext9, 0
+  br i1 %icmp_ne10, label %land.true12, label %land.false11
+
+land.false11:                                     ; preds = %land.rhs7, %land.end
+  br label %land.end14
+
+land.true12:                                      ; preds = %land.rhs7
+  br label %land.end14
+
+land.end14:                                       ; preds = %land.false11, %land.true12
+  %land.phi13 = phi i32 [ 1, %land.true12 ], [ 0, %land.false11 ]
+  %icmp_ne15 = icmp ne i32 %land.phi13, 0
+  br i1 %icmp_ne15, label %land.rhs16, label %land.false20
+
+land.rhs16:                                       ; preds = %land.end14
+  %d.load = load i32, ptr %d, align 4
+  %icmp_eq17 = icmp eq i32 %d.load, 1
+  %zext18 = zext i1 %icmp_eq17 to i32
+  %icmp_ne19 = icmp ne i32 %zext18, 0
+  br i1 %icmp_ne19, label %land.true21, label %land.false20
+
+land.false20:                                     ; preds = %land.rhs16, %land.end14
+  br label %land.end23
+
+land.true21:                                      ; preds = %land.rhs16
+  br label %land.end23
+
+land.end23:                                       ; preds = %land.false20, %land.true21
+  %land.phi22 = phi i32 [ 1, %land.true21 ], [ 0, %land.false20 ]
+  ret i32 %land.phi22
+}

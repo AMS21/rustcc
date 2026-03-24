@@ -1,0 +1,9 @@
+at_sign.c:7:13: error: unexpected character '@' found
+at_sign.c:7:14: error: expected ';'
+at_sign.c:7:14: error: expected '}'
+at_sign.c:7:14: error: expected 'int' keyword
+at_sign.c:7:15: error: expected function name
+at_sign.c:7:15: error: expected '('
+at_sign.c:7:15: error: expected 'void' keyword for parameter list
+at_sign.c:7:15: error: expected ')'
+at_sign.c:7:15: error: expected '{'

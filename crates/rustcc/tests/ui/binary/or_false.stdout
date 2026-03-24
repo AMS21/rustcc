@@ -1,0 +1,26 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:18
+      BinaryOperation LogicalOr
+        IntegerLiteral (0) 4:12
+        IntegerLiteral (0) 4:17
+; ModuleID = 'or_false.c'
+source_filename = "or_false.c"
+
+define i32 @main() {
+entry:
+  br i1 false, label %lor.true, label %lor.rhs
+
+lor.rhs:                                          ; preds = %entry
+  br i1 false, label %lor.true, label %lor.false
+
+lor.true:                                         ; preds = %lor.rhs, %entry
+  br label %lor.end
+
+lor.false:                                        ; preds = %lor.rhs
+  br label %lor.end
+
+lor.end:                                          ; preds = %lor.false, %lor.true
+  %lor.phi = phi i32 [ 1, %lor.true ], [ 0, %lor.false ]
+  ret i32 %lor.phi
+}

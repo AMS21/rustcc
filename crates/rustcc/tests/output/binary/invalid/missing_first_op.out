@@ -1,9 +1,0 @@
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:12: error: expected expression
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:10: error: expected expression instead reached end of file
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:12: error: expected '}'
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:12: error: expected 'int' keyword
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected function name
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected '('
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected 'void' keyword for parameter list
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected ')'
-rustcc/tests/input/binary/invalid/missing_first_op.c:5:13: error: expected '{'

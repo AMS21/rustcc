@@ -1,0 +1,8 @@
+return_in_assignment.c:6:12: error: expected declaration name
+return_in_assignment.c:6:12: error: expected '}'
+return_in_assignment.c:6:12: error: expected 'int' keyword
+return_in_assignment.c:6:14: error: expected function name
+return_in_assignment.c:6:14: error: expected '('
+return_in_assignment.c:6:14: error: expected 'void' keyword for parameter list
+return_in_assignment.c:6:14: error: expected ')'
+return_in_assignment.c:6:14: error: expected '{'

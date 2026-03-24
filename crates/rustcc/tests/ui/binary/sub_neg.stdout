@@ -1,0 +1,14 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:17
+      BinaryOperation Subtract
+        IntegerLiteral (2) 4:12
+        UnaryOperation Negate 4:15-4:16
+          IntegerLiteral (1) 4:16
+; ModuleID = 'sub_neg.c'
+source_filename = "sub_neg.c"
+
+define i32 @main() {
+entry:
+  ret i32 3
+}

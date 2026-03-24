@@ -1,2 +1,0 @@
-rustcc/tests/input/lexer/invalid/invalid_identifier_2.c:6:12: error: unexpected character '@' found
-rustcc/tests/input/lexer/invalid/invalid_identifier_2.c:6:13: error: variable 'b' not declared

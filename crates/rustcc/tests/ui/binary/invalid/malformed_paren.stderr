@@ -1,0 +1,17 @@
+malformed_paren.c:5:14: error: expected ';'
+malformed_paren.c:5:14: error: expected '}'
+malformed_paren.c:5:14: error: expected 'int' keyword
+malformed_paren.c:5:15: error: expected function name
+malformed_paren.c:5:15: error: expected '('
+malformed_paren.c:5:15: error: expected 'void' keyword for parameter list
+malformed_paren.c:5:15: error: expected ')'
+malformed_paren.c:5:15: error: expected '{'
+malformed_paren.c:5:18: error: expected ';'
+malformed_paren.c:5:18: error: expected expression
+malformed_paren.c:5:18: error: expected '}'
+malformed_paren.c:5:18: error: expected 'int' keyword
+malformed_paren.c:5:19: error: expected function name
+malformed_paren.c:5:19: error: expected '('
+malformed_paren.c:5:19: error: expected 'void' keyword for parameter list
+malformed_paren.c:5:19: error: expected ')'
+malformed_paren.c:5:19: error: expected '{'

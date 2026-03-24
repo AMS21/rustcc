@@ -1,0 +1,9 @@
+malformed_less_equal.c:9:16: error: expected expression
+malformed_less_equal.c:9:10: error: expected expression instead reached end of file
+malformed_less_equal.c:9:16: error: expected '}'
+malformed_less_equal.c:9:16: error: expected 'int' keyword
+malformed_less_equal.c:9:18: error: expected function name
+malformed_less_equal.c:9:18: error: expected '('
+malformed_less_equal.c:9:18: error: expected 'void' keyword for parameter list
+malformed_less_equal.c:9:18: error: expected ')'
+malformed_less_equal.c:9:18: error: expected '{'

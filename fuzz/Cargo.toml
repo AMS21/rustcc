@@ -15,12 +15,12 @@ doc = false
 bench = false
 
 [dependencies]
-libfuzzer-sys = "0.4"
-rustcc_codegen = { path = "../crates/rustcc_codegen", default-features = false }
-rustcc_diagnostic = { path = "../crates/rustcc_diagnostic", default-features = false }
-rustcc_lexer = { path = "../crates/rustcc_lexer", default-features = false }
-rustcc_parser = { path = "../crates/rustcc_parser", default-features = false }
-rustcc_source = { path = "../crates/rustcc_source", default-features = false }
+libfuzzer-sys = "0.4.12"
+rustcc_codegen.path = "../crates/rustcc_codegen"
+rustcc_diagnostic.path = "../crates/rustcc_diagnostic"
+rustcc_lexer.path = "../crates/rustcc_lexer"
+rustcc_parser.path = "../crates/rustcc_parser"
+rustcc_source.path = "../crates/rustcc_source"
 
 [profile.release]
 codegen-units = 1

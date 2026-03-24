@@ -1,0 +1,65 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:43
+      BinaryOperation Add
+        BinaryOperation Add
+          Parenthesis 4:12-4:20
+            BinaryOperation LogicalAnd
+              IntegerLiteral (10) 4:13-4:14
+              IntegerLiteral (0) 4:19
+          Parenthesis 4:24-4:31
+            BinaryOperation LogicalAnd
+              IntegerLiteral (0) 4:25
+              IntegerLiteral (4) 4:30
+        Parenthesis 4:35-4:42
+          BinaryOperation LogicalAnd
+            IntegerLiteral (0) 4:36
+            IntegerLiteral (0) 4:41
+; ModuleID = 'and_false.c'
+source_filename = "and_false.c"
+
+define i32 @main() {
+entry:
+  br i1 true, label %land.rhs, label %land.false
+
+land.rhs:                                         ; preds = %entry
+  br i1 false, label %land.true, label %land.false
+
+land.false:                                       ; preds = %land.rhs, %entry
+  br label %land.end
+
+land.true:                                        ; preds = %land.rhs
+  br label %land.end
+
+land.end:                                         ; preds = %land.false, %land.true
+  %land.phi = phi i32 [ 1, %land.true ], [ 0, %land.false ]
+  br i1 false, label %land.rhs1, label %land.false2
+
+land.rhs1:                                        ; preds = %land.end
+  br i1 true, label %land.true3, label %land.false2
+
+land.false2:                                      ; preds = %land.rhs1, %land.end
+  br label %land.end5
+
+land.true3:                                       ; preds = %land.rhs1
+  br label %land.end5
+
+land.end5:                                        ; preds = %land.false2, %land.true3
+  %land.phi4 = phi i32 [ 1, %land.true3 ], [ 0, %land.false2 ]
+  %add = add i32 %land.phi, %land.phi4
+  br i1 false, label %land.rhs6, label %land.false7
+
+land.rhs6:                                        ; preds = %land.end5
+  br i1 false, label %land.true8, label %land.false7
+
+land.false7:                                      ; preds = %land.rhs6, %land.end5
+  br label %land.end10
+
+land.true8:                                       ; preds = %land.rhs6
+  br label %land.end10
+
+land.end10:                                       ; preds = %land.false7, %land.true8
+  %land.phi9 = phi i32 [ 1, %land.true8 ], [ 0, %land.false7 ]
+  %add11 = add i32 %add, %land.phi9
+  ret i32 %add11
+}

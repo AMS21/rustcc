@@ -1,0 +1,1 @@
+postincrement_rvalue.c:4:15: error: cannot apply unary post-increment to an rvalue

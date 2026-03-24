@@ -1,0 +1,13 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:19
+      BinaryOperation GreaterThan
+        IntegerLiteral (15) 4:12-4:13
+        IntegerLiteral (10) 4:17-4:18
+; ModuleID = 'gt_true.c'
+source_filename = "gt_true.c"
+
+define i32 @main() {
+entry:
+  ret i32 1
+}

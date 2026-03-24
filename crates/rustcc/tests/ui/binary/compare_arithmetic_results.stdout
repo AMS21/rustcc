@@ -1,0 +1,19 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:28
+      BinaryOperation Equals
+        BinaryOperation Multiply
+          UnaryOperation Complement 4:12-4:13
+            IntegerLiteral (2) 4:13
+          UnaryOperation Negate 4:17-4:18
+            IntegerLiteral (2) 4:18
+        BinaryOperation Add
+          IntegerLiteral (1) 4:23
+          IntegerLiteral (5) 4:27
+; ModuleID = 'compare_arithmetic_results.c'
+source_filename = "compare_arithmetic_results.c"
+
+define i32 @main() {
+entry:
+  ret i32 1
+}

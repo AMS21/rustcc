@@ -1,0 +1,15 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:21
+      BinaryOperation Subtract
+        BinaryOperation Subtract
+          IntegerLiteral (1) 4:12
+          IntegerLiteral (2) 4:16
+        IntegerLiteral (3) 4:20
+; ModuleID = 'associativity.c'
+source_filename = "associativity.c"
+
+define i32 @main() {
+entry:
+  ret i32 -4
+}

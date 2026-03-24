@@ -1,0 +1,2 @@
+unclosed_paren.c:4:11: error: expected 'void' keyword for parameter list
+unclosed_paren.c:4:11: error: expected ')'

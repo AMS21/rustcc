@@ -1,0 +1,2 @@
+misspelled_keyword.c:5:5: error: variable 'returns' not declared
+misspelled_keyword.c:5:13: error: expected ';'

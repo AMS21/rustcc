@@ -1,0 +1,11 @@
+digit_overflow.c:6:12: error: integer literal is too large
+digit_overflow.c:4:10: error: expected 'void' keyword for parameter list
+digit_overflow.c:6:32: error: expected expression
+digit_overflow.c:6:10: error: expected expression instead reached end of file
+digit_overflow.c:6:32: error: expected '}'
+digit_overflow.c:6:32: error: expected 'int' keyword
+digit_overflow.c:7:1: error: expected function name
+digit_overflow.c:7:1: error: expected '('
+digit_overflow.c:7:1: error: expected 'void' keyword for parameter list
+digit_overflow.c:7:1: error: expected ')'
+digit_overflow.c:7:1: error: expected '{'

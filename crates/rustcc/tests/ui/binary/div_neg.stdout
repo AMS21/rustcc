@@ -1,0 +1,15 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:21
+      BinaryOperation Divide
+        Parenthesis 4:12-4:16
+          UnaryOperation Negate 4:13-4:15
+            IntegerLiteral (12) 4:14-4:15
+        IntegerLiteral (5) 4:20
+; ModuleID = 'div_neg.c'
+source_filename = "div_neg.c"
+
+define i32 @main() {
+entry:
+  ret i32 -2
+}

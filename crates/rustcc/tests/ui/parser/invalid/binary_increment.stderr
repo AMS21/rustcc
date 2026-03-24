@@ -1,0 +1,8 @@
+binary_increment.c:6:17: error: expected ';'
+binary_increment.c:6:17: error: expected '}'
+binary_increment.c:6:17: error: expected 'int' keyword
+binary_increment.c:6:18: error: expected function name
+binary_increment.c:6:18: error: expected '('
+binary_increment.c:6:18: error: expected 'void' keyword for parameter list
+binary_increment.c:6:18: error: expected ')'
+binary_increment.c:6:18: error: expected '{'

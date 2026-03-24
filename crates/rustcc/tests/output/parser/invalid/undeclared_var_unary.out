@@ -1,1 +1,0 @@
-rustcc/tests/input/parser/invalid/undeclared_var_unary.c:5:13: error: variable 'a' not declared

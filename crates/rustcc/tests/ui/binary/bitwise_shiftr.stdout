@@ -1,0 +1,13 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:21
+      BinaryOperation BitwiseRightShift
+        IntegerLiteral (1000) 4:12-4:15
+        IntegerLiteral (4) 4:20
+; ModuleID = 'bitwise_shiftr.c'
+source_filename = "bitwise_shiftr.c"
+
+define i32 @main() {
+entry:
+  ret i32 62
+}

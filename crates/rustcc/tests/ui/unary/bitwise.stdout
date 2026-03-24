@@ -1,0 +1,12 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:15
+      UnaryOperation Complement 4:12-4:14
+        IntegerLiteral (12) 4:13-4:14
+; ModuleID = 'bitwise.c'
+source_filename = "bitwise.c"
+
+define i32 @main() {
+entry:
+  ret i32 -13
+}

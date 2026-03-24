@@ -1,0 +1,1 @@
+postdecrement_rvalue.c:4:15: error: cannot apply unary post-decrement to an rvalue

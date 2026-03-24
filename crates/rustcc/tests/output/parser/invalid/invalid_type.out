@@ -1,4 +1,0 @@
-rustcc/tests/input/parser/invalid/invalid_type.c:5:5: error: variable 'ints' not declared
-rustcc/tests/input/parser/invalid/invalid_type.c:5:10: error: expected ';'
-rustcc/tests/input/parser/invalid/invalid_type.c:5:10: error: variable 'a' not declared
-rustcc/tests/input/parser/invalid/invalid_type.c:6:12: error: variable 'a' not declared

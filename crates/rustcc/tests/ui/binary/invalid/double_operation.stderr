@@ -1,0 +1,9 @@
+double_operation.c:5:16: error: expected expression
+double_operation.c:5:10: error: expected expression instead reached end of file
+double_operation.c:5:16: error: expected '}'
+double_operation.c:5:16: error: expected 'int' keyword
+double_operation.c:5:18: error: expected function name
+double_operation.c:5:18: error: expected '('
+double_operation.c:5:18: error: expected 'void' keyword for parameter list
+double_operation.c:5:18: error: expected ')'
+double_operation.c:5:18: error: expected '{'

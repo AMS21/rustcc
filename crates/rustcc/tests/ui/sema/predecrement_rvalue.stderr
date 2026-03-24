@@ -1,0 +1,1 @@
+predecrement_rvalue.c:4:17: error: cannot apply unary operator pre-decrement to an rvalue

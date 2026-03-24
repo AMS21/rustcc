@@ -1,9 +1,0 @@
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:9: error: expected expression
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:9: error: expected '}'
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:9: error: expected 'int' keyword
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:11: error: expected function name
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:11: error: expected '('
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:11: error: expected 'void' keyword for parameter list
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:11: error: expected ')'
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:9:11: error: expected '{'
-rustcc/tests/input/parser/invalid/compound_invalid_operator.c:10:12: error: variable 'a' not declared

@@ -1,0 +1,8 @@
+increment_declaration.c:5:10: error: invalid declaration. Expected semicolon or initializer
+increment_declaration.c:5:10: error: expected '}'
+increment_declaration.c:5:10: error: expected 'int' keyword
+increment_declaration.c:5:12: error: expected function name
+increment_declaration.c:5:12: error: expected '('
+increment_declaration.c:5:12: error: expected 'void' keyword for parameter list
+increment_declaration.c:5:12: error: expected ')'
+increment_declaration.c:5:12: error: expected '{'

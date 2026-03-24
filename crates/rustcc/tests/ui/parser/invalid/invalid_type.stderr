@@ -1,0 +1,4 @@
+invalid_type.c:5:5: error: variable 'ints' not declared
+invalid_type.c:5:10: error: expected ';'
+invalid_type.c:5:10: error: variable 'a' not declared
+invalid_type.c:6:12: error: variable 'a' not declared

@@ -1,0 +1,17 @@
+declare_keyword_as_var.c:5:16: error: expected declaration name
+declare_keyword_as_var.c:5:16: error: expected '}'
+declare_keyword_as_var.c:5:16: error: expected 'int' keyword
+declare_keyword_as_var.c:5:18: error: expected function name
+declare_keyword_as_var.c:5:18: error: expected '('
+declare_keyword_as_var.c:5:18: error: expected 'void' keyword for parameter list
+declare_keyword_as_var.c:5:18: error: expected ')'
+declare_keyword_as_var.c:5:18: error: expected '{'
+declare_keyword_as_var.c:6:12: error: expected expression
+declare_keyword_as_var.c:6:10: error: expected expression instead reached end of file
+declare_keyword_as_var.c:6:12: error: expected '}'
+declare_keyword_as_var.c:6:12: error: expected 'int' keyword
+declare_keyword_as_var.c:6:19: error: expected function name
+declare_keyword_as_var.c:6:19: error: expected '('
+declare_keyword_as_var.c:6:19: error: expected 'void' keyword for parameter list
+declare_keyword_as_var.c:6:19: error: expected ')'
+declare_keyword_as_var.c:6:19: error: expected '{'

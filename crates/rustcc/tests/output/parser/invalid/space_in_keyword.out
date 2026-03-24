@@ -1,4 +1,0 @@
-rustcc/tests/input/parser/invalid/space_in_keyword.c:5:5: error: variable 'retur' not declared
-rustcc/tests/input/parser/invalid/space_in_keyword.c:5:11: error: expected ';'
-rustcc/tests/input/parser/invalid/space_in_keyword.c:5:11: error: variable 'n' not declared
-rustcc/tests/input/parser/invalid/space_in_keyword.c:5:13: error: expected ';'

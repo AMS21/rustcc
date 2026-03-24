@@ -1,0 +1,4 @@
+space_in_keyword.c:5:5: error: variable 'retur' not declared
+space_in_keyword.c:5:11: error: expected ';'
+space_in_keyword.c:5:11: error: variable 'n' not declared
+space_in_keyword.c:5:13: error: expected ';'

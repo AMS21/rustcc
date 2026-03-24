@@ -1,0 +1,23 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (to_shiftl)
+      IntegerLiteral (3) 4:21
+    ExpressionStatement
+      BinaryOperation BitwiseLeftShiftAssign
+        Variable (to_shiftl)
+        IntegerLiteral (4) 5:19
+    ReturnStatement 6:5-6:21
+      Variable (to_shiftl)
+; ModuleID = 'compound_bitwise_shiftl.c'
+source_filename = "compound_bitwise_shiftl.c"
+
+define i32 @main() {
+entry:
+  %to_shiftl = alloca i32, align 4
+  store i32 3, ptr %to_shiftl, align 4
+  %to_shiftl.load = load i32, ptr %to_shiftl, align 4
+  %shl = shl i32 %to_shiftl.load, 4
+  store i32 %shl, ptr %to_shiftl, align 4
+  %to_shiftl.load1 = load i32, ptr %to_shiftl, align 4
+  ret i32 %to_shiftl.load1
+}

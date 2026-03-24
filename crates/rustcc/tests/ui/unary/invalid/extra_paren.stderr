@@ -1,0 +1,8 @@
+extra_paren.c:6:15: error: expected ';'
+extra_paren.c:6:15: error: expected '}'
+extra_paren.c:6:15: error: expected 'int' keyword
+extra_paren.c:6:16: error: expected function name
+extra_paren.c:6:16: error: expected '('
+extra_paren.c:6:16: error: expected 'void' keyword for parameter list
+extra_paren.c:6:16: error: expected ')'
+extra_paren.c:6:16: error: expected '{'

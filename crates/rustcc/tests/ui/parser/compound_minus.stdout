@@ -1,0 +1,23 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (to_subtract)
+      IntegerLiteral (10) 4:23-4:24
+    ExpressionStatement
+      BinaryOperation SubtractAssign
+        Variable (to_subtract)
+        IntegerLiteral (8) 5:20
+    ReturnStatement 6:5-6:23
+      Variable (to_subtract)
+; ModuleID = 'compound_minus.c'
+source_filename = "compound_minus.c"
+
+define i32 @main() {
+entry:
+  %to_subtract = alloca i32, align 4
+  store i32 10, ptr %to_subtract, align 4
+  %to_subtract.load = load i32, ptr %to_subtract, align 4
+  %sub = sub i32 %to_subtract.load, 8
+  store i32 %sub, ptr %to_subtract, align 4
+  %to_subtract.load1 = load i32, ptr %to_subtract, align 4
+  ret i32 %to_subtract.load1
+}

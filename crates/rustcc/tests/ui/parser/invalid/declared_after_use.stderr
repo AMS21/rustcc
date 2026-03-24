@@ -1,0 +1,1 @@
+declared_after_use.c:5:5: error: variable 'a' not declared

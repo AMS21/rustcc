@@ -1,0 +1,8 @@
+invalid_variable_name.c:6:12: error: expected declaration name
+invalid_variable_name.c:6:12: error: expected '}'
+invalid_variable_name.c:6:12: error: expected 'int' keyword
+invalid_variable_name.c:6:14: error: expected function name
+invalid_variable_name.c:6:14: error: expected '('
+invalid_variable_name.c:6:14: error: expected 'void' keyword for parameter list
+invalid_variable_name.c:6:14: error: expected ')'
+invalid_variable_name.c:6:14: error: expected '{'

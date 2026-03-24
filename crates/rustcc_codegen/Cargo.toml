@@ -7,10 +7,14 @@ repository.workspace = true
 rust-version.workspace = true
 version.workspace = true
 
+[lib]
+test = false
+doctest = false
+
 [dependencies]
 rustc-hash.workspace = true
-rustcc_ast = { path = "../rustcc_ast" }
-rustcc_llvm = { path = "../rustcc_llvm" }
+rustcc_ast.path = "../rustcc_ast"
+rustcc_llvm.path = "../rustcc_llvm"
 
 [lints]
 workspace = true

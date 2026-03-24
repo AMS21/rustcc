@@ -1,0 +1,35 @@
+deep_expression_nesting.c:3:1: error: expected 'int' keyword
+deep_expression_nesting.c:3:2: error: expected function name
+deep_expression_nesting.c:3:3: error: expected 'void' keyword for parameter list
+deep_expression_nesting.c:3:3: error: expected ')'
+deep_expression_nesting.c:3:3: error: expected '{'
+deep_expression_nesting.c:3:131: error: expression nesting limit reached
+deep_expression_nesting.c:3:131: error: expected '}'
+deep_expression_nesting.c:3:131: error: expected 'int' keyword
+deep_expression_nesting.c:3:132: error: expected function name
+deep_expression_nesting.c:3:133: error: expected 'void' keyword for parameter list
+deep_expression_nesting.c:3:133: error: expected ')'
+deep_expression_nesting.c:3:133: error: expected '{'
+deep_expression_nesting.c:3:261: error: expression nesting limit reached
+deep_expression_nesting.c:3:261: error: expected '}'
+deep_expression_nesting.c:3:261: error: expected 'int' keyword
+deep_expression_nesting.c:3:262: error: expected function name
+deep_expression_nesting.c:3:263: error: expected 'void' keyword for parameter list
+deep_expression_nesting.c:3:263: error: expected ')'
+deep_expression_nesting.c:3:263: error: expected '{'
+deep_expression_nesting.c:3:391: error: expression nesting limit reached
+deep_expression_nesting.c:3:391: error: expected '}'
+deep_expression_nesting.c:3:391: error: expected 'int' keyword
+deep_expression_nesting.c:3:392: error: expected function name
+deep_expression_nesting.c:3:393: error: expected 'void' keyword for parameter list
+deep_expression_nesting.c:3:393: error: expected ')'
+deep_expression_nesting.c:3:393: error: expected '{'
+deep_expression_nesting.c:3:521: error: expression nesting limit reached
+deep_expression_nesting.c:3:521: error: expected '}'
+deep_expression_nesting.c:3:521: error: expected 'int' keyword
+deep_expression_nesting.c:3:522: error: expected function name
+deep_expression_nesting.c:3:523: error: expected 'void' keyword for parameter list
+deep_expression_nesting.c:3:523: error: expected ')'
+deep_expression_nesting.c:3:523: error: expected '{'
+<invalid>: error: expected expression but reached end of file
+<invalid>: error: expected '}'

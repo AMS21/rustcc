@@ -1,8 +1,0 @@
-rustcc/tests/input/binary/invalid/missing_const.c:6:12: error: expected expression
-rustcc/tests/input/binary/invalid/missing_const.c:6:12: error: expected '}'
-rustcc/tests/input/binary/invalid/missing_const.c:6:12: error: expected 'int' keyword
-rustcc/tests/input/binary/invalid/missing_const.c:7:1: error: expected function name
-rustcc/tests/input/binary/invalid/missing_const.c:7:1: error: expected '('
-rustcc/tests/input/binary/invalid/missing_const.c:7:1: error: expected 'void' keyword for parameter list
-rustcc/tests/input/binary/invalid/missing_const.c:7:1: error: expected ')'
-rustcc/tests/input/binary/invalid/missing_const.c:7:1: error: expected '{'

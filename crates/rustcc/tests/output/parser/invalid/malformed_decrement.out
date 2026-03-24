@@ -1,9 +1,0 @@
-rustcc/tests/input/parser/invalid/malformed_decrement.c:9:10: error: expected expression
-rustcc/tests/input/parser/invalid/malformed_decrement.c:9:10: error: expected '}'
-rustcc/tests/input/parser/invalid/malformed_decrement.c:9:10: error: expected 'int' keyword
-rustcc/tests/input/parser/invalid/malformed_decrement.c:10:5: error: expected function name
-rustcc/tests/input/parser/invalid/malformed_decrement.c:10:5: error: expected '('
-rustcc/tests/input/parser/invalid/malformed_decrement.c:10:5: error: expected 'void' keyword for parameter list
-rustcc/tests/input/parser/invalid/malformed_decrement.c:10:5: error: expected ')'
-rustcc/tests/input/parser/invalid/malformed_decrement.c:10:5: error: expected '{'
-rustcc/tests/input/parser/invalid/malformed_decrement.c:10:12: error: variable 'a' not declared

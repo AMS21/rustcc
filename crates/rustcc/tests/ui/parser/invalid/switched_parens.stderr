@@ -1,0 +1,11 @@
+switched_parens.c:4:10: error: expected '('
+switched_parens.c:4:10: error: expected 'void' keyword for parameter list
+switched_parens.c:4:11: error: expected '{'
+switched_parens.c:4:13: error: expected expression
+switched_parens.c:4:13: error: expected '}'
+switched_parens.c:4:13: error: expected 'int' keyword
+switched_parens.c:5:5: error: expected function name
+switched_parens.c:5:5: error: expected '('
+switched_parens.c:5:5: error: expected 'void' keyword for parameter list
+switched_parens.c:5:5: error: expected ')'
+switched_parens.c:5:5: error: expected '{'

@@ -1,1 +1,0 @@
-rustcc/tests/input/parser/invalid/undeclared_prefix_incr.c:5:5: error: variable 'a' not declared

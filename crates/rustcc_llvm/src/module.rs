@@ -1,8 +1,10 @@
+use std::ffi::CStr;
+
 use crate::{
     context::LLVMContext,
     ffi::{
-        LLVMAddFunction, LLVMDisposeModule, LLVMDumpModule, LLVMModuleCreateWithNameInContext,
-        LLVMModuleRef,
+        LLVMAddFunction, LLVMDisposeMessage, LLVMDisposeModule, LLVMModuleCreateWithNameInContext,
+        LLVMModuleRef, LLVMPrintModuleToString,
     },
     function::{LLVMFunctionType, LLVMFunctionValue},
     to_cstring,
@@ -39,8 +41,17 @@ impl LLVMModule {
     }
 
     pub fn dump(&self) {
-        // Safety: LLVMDumpModule is safe to call with a valid LLVMModuleRef.
-        unsafe { LLVMDumpModule(self.0) };
+        // Safety: LLVMPrintModuleToString is safe to call with a valid LLVMModuleRef.
+        let dump_string = unsafe { LLVMPrintModuleToString(self.0) };
+
+        // Safety: The returned pointer from LLVMPrintModuleToString is valid for
+        // reading until LLVMDisposeMessage is called.
+        let rust_string = unsafe { CStr::from_ptr(dump_string.cast_const()) }.to_string_lossy();
+        print!("{rust_string}");
+
+        // Safety: We must dispose of the message returned by LLVM to avoid memory
+        // leaks.
+        unsafe { LLVMDisposeMessage(dump_string) };
     }
 }
 

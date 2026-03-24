@@ -1,1 +1,0 @@
-rustcc/tests/input/unary/invalid/unary_missing_semicolon.c:7:1: error: expected ';'

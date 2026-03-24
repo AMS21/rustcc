@@ -1,0 +1,1 @@
+prefix_decr_non_lvalue.c:5:14: error: cannot apply unary operator pre-decrement to an rvalue

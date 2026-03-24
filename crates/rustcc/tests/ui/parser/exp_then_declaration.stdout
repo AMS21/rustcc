@@ -1,0 +1,33 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      UnaryOperation Negate 4:13-4:17
+        IntegerLiteral (2593) 4:14-4:17
+    ExpressionStatement
+      BinaryOperation Assignment
+        Variable (a)
+        BinaryOperation Remainder
+          Variable (a)
+          IntegerLiteral (3) 5:13
+    Declaration (b)
+      UnaryOperation Negate 6:13-6:14
+        Variable (a)
+    ReturnStatement 7:5-7:13
+      Variable (b)
+; ModuleID = 'exp_then_declaration.c'
+source_filename = "exp_then_declaration.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 -2593, ptr %a, align 4
+  %a.load = load i32, ptr %a, align 4
+  %srem = srem i32 %a.load, 3
+  store i32 %srem, ptr %a, align 4
+  %b = alloca i32, align 4
+  %a.load1 = load i32, ptr %a, align 4
+  %neg = sub i32 0, %a.load1
+  store i32 %neg, ptr %b, align 4
+  %b.load = load i32, ptr %b, align 4
+  ret i32 %b.load
+}

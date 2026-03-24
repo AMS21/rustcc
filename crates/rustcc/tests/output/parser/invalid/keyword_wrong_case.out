@@ -1,2 +1,0 @@
-rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:5: error: variable 'RETURN' not declared
-rustcc/tests/input/parser/invalid/keyword_wrong_case.c:5:12: error: expected ';'

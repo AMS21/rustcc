@@ -1,0 +1,16 @@
+malformed_not_equal.c:9:14: error: expected ';'
+malformed_not_equal.c:9:14: error: expected '}'
+malformed_not_equal.c:9:14: error: expected 'int' keyword
+malformed_not_equal.c:9:16: error: expected function name
+malformed_not_equal.c:9:16: error: expected '('
+malformed_not_equal.c:9:16: error: expected 'void' keyword for parameter list
+malformed_not_equal.c:9:16: error: expected ')'
+malformed_not_equal.c:9:16: error: expected '{'
+malformed_not_equal.c:9:16: error: expected expression
+malformed_not_equal.c:9:16: error: expected '}'
+malformed_not_equal.c:9:16: error: expected 'int' keyword
+malformed_not_equal.c:9:18: error: expected function name
+malformed_not_equal.c:9:18: error: expected '('
+malformed_not_equal.c:9:18: error: expected 'void' keyword for parameter list
+malformed_not_equal.c:9:18: error: expected ')'
+malformed_not_equal.c:9:18: error: expected '{'

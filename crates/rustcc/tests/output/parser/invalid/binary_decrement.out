@@ -1,8 +1,0 @@
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:17: error: expected ';'
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:17: error: expected '}'
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:17: error: expected 'int' keyword
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:18: error: expected function name
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:18: error: expected '('
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:18: error: expected 'void' keyword for parameter list
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:18: error: expected ')'
-rustcc/tests/input/parser/invalid/binary_decrement.c:6:18: error: expected '{'

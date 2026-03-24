@@ -1,0 +1,9 @@
+bitwise_double_operator.c:7:16: error: expected expression
+bitwise_double_operator.c:7:10: error: expected expression instead reached end of file
+bitwise_double_operator.c:7:16: error: expected '}'
+bitwise_double_operator.c:7:16: error: expected 'int' keyword
+bitwise_double_operator.c:7:18: error: expected function name
+bitwise_double_operator.c:7:18: error: expected '('
+bitwise_double_operator.c:7:18: error: expected 'void' keyword for parameter list
+bitwise_double_operator.c:7:18: error: expected ')'
+bitwise_double_operator.c:7:18: error: expected '{'

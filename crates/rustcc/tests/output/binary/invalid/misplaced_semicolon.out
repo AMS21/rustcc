@@ -1,9 +1,0 @@
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:5:18: error: missing closing right parenthesis ')'
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:5:19: error: expected expression
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:5:19: error: expected '}'
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:5:19: error: expected 'int' keyword
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:6:1: error: expected function name
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:6:1: error: expected '('
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:6:1: error: expected 'void' keyword for parameter list
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:6:1: error: expected ')'
-rustcc/tests/input/binary/invalid/misplaced_semicolon.c:6:1: error: expected '{'

@@ -1,0 +1,8 @@
+not_expression.c:5:12: error: expected expression
+not_expression.c:5:10: error: expected expression instead reached end of file
+not_expression.c:5:12: error: expected '}'
+not_expression.c:6:1: error: expected function name
+not_expression.c:6:1: error: expected '('
+not_expression.c:6:1: error: expected 'void' keyword for parameter list
+not_expression.c:6:1: error: expected ')'
+not_expression.c:6:1: error: expected '{'

@@ -276,7 +276,7 @@ jobs:
         tool: cargo-shear
 
     - name: Check for unused dependencies
-      run: cargo shear
+      run: cargo shear --deny-warnings
 
   unused-features:
     runs-on: ubuntu-latest

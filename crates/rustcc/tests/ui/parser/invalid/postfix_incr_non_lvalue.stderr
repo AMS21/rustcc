@@ -1,0 +1,1 @@
+postfix_incr_non_lvalue.c:6:5: error: cannot apply unary post-increment to an rvalue

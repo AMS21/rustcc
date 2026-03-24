@@ -1,0 +1,9 @@
+TranslationUnit
+  FunctionDefinition "a"
+; ModuleID = 'empty_fn.c'
+source_filename = "empty_fn.c"
+
+define i32 @a() {
+entry:
+  unreachable
+}

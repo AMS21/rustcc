@@ -1,0 +1,13 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:17
+      BinaryOperation BitwiseXor
+        IntegerLiteral (7) 4:12
+        IntegerLiteral (1) 4:16
+; ModuleID = 'bitwise_xor.c'
+source_filename = "bitwise_xor.c"
+
+define i32 @main() {
+entry:
+  ret i32 6
+}

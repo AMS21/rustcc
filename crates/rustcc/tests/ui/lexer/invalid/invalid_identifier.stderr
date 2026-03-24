@@ -1,0 +1,7 @@
+invalid_identifier.c:6:13: error: expected ';'
+invalid_identifier.c:6:13: error: expected '}'
+invalid_identifier.c:6:13: error: expected 'int' keyword
+invalid_identifier.c:6:16: error: expected '('
+invalid_identifier.c:6:16: error: expected 'void' keyword for parameter list
+invalid_identifier.c:6:16: error: expected ')'
+invalid_identifier.c:6:16: error: expected '{'

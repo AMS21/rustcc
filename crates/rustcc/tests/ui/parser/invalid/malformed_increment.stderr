@@ -1,0 +1,9 @@
+malformed_increment.c:9:10: error: expected expression
+malformed_increment.c:9:10: error: expected '}'
+malformed_increment.c:9:10: error: expected 'int' keyword
+malformed_increment.c:10:5: error: expected function name
+malformed_increment.c:10:5: error: expected '('
+malformed_increment.c:10:5: error: expected 'void' keyword for parameter list
+malformed_increment.c:10:5: error: expected ')'
+malformed_increment.c:10:5: error: expected '{'
+malformed_increment.c:10:12: error: variable 'a' not declared

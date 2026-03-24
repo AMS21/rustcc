@@ -1,0 +1,20 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (var0)
+      <uninitialized>
+    ExpressionStatement
+      BinaryOperation Assignment
+        Variable (var0)
+        IntegerLiteral (2) 5:12
+    ReturnStatement 6:5-6:16
+      Variable (var0)
+; ModuleID = 'assign.c'
+source_filename = "assign.c"
+
+define i32 @main() {
+entry:
+  %var0 = alloca i32, align 4
+  store i32 2, ptr %var0, align 4
+  %var0.load = load i32, ptr %var0, align 4
+  ret i32 %var0.load
+}

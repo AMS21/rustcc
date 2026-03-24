@@ -4,7 +4,7 @@ cargo fuzz build -O --debug-assertions
 
 # Collect all test cases into a seed corpus
 mkdir -p seed_corpus
-find crates/rustcc/tests/input -type f -iname '*.c' -exec sh -c '
+find crates/rustcc/tests/ui -type f -iname '*.c' -exec sh -c '
   for f do
     h=$(sha256sum "$f" | cut -d" " -f1)
     cp -- "$f" "seed_corpus/$h.c"

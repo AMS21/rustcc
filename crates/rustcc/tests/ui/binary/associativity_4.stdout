@@ -1,0 +1,17 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:27
+      BinaryOperation LessThanOrEqual
+        BinaryOperation GreaterThan
+          BinaryOperation GreaterThanOrEqual
+            IntegerLiteral (5) 4:12
+            IntegerLiteral (0) 4:17
+          IntegerLiteral (1) 4:21
+        IntegerLiteral (0) 4:26
+; ModuleID = 'associativity_4.c'
+source_filename = "associativity_4.c"
+
+define i32 @main() {
+entry:
+  ret i32 1
+}

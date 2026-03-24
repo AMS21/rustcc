@@ -1,0 +1,13 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:17
+      BinaryOperation LessThan
+        IntegerLiteral (1) 4:12
+        IntegerLiteral (2) 4:16
+; ModuleID = 'lt_true.c'
+source_filename = "lt_true.c"
+
+define i32 @main() {
+entry:
+  ret i32 1
+}

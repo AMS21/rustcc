@@ -1,9 +1,0 @@
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:16: error: expected expression
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:10: error: expected expression instead reached end of file
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:16: error: expected '}'
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:16: error: expected 'int' keyword
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:18: error: expected function name
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:18: error: expected '('
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:18: error: expected 'void' keyword for parameter list
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:18: error: expected ')'
-rustcc/tests/input/parser/invalid/malformed_less_equal.c:9:18: error: expected '{'

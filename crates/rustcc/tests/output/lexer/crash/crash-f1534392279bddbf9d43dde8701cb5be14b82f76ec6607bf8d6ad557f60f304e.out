@@ -1,8 +1,0 @@
-rustcc/tests/input/lexer/crash/crash-f1534392279bddbf9d43dde8701cb5be14b82f76ec6607bf8d6ad557f60f304e.c:4:1: error: expected 'int' keyword
-<invalid>: error: expected function name
-<invalid>: error: expected '('
-<invalid>: error: expected 'void' keyword for parameter list
-<invalid>: error: expected ')'
-<invalid>: error: expected '{'
-<invalid>: error: expected '}'
-IntegerLiteral(0) 4:1-4:2 - '00'

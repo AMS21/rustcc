@@ -1,0 +1,13 @@
+TranslationUnit
+  FunctionDefinition "main"
+    ReturnStatement 4:5-4:17
+      BinaryOperation BitwiseAnd
+        IntegerLiteral (3) 4:12
+        IntegerLiteral (5) 4:16
+; ModuleID = 'bitwise_and.c'
+source_filename = "bitwise_and.c"
+
+define i32 @main() {
+entry:
+  ret i32 1
+}

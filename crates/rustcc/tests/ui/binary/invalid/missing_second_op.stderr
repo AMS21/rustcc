@@ -1,0 +1,9 @@
+missing_second_op.c:5:16: error: expected expression
+missing_second_op.c:5:10: error: expected expression instead reached end of file
+missing_second_op.c:5:16: error: expected '}'
+missing_second_op.c:5:16: error: expected 'int' keyword
+missing_second_op.c:6:1: error: expected function name
+missing_second_op.c:6:1: error: expected '('
+missing_second_op.c:6:1: error: expected 'void' keyword for parameter list
+missing_second_op.c:6:1: error: expected ')'
+missing_second_op.c:6:1: error: expected '{'

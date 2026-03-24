@@ -28,10 +28,11 @@ echo "Fuzzing the compiler..."
 
 # Use dictionary and merge seeds from tests as additional corpus directory
 DICT="fuzz/dictionaries/c.dict"
-SEED_DIR="crates/rustcc/tests/input/"
+SEED_DIR="crates/rustcc/tests/ui/"
 
-cargo +nightly fuzz run fuzz_compile \
+RUSTFLAGS="-Cdebuginfo=1 -Cforce-frame-pointers" cargo \
+    +nightly fuzz run fuzz_compile \
     fuzz/corpus/fuzz_compile "${SEED_DIR}" \
     --release --debug-assertions -- \
-    -only_ascii=1 -max_len=$MAX_LEN -close_fd_mask=1 \
+    -max_len=$MAX_LEN -close_fd_mask=1 \
     -jobs=$JOBS -workers=$JOBS -dict=$DICT

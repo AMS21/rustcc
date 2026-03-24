@@ -1,0 +1,46 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      IntegerLiteral (2147483646) 4:13-4:22
+    Declaration (b)
+      IntegerLiteral (0) 5:13
+    Declaration (c)
+      BinaryOperation Add
+        BinaryOperation Divide
+          Variable (a)
+          IntegerLiteral (6) 6:17
+        UnaryOperation LogicalNot 6:21-6:22
+          Variable (b)
+    ReturnStatement 7:5-7:35
+      BinaryOperation Equals
+        BinaryOperation Multiply
+          Variable (c)
+          IntegerLiteral (2) 7:16
+        BinaryOperation Subtract
+          Variable (a)
+          IntegerLiteral (1431655762) 7:25-7:34
+; ModuleID = 'allocate_temps_and_vars.c'
+source_filename = "allocate_temps_and_vars.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 2147483646, ptr %a, align 4
+  %b = alloca i32, align 4
+  store i32 0, ptr %b, align 4
+  %c = alloca i32, align 4
+  %a.load = load i32, ptr %a, align 4
+  %sdiv = sdiv i32 %a.load, 6
+  %b.load = load i32, ptr %b, align 4
+  %icmp_eq = icmp eq i32 %b.load, 0
+  %zext = zext i1 %icmp_eq to i32
+  %add = add i32 %sdiv, %zext
+  store i32 %add, ptr %c, align 4
+  %c.load = load i32, ptr %c, align 4
+  %mul = mul i32 %c.load, 2
+  %a.load1 = load i32, ptr %a, align 4
+  %sub = sub i32 %a.load1, 1431655762
+  %icmp_eq2 = icmp eq i32 %mul, %sub
+  %zext3 = zext i1 %icmp_eq2 to i32
+  ret i32 %zext3
+}

@@ -1,0 +1,9 @@
+misplaced_semicolon.c:5:18: error: missing closing right parenthesis ')'
+misplaced_semicolon.c:5:19: error: expected expression
+misplaced_semicolon.c:5:19: error: expected '}'
+misplaced_semicolon.c:5:19: error: expected 'int' keyword
+misplaced_semicolon.c:6:1: error: expected function name
+misplaced_semicolon.c:6:1: error: expected '('
+misplaced_semicolon.c:6:1: error: expected 'void' keyword for parameter list
+misplaced_semicolon.c:6:1: error: expected ')'
+misplaced_semicolon.c:6:1: error: expected '{'

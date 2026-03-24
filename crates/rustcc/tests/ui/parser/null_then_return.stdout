@@ -1,0 +1,12 @@
+TranslationUnit
+  FunctionDefinition "main"
+    NullStatement
+    ReturnStatement 5:5-5:13
+      IntegerLiteral (0) 5:12
+; ModuleID = 'null_then_return.c'
+source_filename = "null_then_return.c"
+
+define i32 @main() {
+entry:
+  ret i32 0
+}

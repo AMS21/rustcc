@@ -1,0 +1,14 @@
+TranslationUnit
+  FunctionDefinition "main"
+    Declaration (a)
+      UnaryOperation Negate 3:26-3:27
+        IntegerLiteral (1) 3:27
+; ModuleID = 'simple_declaration.c'
+source_filename = "simple_declaration.c"
+
+define i32 @main() {
+entry:
+  %a = alloca i32, align 4
+  store i32 -1, ptr %a, align 4
+  ret i32 0
+}
