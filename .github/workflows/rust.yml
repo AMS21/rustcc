@@ -202,7 +202,7 @@ jobs:
       run: cargo tarpaulin --verbose --workspace --all-targets --all-features --follow-exec --locked --post-test-delay 2 --out Xml --engine llvm
 
     - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v5
+      uses: codecov/codecov-action@v6
       with:
         fail_ci_if_error: true
         token: ${{ secrets.CODECOV_TOKEN }}
