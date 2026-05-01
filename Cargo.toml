@@ -28,7 +28,7 @@ assert_cmd = "2.2.0"
 bindgen = { version = "0.72.1", default-features = false }
 clap = { version = "4.6.0", features = ["cargo"] }
 elsa = "1.11.2"
-pastey = "0.2.1"
+pastey = "0.2.2"
 phf = { version = "0.13.1", features = ["macros"] }
 rustc-hash = "2.1.2"
 semver = { version = "1.0.28", default-features = false }
