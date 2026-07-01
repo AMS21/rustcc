@@ -32,7 +32,7 @@ pastey = "0.2.1"
 phf = { version = "0.14.0", features = ["macros"] }
 rustc-hash = "2.1.2"
 semver = { version = "1.0.28", default-features = false }
-similar = "2.7.0"
+similar = "3.1.1"
 tempfile = { version = "3.27.0", default-features = false }
 
 # Configure lints
