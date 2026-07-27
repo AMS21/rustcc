@@ -15,7 +15,7 @@ doc = false
 bench = false
 
 [dependencies]
-libfuzzer-sys = "0.4.12"
+libfuzzer-sys = "0.4.13"
 rustcc_codegen.path = "../crates/rustcc_codegen"
 rustcc_diagnostic.path = "../crates/rustcc_diagnostic"
 rustcc_lexer.path = "../crates/rustcc_lexer"
