@@ -26,15 +26,6 @@ jobs:
       - name: Check for typos
         uses: crate-ci/typos@v1
 
-      - name: Typos info
-        if: failure()
-        run: |
-          echo 'To fix typos, please run `typos -w`'
-          echo 'To check for a diff, run `typos`'
-          echo 'You can find typos here: https://crates.io/crates/typos'
-          echo 'if you use VSCode, you can also install `Typos Spell Checker'
-          echo 'You can find the extension here: https://marketplace.visualstudio.com/items?itemName=tekumara.typos-vscode'
-
   sort-toml:
     runs-on: ubuntu-latest
 

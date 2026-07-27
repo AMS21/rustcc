@@ -55,7 +55,7 @@ impl<'a> Statement<'a> {
                 )
             }
             StatementKind::Null => {
-                format!("{}NullStatement", "  ".repeat(depth),)
+                format!("{}NullStatement", "  ".repeat(depth))
             }
         }
     }

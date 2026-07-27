@@ -156,7 +156,7 @@ impl<'a> Expression<'a> {
             }
 
             ExpressionKind::Variable(name) => {
-                format!("{}Variable ({})", "  ".repeat(depth), name,)
+                format!("{}Variable ({})", "  ".repeat(depth), name)
             }
         }
     }

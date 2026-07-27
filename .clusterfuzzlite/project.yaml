@@ -2,18 +2,18 @@ language: rust
 
 # Use local test inputs as seed corpus for all fuzz targets
 sanitizers:
-	- address
+  - address
 
 fuzzing_engines:
-	- libfuzzer
+  - libfuzzer
 
 seed_corpus_dirs:
-	- crates/rustcc/tests/ui
+  - crates/rustcc/tests/ui
 
 # Package dictionary files alongside fuzzers
 dictionaries:
-	- fuzz/dictionaries/c.dict
+  - fuzz/dictionaries/c.dict
 
 # Only include C-like source files as seeds
-seed_corpus_include_regex: 
-	- \.c$
+seed_corpus_include_regex:
+  - \.c$
