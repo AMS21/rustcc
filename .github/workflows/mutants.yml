@@ -4,27 +4,27 @@ on:
   pull_request:
     paths:
       # Workflow file itself
-      - '.github/workflows/mutants.yml'
+      - ".github/workflows/mutants.yml"
       # Rust files
-      - '**.rs'
+      - "**.rs"
       # C files
-      - '**.c'
-      - '**.h'
+      - "**.c"
+      - "**.h"
       # Cargo files
-      - 'Cargo.lock'
-      - 'Cargo.toml'
+      - "Cargo.lock"
+      - "Cargo.toml"
   push:
     paths:
       # Workflow file itself
-      - '.github/workflows/mutants.yml'
+      - ".github/workflows/mutants.yml"
       # Rust files
-      - '**.rs'
+      - "**.rs"
       # C files
-      - '**.c'
-      - '**.h'
+      - "**.c"
+      - "**.h"
       # Cargo files
-      - 'Cargo.lock'
-      - 'Cargo.toml'
+      - "Cargo.lock"
+      - "Cargo.toml"
   workflow_dispatch:
 
 concurrency:
@@ -48,32 +48,32 @@ jobs:
         shard: [0, 1, 2, 3, 4, 5, 6, 7]
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: Install rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
 
-    - name: Install LLVM tools
-      uses: ZhongRuoyu/setup-llvm@v0
-      with:
-        llvm-version: ${{ env.LLVM_VERSION }}
+      - name: Install LLVM tools
+        uses: ZhongRuoyu/setup-llvm@v0
+        with:
+          llvm-version: ${{ env.LLVM_VERSION }}
 
-    - uses: taiki-e/install-action@v2
-      name: Install cargo-mutants
-      with:
-        tool: cargo-mutants
+      - uses: taiki-e/install-action@v2
+        name: Install cargo-mutants
+        with:
+          tool: cargo-mutants
 
-    - name: Build project
-      run: cargo build --workspace
+      - name: Build project
+        run: cargo build --workspace
 
-    - name: Run cargo-mutants
-      run: |
-        cargo mutants --workspace --no-shuffle -vV --shard ${{ matrix.shard }}/8 --timeout 300 --in-place --cap-lints true --test-workspace true
+      - name: Run cargo-mutants
+        run: |
+          cargo mutants --workspace --no-shuffle -vV --shard ${{ matrix.shard }}/8 --timeout 300 --in-place --cap-lints true --test-workspace true
 
-    - name: Archive mutants.out
-      uses: actions/upload-artifact@v7
-      if: always()
-      with:
-        path: mutants.out
-        name: mutants-shard-${{matrix.shard}}.out
+      - name: Archive mutants.out
+        uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          path: mutants.out
+          name: mutants-shard-${{matrix.shard}}.out

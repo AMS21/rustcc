@@ -3,9 +3,9 @@ name: ClusterFuzzLite cron tasks
 on:
   push:
     paths:
-      - '.github/workflows/cflite_cron.yml'
+      - ".github/workflows/cflite_cron.yml"
   schedule:
-    - cron: '0 0 * * *'  # Once a day at midnight.
+    - cron: "0 0 * * *" # Once a day at midnight.
   workflow_dispatch:
 
 permissions: read-all
@@ -25,39 +25,39 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Build Fuzzers
-      id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
-      with:
-        language: rust
+      - name: Build Fuzzers
+        id: build
+        uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+        with:
+          language: rust
 
-    - name: Run Fuzzers
-      id: run
-      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        fuzz-seconds: 1800 # 30 Minutes
-        mode: 'prune'
-        output-sarif: true
-        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+      - name: Run Fuzzers
+        id: run
+        uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fuzz-seconds: 1800 # 30 Minutes
+          mode: "prune"
+          output-sarif: true
+          storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
 
   Coverage:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Build Fuzzers
-      id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
-      with:
-        language: rust
-        sanitizer: coverage
+      - name: Build Fuzzers
+        id: build
+        uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+        with:
+          language: rust
+          sanitizer: coverage
 
-    - name: Run Fuzzers
-      id: run
-      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        fuzz-seconds: 1800 # 30 Minutes
-        mode: 'coverage'
-        sanitizer: 'coverage'
-        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+      - name: Run Fuzzers
+        id: run
+        uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fuzz-seconds: 1800 # 30 Minutes
+          mode: "coverage"
+          sanitizer: "coverage"
+          storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git

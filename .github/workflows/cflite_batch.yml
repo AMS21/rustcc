@@ -3,9 +3,9 @@ name: ClusterFuzzLite batch fuzzing
 on:
   push:
     paths:
-      - '.github/workflows/cflite_batch.yml'
+      - ".github/workflows/cflite_batch.yml"
   schedule:
-    - cron: '0 0/6 * * *'  # Every 6th hour.
+    - cron: "0 0/6 * * *" # Every 6th hour.
   workflow_dispatch:
 
 permissions:
@@ -23,32 +23,32 @@ jobs:
       fail-fast: false
       matrix:
         sanitizer:
-        # Clusterfuzz on rust only supports address sanitizer
-        - address
+          # Clusterfuzz on rust only supports address sanitizer
+          - address
         # - undefined
         # - memory
 
     steps:
-    - name: Build Fuzzers (${{ matrix.sanitizer }})
-      id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
-      with:
-        language: rust
-        sanitizer: ${{ matrix.sanitizer }}
+      - name: Build Fuzzers (${{ matrix.sanitizer }})
+        id: build
+        uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+        with:
+          language: rust
+          sanitizer: ${{ matrix.sanitizer }}
 
-    - name: Run Fuzzers (${{ matrix.sanitizer }})
-      id: run
-      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        fuzz-seconds: 10800 # 3 hours
-        mode: 'batch'
-        sanitizer: ${{ matrix.sanitizer }}
-        output-sarif: true
-        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
-        minimize-crashes: true
-        parallel-fuzzing: true
-        report-unreproducible-crashes: true
+      - name: Run Fuzzers (${{ matrix.sanitizer }})
+        id: run
+        uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fuzz-seconds: 10800 # 3 hours
+          mode: "batch"
+          sanitizer: ${{ matrix.sanitizer }}
+          output-sarif: true
+          storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+          minimize-crashes: true
+          parallel-fuzzing: true
+          report-unreproducible-crashes: true
 
   ReportCrash:
     runs-on: ubuntu-latest
@@ -61,14 +61,14 @@ jobs:
     if: ${{ always() && needs.BatchFuzzing.result == 'failure' && github.ref == 'refs/heads/main' }}
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v7
+      - name: Checkout code
+        uses: actions/checkout@v7
 
-    - name: Create issue
-      id: report
-      uses: JasonEtco/create-an-issue@v2
-      with:
-        filename: .github/fuzz_failure.md
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        RUN_ID: ${{ github.run_id }}
+      - name: Create issue
+        id: report
+        uses: JasonEtco/create-an-issue@v2
+        with:
+          filename: .github/fuzz_failure.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.run_id }}

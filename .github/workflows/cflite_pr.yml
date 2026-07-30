@@ -3,16 +3,16 @@ name: ClusterFuzzLite PR fuzzing
 on:
   push:
     paths:
-      - '.github/workflows/cflite_pr.yml'
+      - ".github/workflows/cflite_pr.yml"
   pull_request:
     paths:
       # Workflow file itself
-      - '.github/workflows/cflite_pr.yml'
+      - ".github/workflows/cflite_pr.yml"
       # Rust files
-      - '**.rs'
+      - "**.rs"
       # Cargo files
-      - 'Cargo.lock'
-      - 'Cargo.toml'
+      - "Cargo.lock"
+      - "Cargo.toml"
   workflow_dispatch:
 
 permissions: read-all
@@ -39,30 +39,30 @@ jobs:
       fail-fast: false
       matrix:
         sanitizer:
-        # Clusterfuzz on rust only supports address sanitizer
-        - address
+          # Clusterfuzz on rust only supports address sanitizer
+          - address
         # - undefined
         # - memory
 
     steps:
-    - name: Build Fuzzers (${{ matrix.sanitizer }})
-      id: build
-      uses: google/clusterfuzzlite/actions/build_fuzzers@v1
-      with:
-        language: rust
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        sanitizer: ${{ matrix.sanitizer }}
-        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+      - name: Build Fuzzers (${{ matrix.sanitizer }})
+        id: build
+        uses: google/clusterfuzzlite/actions/build_fuzzers@v1
+        with:
+          language: rust
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          sanitizer: ${{ matrix.sanitizer }}
+          storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
 
-    - name: Run Fuzzers (${{ matrix.sanitizer }})
-      id: run
-      uses: google/clusterfuzzlite/actions/run_fuzzers@v1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        fuzz-seconds: 1800 # 30 minutes
-        mode: 'code-change'
-        sanitizer: ${{ matrix.sanitizer }}
-        output-sarif: true
-        storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
-        minimize-crashes: true
-        parallel-fuzzing: true
+      - name: Run Fuzzers (${{ matrix.sanitizer }})
+        id: run
+        uses: google/clusterfuzzlite/actions/run_fuzzers@v1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          fuzz-seconds: 1800 # 30 minutes
+          mode: "code-change"
+          sanitizer: ${{ matrix.sanitizer }}
+          output-sarif: true
+          storage-repo: https://${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/AMS21/rustcc-corpus.git
+          minimize-crashes: true
+          parallel-fuzzing: true

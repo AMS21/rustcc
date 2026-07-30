@@ -4,33 +4,33 @@ on:
   pull_request:
     paths:
       # Workflow file itself
-      - '.github/workflows/rust.yml'
+      - ".github/workflows/rust.yml"
       # Rust files
-      - '**.rs'
+      - "**.rs"
       # C files
-      - '**.c'
-      - '**.h'
+      - "**.c"
+      - "**.h"
       # Cargo files
-      - 'Cargo.lock'
-      - 'Cargo.toml'
+      - "Cargo.lock"
+      - "Cargo.toml"
       # Configuration files
-      - '.rustfmt.toml'
-      - '.clippy.toml'
+      - ".rustfmt.toml"
+      - ".clippy.toml"
   push:
     paths:
       # Workflow file itself
-      - '.github/workflows/rust.yml'
+      - ".github/workflows/rust.yml"
       # Rust files
-      - '**.rs'
+      - "**.rs"
       # C files
-      - '**.c'
-      - '**.h'
+      - "**.c"
+      - "**.h"
       # Cargo files
-      - 'Cargo.lock'
-      - 'Cargo.toml'
+      - "Cargo.lock"
+      - "Cargo.toml"
       # Configuration files
-      - '.rustfmt.toml'
-      - '.clippy.toml'
+      - ".rustfmt.toml"
+      - ".clippy.toml"
   workflow_dispatch:
 
 concurrency:
@@ -54,11 +54,21 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Audit Rust Dependencies
-      uses: actions-rust-lang/audit@v1
+      - name: Audit Rust Dependencies
+        uses: actions-rust-lang/audit@v1
+
+  deny:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Run cargo-deny
+        uses: EmbarkStudios/cargo-deny-action@v2
 
   lint:
     runs-on: ${{ matrix.os }}
@@ -73,64 +83,64 @@ jobs:
           - windows-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        components: clippy
+      - name: Install rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: clippy
 
-    - name: Install cargo-hack
-      uses: taiki-e/install-action@v2
-      with:
-        tool: cargo-hack
+      - name: Install cargo-hack
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack
 
-    - name: Install LLVM tools
-      uses: ZhongRuoyu/setup-llvm@v0
-      with:
-        llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
+      - name: Install LLVM tools
+        uses: ZhongRuoyu/setup-llvm@v0
+        with:
+          llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
 
-    - name: Clippy
-      run: cargo hack clippy --workspace --feature-powerset --verbose -- -D warnings
+      - name: Clippy
+        run: cargo hack clippy --workspace --feature-powerset --verbose -- -D warnings
 
   formatting:
     runs-on: ubuntu-slim
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        toolchain: nightly
-        components: rustfmt
+      - name: Install rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          components: rustfmt
 
-    - name: Rustfmt Check
-      uses: actions-rust-lang/rustfmt@v1
+      - name: Rustfmt Check
+        uses: actions-rust-lang/rustfmt@v1
 
   docs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        toolchain: stable
+      - name: Install rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: stable
 
-    - name: Install LLVM tools
-      uses: ZhongRuoyu/setup-llvm@v0
-      with:
-        llvm-version: ${{ env.LLVM_VERSION }}
+      - name: Install LLVM tools
+        uses: ZhongRuoyu/setup-llvm@v0
+        with:
+          llvm-version: ${{ env.LLVM_VERSION }}
 
-    - name: Build documentation
-      env:
-        RUSTDOCFLAGS: -D warnings
-      run: cargo doc --workspace --all-features --no-deps --document-private-items
+      - name: Build documentation
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --workspace --all-features --no-deps --document-private-items
 
   build:
     runs-on: ${{ matrix.os }}
@@ -152,60 +162,60 @@ jobs:
           - "1.88" # MSRV
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        toolchain: ${{ matrix.toolchain }}
+      - name: Install rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.toolchain }}
 
-    - name: Install cargo-hack
-      uses: taiki-e/install-action@v2
-      with:
-        tool: cargo-hack
+      - name: Install cargo-hack
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack
 
-    - name: Install LLVM tools
-      uses: ZhongRuoyu/setup-llvm@v0
-      with:
-        llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
+      - name: Install LLVM tools
+        uses: ZhongRuoyu/setup-llvm@v0
+        with:
+          llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
 
-    - name: Build
-      run: cargo build --workspace --verbose
+      - name: Build
+        run: cargo build --workspace --verbose
 
-    - name: Run tests
-      run: cargo hack test --workspace --feature-powerset --verbose
+      - name: Run tests
+        run: cargo hack test --workspace --feature-powerset --verbose
 
   coverage:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        toolchain: nightly
+      - name: Install rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
 
-    - name: Install LLVM tools
-      uses: ZhongRuoyu/setup-llvm@v0
-      with:
-        llvm-version: ${{ env.LLVM_VERSION }}
+      - name: Install LLVM tools
+        uses: ZhongRuoyu/setup-llvm@v0
+        with:
+          llvm-version: ${{ env.LLVM_VERSION }}
 
-    - name: Install tarpaulin
-      uses: taiki-e/install-action@v2
-      with:
-        tool: cargo-tarpaulin
+      - name: Install tarpaulin
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-tarpaulin
 
-    - name: Run cargo-tarpaulin
-      run: cargo tarpaulin --verbose --workspace --all-targets --all-features --follow-exec --locked --post-test-delay 2 --out Xml --engine llvm
+      - name: Run cargo-tarpaulin
+        run: cargo tarpaulin --verbose --workspace --all-targets --all-features --follow-exec --locked --post-test-delay 2 --out Xml --engine llvm
 
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v7
-      with:
-        fail_ci_if_error: true
-        token: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v7
+        with:
+          fail_ci_if_error: true
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   careful:
     runs-on: ${{ matrix.os }}
@@ -234,62 +244,62 @@ jobs:
             flags: ""
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install rust toolchain
-      uses: actions-rust-lang/setup-rust-toolchain@v1
-      with:
-        toolchain: nightly
-        components: rust-src
+      - name: Install rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: nightly
+          components: rust-src
 
-    - name: Install cargo-hack
-      uses: taiki-e/install-action@v2
-      with:
-        tool: cargo-hack
+      - name: Install cargo-hack
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack
 
-    - name: Install cargo-careful
-      uses: taiki-e/install-action@v2
-      with:
-        tool: cargo-careful
+      - name: Install cargo-careful
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-careful
 
-    - name: Install LLVM tools
-      uses: ZhongRuoyu/setup-llvm@v0
-      with:
-        llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
+      - name: Install LLVM tools
+        uses: ZhongRuoyu/setup-llvm@v0
+        with:
+          llvm-version: ${{ matrix.os == 'macos-latest' && env.LLVM_VERSION_MACOS || env.LLVM_VERSION }}
 
-    - name: Build
-      run: cargo careful build --workspace --verbose ${{ matrix.flags }}
+      - name: Build
+        run: cargo careful build --workspace --verbose ${{ matrix.flags }}
 
-    - name: Run tests
-      run: cargo hack careful test --workspace --feature-powerset --verbose ${{ matrix.flags }}
+      - name: Run tests
+        run: cargo hack careful test --workspace --feature-powerset --verbose ${{ matrix.flags }}
 
   unused-dependencies:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install cargo-shear
-      uses: taiki-e/install-action@v2
-      with:
-        tool: cargo-shear
+      - name: Install cargo-shear
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-shear
 
-    - name: Check for unused dependencies
-      run: cargo shear --deny-warnings
+      - name: Check for unused dependencies
+        run: cargo shear --deny-warnings
 
   unused-features:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v7
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Install cargo-features-manager
-      uses: taiki-e/install-action@v2
-      with:
-        tool: cargo-features-manager
+      - name: Install cargo-features-manager
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-features-manager
 
-    - name: Check for unused features
-      run: cargo features prune --no-tmp
+      - name: Check for unused features
+        run: cargo features prune --no-tmp
