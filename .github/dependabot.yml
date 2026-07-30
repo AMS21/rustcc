@@ -6,12 +6,7 @@ updates:
       interval: monthly
       time: "04:00"
   - package-ecosystem: cargo
-    directory: "/"
-    schedule:
-      interval: monthly
-      time: "04:00"
-  - package-ecosystem: cargo
-    directory: "/fuzz"
+    directories: ["/", "/fuzz"]
     schedule:
       interval: monthly
       time: "04:00"
