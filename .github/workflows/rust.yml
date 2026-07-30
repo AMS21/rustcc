@@ -242,6 +242,8 @@ jobs:
             flags: ""
           - os: macos-26-intel
             flags: ""
+          - os: windows-latest
+            flags: ""
 
     steps:
       - name: Checkout
