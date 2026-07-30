@@ -246,6 +246,10 @@ fn normalize_stream(s: &str, test_path: &Path, command_input_path: &Path) -> Str
         // either style depending on toolchain and host platform.
         out = out.replace(&path.replace('\\', "/"), &file_name);
         out = out.replace(&path.replace('/', "\\"), &file_name);
+
+        // LLVM IR double-quoted strings (source_filename = "...") use C-style
+        // escaping, so backslashes in the path appear doubled.
+        out = out.replace(&path.replace('\\', "\\\\"), &file_name);
     }
 
     normalize_output_for_compare(&out)
