@@ -78,7 +78,7 @@ repos:
       - id: cargo-shear
         name: cargo shear
         description: Check for unused dependencies
-        entry: cargo +nightly shear --expand --deny-warnings
+        entry: cargo shear --deny-warnings
         language: system
         types: [toml]
         pass_filenames: false
