@@ -92,7 +92,7 @@ jobs:
           components: clippy
 
       - name: Install cargo-hack
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         with:
           tool: cargo-hack
 
@@ -171,7 +171,7 @@ jobs:
           toolchain: ${{ matrix.toolchain }}
 
       - name: Install cargo-hack
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         with:
           tool: cargo-hack
 
@@ -204,7 +204,7 @@ jobs:
           llvm-version: ${{ env.LLVM_VERSION }}
 
       - name: Install tarpaulin
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         with:
           tool: cargo-tarpaulin
 
@@ -256,12 +256,12 @@ jobs:
           components: rust-src
 
       - name: Install cargo-hack
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         with:
           tool: cargo-hack
 
       - name: Install cargo-careful
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         with:
           tool: cargo-careful
 
@@ -284,7 +284,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install cargo-shear
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         with:
           tool: cargo-shear
 
@@ -299,7 +299,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: Install cargo-features-manager
-        uses: taiki-e/install-action@v2
+        uses: taiki-e/install-action@v2.85.4
         with:
           tool: cargo-features-manager
 
