@@ -25,7 +25,7 @@ version = "0.1.0"
 anstream = "1.0.0"
 anstyle = "1.0.14"
 assert_cmd = "2.2.2"
-bindgen = { version = "0.72.1", default-features = false }
+bindgen = { version = "0.73.2", default-features = false }
 clap = { version = "4.6.1", features = ["cargo"] }
 elsa = "1.11.2"
 pastey = "0.2.3"
