@@ -59,7 +59,7 @@ jobs:
         with:
           llvm-version: ${{ env.LLVM_VERSION }}
 
-      - uses: taiki-e/install-action@v2.87.21
+      - uses: taiki-e/install-action@v2.88.0
         name: Install cargo-mutants
         with:
           tool: cargo-mutants
